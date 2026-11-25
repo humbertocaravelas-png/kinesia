@@ -126,6 +126,11 @@ tr:last-child td{border-bottom:0}
 code{font-size:12.5px;word-break:break-all;background:var(--accs);color:var(--acc);padding:1px 6px;border-radius:6px}
 .exi{border-top:1px solid var(--line);padding:14px 0}.exi:first-child{border-top:0}
 .exi input[type=checkbox]{width:22px;height:22px;accent-color:var(--acc);margin:0}
+.libg{display:grid;gap:8px;margin-top:10px;max-height:440px;overflow:auto}
+.libi{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:8px}
+.libi>div{flex:1;min-width:0;font-size:14px}.libi img{width:60px;height:60px;object-fit:cover;border-radius:8px;flex:none;background:var(--field)}
+.eximg{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}.eximg img{width:130px;max-width:46%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;background:var(--field)}
+.exi video{display:block;width:100%;max-width:420px;border-radius:12px;margin-top:8px}.exi .guia ol{margin:6px 0 0;padding-left:20px;font-size:15px}
 .f3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}.f3 label{font-size:12px;display:grid;gap:3px;color:var(--mut)}
 .rep{display:none}
 [hidden]{display:none!important}
@@ -253,6 +258,11 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
       <div class="card npac">
         <h2>Prescrição</h2>
         <ul class="evl" id="plist" style="gap:12px"></ul>
+        <details class="guia" id="libbox" style="margin-top:10px"><summary>Biblioteca de exercícios</summary>
+          <div class="f2"><label>Buscar <input type="search" id="lq" placeholder="Ex.: ponte, agachamento, ombro"></label><label>Músculo <select id="lm"><option value="">Todos</option></select></label><label>Equipamento <select id="le"><option value="">Todos</option></select></label></div>
+          <div class="libg" id="libres" aria-live="polite"></div>
+          <p class="mut" style="font-size:12px">Os exercícios que você já prescreveu aparecem primeiro, marcados como “Seu”. Imagens e textos da Free Exercise DB (domínio público), traduzidos.</p>
+        </details>
         <div class="f2" style="margin-top:14px">
           <label>Exercício <input type="text" id="pnome" list="exlib" maxlength="80" placeholder="Ex.: ponte de glúteo"></label>
           <label>Séries <input type="text" id="pser" maxlength="20" placeholder="3"></label>
@@ -261,7 +271,9 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
           <label>Frequência <input type="text" id="pfreq" maxlength="40" placeholder="3x por semana"></label>
           <label>Vídeo (link https) <input type="text" id="pvid" maxlength="300" placeholder="https://youtu.be/..."></label>
         </div>
+        <label class="pro" style="display:grid;gap:4px;margin-top:12px;font-size:14px;font-weight:500">Enviar vídeo seu (até 50 MB) <input type="file" id="pvup" accept="video/mp4,video/quicktime,video/webm"><span class="mut" id="pvst" role="status"></span></label>
         <label style="display:grid;gap:4px;margin-top:12px;font-size:14px;font-weight:500">Orientação <input type="text" id="pobs" maxlength="300" placeholder="Ex.: suba devagar, pare se a dor passar de 5"></label>
+        <label style="display:grid;gap:4px;margin-top:12px;font-size:14px;font-weight:500">Como fazer (um passo por linha) <textarea id="ppas" maxlength="2000" rows="4" placeholder="Deite de barriga para cima com os joelhos dobrados.&#10;Suba o quadril devagar."></textarea></label>
         <div class="row" style="margin-top:12px"><button class="pri" id="padd">Adicionar exercício</button><button id="pcancel" hidden>Cancelar edição</button></div>
         <datalist id="exlib"><option>Caminhada</option><option>Bicicleta ergométrica</option><option>Sentar e levantar da cadeira</option><option>Ponte de glúteo</option><option>Prancha</option><option>Quatro apoios (perdigueiro)</option><option>Remada com elástico</option><option>Rotação externa de ombro com elástico</option><option>Elevação lateral com halter</option><option>Panturrilha em pé</option><option>Subir degrau (step)</option><option>Gato-camelo (mobilidade de coluna)</option><option>Alongamento de posteriores de coxa</option><option>Respiração diafragmática</option><option>Hidroginástica</option><option>Agachamento</option><option>Afundo</option><option>Leg press</option><option>Cadeira extensora</option><option>Isometria de quadríceps</option><option>Elevação da perna estendida</option><option>Equilíbrio em uma perna</option><option>Levantamento terra</option><option>Supino</option><option>Desenvolvimento de ombro</option><option>Puxada alta</option><option>Corrida leve</option></datalist>
       </div>
@@ -566,11 +578,15 @@ function renderGuide(){const tk=MODE==='pac'?TOKEN:P().token,remote=MODE!=='loca
 
 function renderDiario(){const E=P().entries,ds=days().filter(d=>E[d].diario?.length).reverse().slice(0,60);
   $('#dlist').innerHTML=ds.length?ds.map(d=>`<li style="display:block"><b>${esc(br(d)+'/'+d.slice(2,4))}</b><ul class="evl">${E[d].diario.map((x,i)=>`<li><span><strong>${esc(x.h||'—')}</strong> · dor ${esc(x.dor)}${x.local?' · '+esc(x.local):''}${x.gat?`<br><span class="mut">Fazendo: ${esc(x.gat)}</span>`:''}${x.ali?`<br><span class="mut">Ajudou: ${esc(x.ali)}</span>`:''}${x.nota?`<br>${esc(x.nota)}`:''}</span><button type="button" class="del" data-d="${esc(d)}" data-i="${i}" aria-label="Apagar anotação" style="min-height:36px;padding:4px 12px">Apagar</button></li>`).join('')}</ul></li>`).join(''):'<li class="mut">Nenhuma anotação ainda.</li>'}
+const IMG='https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/',okImg=s=>/^[\w-]+\/\d\.jpg$/.test(s);
+const exImg=x=>{const i=(x.img||[]).filter(okImg);return i.length?`<div class="eximg">${i.map(s=>`<img src="${IMG+s}" alt="" loading="lazy">`).join('')}</div>`:''};
+// Vídeo enviado ao Supabase Storage toca na própria página; outros links abrem fora.
+const vidH=v=>!/^https:\/\//.test(v||'')?'':/\/storage\/v1\/object\/public\//.test(v)?`<video src="${esc(v)}" controls preload="metadata" playsinline></video>`:`<a href="${esc(v)}" target="_blank" rel="noopener" style="color:var(--acc);font-size:15px">Ver vídeo</a>`;
 const exMeta=x=>[x.series&&x.series+(x.series==='1'?' série':' séries'),x.reps,x.carga&&'carga '+x.carga,x.freq].filter(Boolean).join(' · ');
 function lastDone(id){const E=P().entries,d=days().reverse().find(d=>E[d].treino?.itens?.[id]);if(!d)return'';const v=E[d].treino.itens[id];return`Último: ${[v.s&&v.s+'x',v.r,v.c].filter(Boolean).join(' ')} (${br(d)})`}
 function renderExe(){const p=P(),L=p.presc||[],t=p.entries[$('#xdate').value]?.treino||{},it=t.itens||{};
   $('#xlist').innerHTML=L.length?L.map(x=>{const v=it[x.id];const f=(k,l,dv)=>`<label>${l}<input type="text" data-f="${k}" maxlength="30" value="${esc(v?v[k]:dv)}"></label>`;
-    return`<div class="exi" data-x="${esc(x.id)}"><label class="row" style="gap:10px;font-weight:600;flex-wrap:nowrap"><input type="checkbox"${v?' checked':''}>${esc(x.nome)}</label><div class="mut">${esc(exMeta(x))}</div>${x.obs?`<div style="font-size:15px;margin-top:4px">${esc(x.obs)}</div>`:''}${/^https:\/\//.test(x.video||'')?`<a href="${esc(x.video)}" target="_blank" rel="noopener" style="color:var(--acc);font-size:15px">Ver vídeo</a>`:''}<div class="f3">${f('s','Séries',x.series||'')}${f('r','Reps / tempo',x.reps||'')}${f('c','Carga',x.carga||'')}</div></div>`}).join('')
+    return`<div class="exi" data-x="${esc(x.id)}"><label class="row" style="gap:10px;font-weight:600;flex-wrap:nowrap"><input type="checkbox"${v?' checked':''}>${esc(x.nome)}</label><div class="mut">${esc(exMeta(x))}</div>${x.obs?`<div style="font-size:15px;margin-top:4px">${esc(x.obs)}</div>`:''}${exImg(x)}${vidH(x.video)}${x.passos?`<details class="guia"><summary>Como fazer</summary><ol>${x.passos.split('\n').filter(s=>s.trim()).map(s=>`<li>${esc(s)}</li>`).join('')}</ol></details>`:''}<div class="f3">${f('s','Séries',x.series||'')}${f('r','Reps / tempo',x.reps||'')}${f('c','Carga',x.carga||'')}</div></div>`}).join('')
     :`<p class="mut">${MODE==='pac'?'Seu fisioterapeuta ainda não passou exercícios.':'Nenhum exercício prescrito ainda. Monte a prescrição ao lado.'}</p>`;
   $('#xdor').value=t.dor??0;$('#oxdor').textContent=t.dor??0;$('#xpse').value=t.pse??5;$('#oxpse').textContent=t.pse??5;$('#xsave').hidden=!L.length;fillR();
   $('#plist').innerHTML=L.length?L.map(x=>`<li><span><strong>${esc(x.nome)}</strong><br><span class="mut">${esc(exMeta(x))}</span>${lastDone(x.id)?`<br><span class="mut">${esc(lastDone(x.id))}</span>`:''}</span><span class="row" style="gap:6px;flex-wrap:nowrap"><button type="button" data-ed="${esc(x.id)}" style="min-height:36px;padding:4px 12px">Editar</button><button type="button" class="del" data-rm="${esc(x.id)}" aria-label="Remover ${esc(x.nome)}" style="min-height:36px;padding:4px 12px">Remover</button></span></li>`).join(''):'<li class="mut">Nenhum exercício na prescrição.</li>';
@@ -609,16 +625,38 @@ $('#xsave').addEventListener('click',e=>{const p=P(),d=$('#xdate').value;if(!p.i
   if(!Object.keys(itens).length)return toast('Marque os exercícios que você fez');
   const E=p.entries;E[d]=E[d]||{};E[d].treino={itens,dor:+$('#xdor').value,pse:+$('#xpse').value};
   busy(e.currentTarget,async()=>{const ok=await putEntries(p,[d]);renderAll();$('#xstat').textContent=ok?(MODE==='pac'?'Enviado ao seu fisioterapeuta.':'Salvo.'):'Não enviado. Toque em Salvar de novo.';if(ok)toast('Treino salvo')})});
-let editX=null;const PF=['pnome','pser','preps','pcarga','pfreq','pvid','pobs'],PK=['nome','series','reps','carga','freq','video','obs'];
-const resetPF=()=>{PF.forEach(i=>$('#'+i).value='');editX=null;$('#padd').textContent='Adicionar exercício';$('#pcancel').hidden=true};
+let editX=null,pImg=[];const PF=['pnome','pser','preps','pcarga','pfreq','pvid','pobs','ppas'],PK=['nome','series','reps','carga','freq','video','obs','passos'];
+const resetPF=()=>{PF.forEach(i=>$('#'+i).value='');editX=null;pImg=[];$('#padd').textContent='Adicionar exercício';$('#pcancel').hidden=true};
 $('#pcancel').addEventListener('click',resetPF);
 $('#padd').addEventListener('click',async()=>{const p=P();if(!p.id)return toast('Crie um paciente primeiro');const v=Object.fromEntries(PK.map((k,i)=>[k,$('#'+PF[i]).value.trim()]));
   if(!v.nome)return toast('Informe o exercício');if(v.video&&!/^https:\/\//.test(v.video))return toast('O link do vídeo precisa começar com https://');
-  const L=p.presc=p.presc||[],x={id:editX||uid(),...v},i=L.findIndex(y=>y.id===x.id);if(i>=0)L[i]=x;else L.push(x);resetPF();
+  const L=p.presc=p.presc||[],x={id:editX||uid(),...v,img:pImg},i=L.findIndex(y=>y.id===x.id);if(i>=0)L[i]=x;else L.push(x);resetPF();
   const ok=await putPatient(p);renderAll();if(ok)toast('Prescrição salva')});
 $('#plist').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;const p=P(),L=p.presc||[];
-  if(b.dataset.ed){const x=L.find(y=>y.id===b.dataset.ed);if(!x)return;PK.forEach((k,i)=>$('#'+PF[i]).value=x[k]||'');editX=x.id;$('#padd').textContent='Salvar alteração';$('#pcancel').hidden=false;$('#pnome').focus();return}
+  if(b.dataset.ed){const x=L.find(y=>y.id===b.dataset.ed);if(!x)return;PK.forEach((k,i)=>$('#'+PF[i]).value=x[k]||'');pImg=x.img||[];editX=x.id;$('#padd').textContent='Salvar alteração';$('#pcancel').hidden=false;$('#pnome').focus();return}
   if(b.dataset.rm){p.presc=L.filter(y=>y.id!==b.dataset.rm);if(editX===b.dataset.rm)resetPF();const ok=await putPatient(p);renderAll();if(ok)toast('Exercício removido')}});
+// Biblioteca: carrega o JSON só quando abre. "Seu" = exercícios já prescritos a qualquer paciente.
+let LIB=null,OWN=[];const fold=s=>String(s??'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+async function lib(){if(LIB)return LIB;try{const r=await fetch('exercicios-pt.json');if(!r.ok)throw 0;LIB=await r.json()}catch{toast('Não consegui abrir a biblioteca');return[]}
+  const u=k=>[...new Set(LIB.flatMap(x=>[].concat(x[k]||[])))].filter(Boolean).sort((a,b)=>a.localeCompare(b,'pt')),o=a=>'<option value="">Todos</option>'+a.map(v=>`<option>${esc(v)}</option>`).join('');
+  $('#lm').innerHTML=o(u('m'));$('#le').innerHTML=o(u('e'));return LIB}
+async function renderLib(){const L=await lib(),q=fold($('#lq').value.trim()),m=$('#lm').value,e=$('#le').value,seen=new Set();
+  OWN=m||e?[]:S.patients.flatMap(p=>p.presc||[]).filter(x=>{const k=fold(x.nome);if(seen.has(k)||!k.includes(q))return false;seen.add(k);return true}).slice(0,10);
+  const r=L.filter(x=>(!q||fold(x.n+' '+x.m.join(' ')).includes(q))&&(!m||x.m.includes(m)||x.s.includes(m))&&(!e||x.e===e)),row=(img,n,sub,u)=>`<div class="libi">${img}<div><strong>${esc(n)}</strong><br><span class="mut">${esc(sub)}</span></div><button type="button" data-use="${u}" style="min-height:36px;padding:4px 12px">Usar</button></div>`;
+  $('#libres').innerHTML=OWN.map((x,i)=>row(x.img?.[0]&&okImg(x.img[0])?`<img src="${IMG+x.img[0]}" alt="" loading="lazy">`:'',x.nome,'Seu · '+exMeta(x),'o:'+i)).join('')
+    +r.slice(0,40).map(x=>row(x.i[0]&&okImg(x.i[0])?`<img src="${IMG+x.i[0]}" alt="" loading="lazy">`:'',x.n,[x.m.join(', '),x.e].filter(Boolean).join(' · '),'l:'+esc(x.id))).join('')
+    +(r.length>40?`<p class="mut">Mostrando 40 de ${r.length}. Refine a busca.</p>`:'')+(!OWN.length&&!r.length?'<p class="mut">Nada encontrado.</p>':'')}
+$('#libbox').addEventListener('toggle',e=>{if(e.target.open)renderLib()});['lq','lm','le'].forEach(i=>$('#'+i).addEventListener('input',renderLib));
+$('#libres').addEventListener('click',e=>{const b=e.target.closest('[data-use]');if(!b)return;const[t,k]=b.dataset.use.split(':');
+  if(t==='o'){const x=OWN[+k];PK.forEach((k,i)=>$('#'+PF[i]).value=x[k]||'');pImg=x.img||[]}
+  else{const x=LIB.find(y=>y.id===k);if(!x)return;$('#pnome').value=x.n;$('#ppas').value=x.p.join('\n');pImg=x.i.slice(0,2)}
+  $('#pser').focus();$('#pnome').scrollIntoView({block:'center'});toast('Ajuste séries e repetições e toque em Adicionar')});
+$('#pvup').addEventListener('change',async e=>{const f=e.target.files[0],st=$('#pvst');if(!f||!db)return;
+  if(f.size>50*1048576){e.target.value='';return toast('Vídeo acima de 50 MB. Grave mais curto ou em qualidade menor.')}
+  st.textContent='Enviando o vídeo…';const{data:{user}}=await db.auth.getUser(),ext=(f.name.split('.').pop()||'mp4').toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,5),path=`${user.id}/${uid()}.${ext}`;
+  const{error}=await db.storage.from('videos').upload(path,f,{contentType:f.type||'video/mp4'});e.target.value='';
+  if(error){st.textContent='Não enviou: '+error.message;return}
+  $('#pvid').value=db.storage.from('videos').getPublicUrl(path).data.publicUrl;st.textContent='Vídeo enviado. Toque em Adicionar exercício para salvar.'});
 $('#dlist').addEventListener('click',async e=>{const b=e.target.closest('button[data-i]');if(!b)return;const p=P(),x=p.entries[b.dataset.d];if(!x?.diario)return;
   x.diario.splice(+b.dataset.i,1);await putEntries(p,[b.dataset.d]);renderAll()});
 $('#rdate').addEventListener('change',loadReg);$('#wdate').addEventListener('change',loadWear);
@@ -678,7 +716,7 @@ const isDay=d=>/^\d{4}-\d{2}-\d{2}$/.test(d);
 function addPatient(o){if(!o||!o.entries||typeof o.entries!=='object'||Array.isArray(o.entries))throw 0;
   const entries=Object.fromEntries(Object.entries(o.entries).filter(([d,e])=>isDay(d)&&e&&typeof e==='object').map(([d,e])=>[d,norm(e)]));
   const events=Object.fromEntries(Object.entries(o.events&&typeof o.events==='object'?o.events:{}).filter(([d,t])=>isDay(d)&&typeof t==='string'));
-  const presc=(Array.isArray(o.presc)?o.presc:[]).filter(x=>x&&typeof x.nome==='string').slice(0,40).map(x=>({id:String(x.id||uid()),...Object.fromEntries(PK.map(k=>[k,String(x[k]??'').slice(0,300)]))})).map(x=>/^https:\/\//.test(x.video)?x:{...x,video:''});
+  const presc=(Array.isArray(o.presc)?o.presc:[]).filter(x=>x&&typeof x.nome==='string').slice(0,40).map(x=>({id:String(x.id||uid()),...Object.fromEntries(PK.map(k=>[k,String(x[k]??'').slice(0,k==='passos'?2000:300)])),img:(Array.isArray(x.img)?x.img:[]).filter(okImg).slice(0,2)})).map(x=>/^https:\/\//.test(x.video)?x:{...x,video:''});
   const p={id:uid(),name:String(o.name||'Paciente importado').slice(0,120),age:num(o.age),queixa:String(o.queixa||''),aparelho:String(o.aparelho||''),entries,events,presc};
   const ex=S.patients.find(x=>x.name===p.name);if(ex){Object.assign(ex.entries,entries);ex.events=Object.assign(ex.events||{},events);if(presc.length)ex.presc=presc;S.cur=ex.id;return ex}
   S.patients.push(p);S.cur=p.id;return p}
