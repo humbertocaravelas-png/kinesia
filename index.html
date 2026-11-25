@@ -126,6 +126,30 @@ tr:last-child td{border-bottom:0}
 code{font-size:12.5px;word-break:break-all;background:var(--accs);color:var(--acc);padding:1px 6px;border-radius:6px}
 .exi{border-top:1px solid var(--line);padding:14px 0}.exi:first-child{border-top:0}
 .exi input[type=checkbox]{width:22px;height:22px;accent-color:var(--acc);margin:0}
+.go{min-height:52px;padding:0 28px;font-size:17px}
+.xr{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}.xr:first-child{border-top:0}
+.xr img,.xph{width:52px;height:52px;border-radius:10px;object-fit:cover;flex:none;background:var(--field)}.xr>div{flex:1;min-width:0}
+.ok{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--acc);color:var(--on);font-weight:700;flex:none}
+.fold>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;min-height:32px}.fold>summary::-webkit-details-marker{display:none}
+.fold>summary::after{content:"+";font-size:22px;color:var(--mut)}.fold[open]>summary::after{content:"–"}.fold>summary h2{margin:0}.fold[open]>summary{margin-bottom:12px}
+#ppas{font-family:inherit;font-size:15px}
+.gd{position:fixed;inset:0;z-index:50;background:var(--bg);overflow:auto}
+.gdbar{position:sticky;top:0;display:flex;gap:12px;align-items:center;padding:12px 16px;background:var(--bg);border-bottom:1px solid var(--line);z-index:1}
+.gdbar button{min-height:40px;width:40px;padding:0;flex:none}.gdp{flex:1;height:6px;border-radius:3px;background:var(--line2);overflow:hidden}
+.gdp i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .3s}
+.gdb{max-width:560px;margin:0 auto;padding:20px 16px 48px}.gdn{font-family:Sora,sans-serif;font-size:24px;margin:0;line-height:1.25}
+.gdt{font-size:20px;font-weight:600;color:var(--acc);margin:6px 0 0}.gdsug{background:var(--accs);border-radius:12px;padding:10px 14px;margin:10px 0 0;font-size:15px}
+.gdb .eximg img{width:48%;max-width:260px}.gdb video{display:block;width:100%;border-radius:14px;margin-top:10px}.gdb .guia ol{padding-left:20px}
+.gsh,.gs{display:grid;grid-template-columns:26px 1fr 1fr 52px;gap:8px;align-items:center}.gsh{margin-top:18px;font-size:12px;color:var(--mut)}.gsh span:first-child{grid-column:2}
+.gs{margin-top:8px}.gs>span{font-weight:700;color:var(--mut);text-align:center}.gck{min-height:48px;width:52px;padding:0;font-size:20px}
+.gs.on .gck{background:var(--acc);color:var(--on);border-color:var(--acc)}.gs.on input{opacity:.65}.gadd{margin-top:10px}
+.gtm{margin-top:16px;text-align:center;padding:16px;border-radius:16px;background:var(--card2);border:1px solid var(--line2);display:grid;gap:6px}.gtm b{font-family:Sora,sans-serif;font-size:46px;font-variant-numeric:tabular-nums;color:var(--acc)}
+.gdnav{display:flex;gap:10px;margin-top:24px}.gdnav button{flex:1;min-height:52px}
+.mmap{display:flex;gap:6px;justify-content:center}.mmap svg{width:48%;max-width:170px}.mb{fill:var(--line2)}
+.cal{display:flex;gap:3px;justify-content:center}.cal div{display:grid;gap:3px;flex:1;max-width:20px}.cal i{display:block;aspect-ratio:1;border-radius:3px;background:var(--line2)}.cal i.f{visibility:hidden}
+.cal i.t1,.lg i.t1{background:color-mix(in srgb,var(--acc) 35%,transparent)}.cal i.t2,.lg i.t2{background:var(--acc)}
+.lg{display:inline-flex;align-items:center;gap:4px;margin-left:10px;font-size:13px}.lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-left:6px}
+@media print{.gd{display:none!important}}
 .libg{display:grid;gap:8px;margin-top:10px;max-height:440px;overflow:auto}
 .libi{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:8px}
 .libi>div{flex:1;min-width:0;font-size:14px}.libi img{width:60px;height:60px;object-fit:cover;border-radius:8px;flex:none;background:var(--field)}
@@ -145,6 +169,7 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
   <div class="top">
     <div class="brand"><svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="kg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7FF3EE"/><stop offset="1" stop-color="#00E1D8"/></linearGradient></defs><rect x="1" y="1" width="38" height="38" rx="12" fill="#0A3D35" stroke="#00E1D8" stroke-opacity=".35"/><path d="M8 21h6l3-8 5 15 3-7h7" fill="none" stroke="url(#kg)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><div><h1 id="htitle">Kinesia</h1><div class="sub" id="pinfo">Acompanhamento diário · Hugo Caravelas</div></div></div>
     <div class="pat npac auth"><select id="psel" aria-label="Paciente"></select><button id="pnew">Novo paciente</button><button id="lout" class="pro">Sair</button></div>
+    <button id="inst" hidden>Instalar app</button>
   </div>
   <nav role="tablist" class="auth">
     <button role="tab" data-t="evo" class="npac" aria-selected="true">Evolução</button>
@@ -192,13 +217,17 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
       <ul class="evl" id="evl"></ul>
     </div>
     <div class="stackc">
-      <div class="card"><h2>Domínios · últimos 7 dias</h2><p class="mut" style="margin:0">0% = pior situação · 100% = melhor situação</p><div id="doms"></div></div>
+      <div class="card"><h2>Domínios · 7 dias</h2><div id="doms"></div></div>
       <div class="card"><h2>Bandeiras de atenção</h2><ul class="flags" id="flags"></ul></div>
     </div>
   </div>
   <div class="grid" style="margin-top:20px">
-    <div class="card"><h2>Últimos registros</h2><div class="scroll"><table id="last"></table></div></div>
-    <div class="card"><h2>O que acompanha a dor</h2><ul class="ins" id="ins"></ul><p class="mut">Correlação entre os dias registrados. Mostra associação, não causa. Use para guiar a conversa no atendimento.</p></div>
+    <div class="card"><h2>Músculos · 7 dias</h2><div id="mmap" class="mmap"></div><p class="mut" id="mmapt" style="margin:8px 0 0;font-size:14px"></p></div>
+    <div class="card"><h2>Constância</h2><div id="cal" class="cal"></div><p class="mut" id="calt" style="margin:8px 0 0;font-size:14px"></p></div>
+  </div>
+  <div class="grid" style="margin-top:20px">
+    <details class="card fold"><summary><h2>Últimos registros</h2></summary><div class="scroll"><table id="last"></table></div></details>
+    <details class="card fold"><summary><h2>O que acompanha a dor</h2></summary><ul class="ins" id="ins"></ul><p class="mut">Associação entre os dias, não causa.</p></details>
   </div>
   <p class="rep mut" style="margin-top:20px">Hugo Caravelas · Fisioterapeuta · CREFITO 423564-F. Dados de relógio e anel de consumo mostram a tendência de cada paciente e não servem para diagnóstico.</p>
 </section>
@@ -206,12 +235,11 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
 <section id="t-reg" hidden>
   <div class="card">
     <div class="row" style="justify-content:space-between"><h2>Como foi o dia</h2><label class="row" style="gap:8px">Data <input type="date" id="rdate" style="width:auto"></label></div>
-    <p class="mut" style="margin:4px 0 0">Respostas de 0 a 10. Leva menos de um minuto.</p>
     <div id="sliders"></div>
-    <fieldset><legend>Observações</legend><div class="f2" style="margin-top:10px">
+    <details class="guia"><summary>Observações (opcional)</summary><div class="f2">
       <label>Onde dói? <input type="text" id="rlocal" placeholder="Ex.: lombar, ombro direito" maxlength="300"></label>
       <label>Algo marcante hoje? <input type="text" id="robs" placeholder="Ex.: dormi mal, viagem, crise" maxlength="300"></label>
-    </div></fieldset>
+    </div></details>
     <div class="row" style="margin-top:20px"><button class="pri" id="rsave">Salvar registro</button><span class="mut" id="rstat" role="status"></span></div>
   </div>
 </section>
@@ -220,7 +248,6 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
   <div class="grid">
     <div class="card">
       <h2>Diário da dor</h2>
-      <p class="mut" style="margin:4px 0 0">Anote cada vez que a dor mudar: quando foi, o que estava fazendo e o que ajudou.</p>
       <div class="f2" style="margin-top:14px">
         <label>Data <input type="date" id="ddate"></label>
         <label>Hora <input type="time" id="dhora" style="min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);width:100%"></label>
@@ -228,10 +255,13 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
       <div class="sl" style="margin-top:14px"><label for="ddor">Intensidade da dor <output id="odor">5</output></label><input type="range" id="ddor" min="0" max="10" step="1" value="5"><small>0 sem dor · 10 pior dor imaginável</small></div>
       <div class="f2" style="margin-top:12px">
         <label>Onde dói? <input type="text" id="dlocal" maxlength="200" placeholder="Ex.: lombar, pescoço"></label>
+      </div>
+      <details class="guia"><summary>Mais detalhes</summary><div class="f2">
         <label>O que estava fazendo? <input type="text" id="dgat" maxlength="200" placeholder="Ex.: lavando louça, sentado no ônibus"></label>
         <label>O que ajudou? <input type="text" id="dali" maxlength="200" placeholder="Ex.: calor, deitar, caminhar"></label>
       </div>
       <label style="display:grid;gap:4px;margin-top:12px;font-size:14px;font-weight:500">Anotação <input type="text" id="dnota" maxlength="300" placeholder="Como se sentiu, pensamentos, remédio que tomou"></label>
+      </details>
       <div class="row" style="margin-top:18px"><button class="pri" id="dadd">Adicionar ao diário</button><span class="mut" id="dstat" role="status"></span></div>
     </div>
     <div class="card"><h2>Anotações</h2><ul class="evl" id="dlist" style="gap:14px"></ul></div>
@@ -241,18 +271,9 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
 <section id="t-exe" hidden>
   <div class="grid">
     <div class="card">
-      <div class="row" style="justify-content:space-between"><h2>Treino do dia</h2><label class="row" style="gap:8px">Data <input type="date" id="xdate" style="width:auto"></label></div>
-      <p class="mut" style="margin:4px 0 0">Marque o que fez e ajuste séries, repetições e carga se mudou algo.</p>
+      <div class="row" style="justify-content:space-between"><h2>Treino do dia</h2><input type="date" id="xdate" style="width:auto" aria-label="Data do treino"></div>
       <div id="xlist" style="margin-top:8px"></div>
-      <div class="items" style="margin-top:6px">
-        <div class="sl"><div class="slh"><label for="xdor">Dor durante o exercício</label><button type="button" class="help" aria-expanded="false" aria-controls="b-xdor" aria-label="Exemplos de dor durante o exercício" data-b="b-xdor">?</button><output id="oxdor">0</output></div>
-          <div class="balao" id="b-xdor" hidden><ul><li><b>0–2</b>Sem dor ou quase nenhuma</li><li><b>3–5</b>Dor aceitável, que passa depois do exercício</li><li><b>6–10</b>Dor forte: pare o exercício e avise o seu fisioterapeuta</li></ul></div>
-          <input type="range" id="xdor" min="0" max="10" step="1" value="0"><small>0 sem dor · 10 pior dor imaginável</small></div>
-        <div class="sl"><div class="slh"><label for="xpse">Esforço (PSE)</label><button type="button" class="help" aria-expanded="false" aria-controls="b-xpse" aria-label="Exemplos de esforço" data-b="b-xpse">?</button><output id="oxpse">5</output></div>
-          <div class="balao" id="b-xpse" hidden><ul><li><b>0–2</b>Muito leve, quase sem esforço</li><li><b>3–4</b>Leve: respiração um pouco mais rápida</li><li><b>5–6</b>Moderado: ainda dá para falar frases curtas</li><li><b>7–8</b>Forte: difícil falar</li><li><b>9–10</b>Máximo: não aguentaria mais</li></ul></div>
-          <input type="range" id="xpse" min="0" max="10" step="1" value="5"><small>0 repouso · 10 esforço máximo</small></div>
-      </div>
-      <div class="row" style="margin-top:18px"><button class="pri" id="xsave">Salvar treino</button><span class="mut" id="xstat" role="status"></span></div>
+      <div class="row" style="margin-top:16px"><button class="pri go" id="xgo">Começar treino</button><span class="mut" id="xstat" role="status"></span></div>
     </div>
     <div class="stackc">
       <div class="card npac">
@@ -268,16 +289,24 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
           <label>Séries <input type="text" id="pser" maxlength="20" placeholder="3"></label>
           <label>Repetições ou tempo <input type="text" id="preps" maxlength="30" placeholder="10 a 12 ou 30 s"></label>
           <label>Carga <input type="text" id="pcarga" maxlength="30" placeholder="Elástico verde, 2 kg"></label>
+        </div>
+        <details class="guia"><summary>Mais opções</summary><div class="f2">
           <label>Frequência <input type="text" id="pfreq" maxlength="40" placeholder="3x por semana"></label>
+          <label>Descanso (segundos) <input type="text" id="pdesc" maxlength="4" inputmode="numeric" placeholder="60"></label>
+          <label>Progressão <select id="pprog"><option value="">Sem progressão</option><option value="carga">Sobe a carga</option><option value="dupla">Sobe repetições, depois carga</option><option value="tempo">Sobe o tempo</option></select></label>
+          <label>Quanto sobe <input type="text" id="pinc" maxlength="20" placeholder="1 kg ou 5 s"></label>
+          <label>Músculo principal <select id="pmus"><option value="">—</option></select></label>
           <label>Vídeo (link https) <input type="text" id="pvid" maxlength="300" placeholder="https://youtu.be/..."></label>
         </div>
         <label class="pro" style="display:grid;gap:4px;margin-top:12px;font-size:14px;font-weight:500">Enviar vídeo seu (até 50 MB) <input type="file" id="pvup" accept="video/mp4,video/quicktime,video/webm"><span class="mut" id="pvst" role="status"></span></label>
         <label style="display:grid;gap:4px;margin-top:12px;font-size:14px;font-weight:500">Orientação <input type="text" id="pobs" maxlength="300" placeholder="Ex.: suba devagar, pare se a dor passar de 5"></label>
         <label style="display:grid;gap:4px;margin-top:12px;font-size:14px;font-weight:500">Como fazer (um passo por linha) <textarea id="ppas" maxlength="2000" rows="4" placeholder="Deite de barriga para cima com os joelhos dobrados.&#10;Suba o quadril devagar."></textarea></label>
+        <p class="mut" style="font-size:13px">Progressão: a sugestão só sobe quando o paciente completa todas as séries com dor durante ≤ 3 e sem piora de 2 pontos no dia seguinte.</p>
+        </details>
         <div class="row" style="margin-top:12px"><button class="pri" id="padd">Adicionar exercício</button><button id="pcancel" hidden>Cancelar edição</button></div>
         <datalist id="exlib"><option>Caminhada</option><option>Bicicleta ergométrica</option><option>Sentar e levantar da cadeira</option><option>Ponte de glúteo</option><option>Prancha</option><option>Quatro apoios (perdigueiro)</option><option>Remada com elástico</option><option>Rotação externa de ombro com elástico</option><option>Elevação lateral com halter</option><option>Panturrilha em pé</option><option>Subir degrau (step)</option><option>Gato-camelo (mobilidade de coluna)</option><option>Alongamento de posteriores de coxa</option><option>Respiração diafragmática</option><option>Hidroginástica</option><option>Agachamento</option><option>Afundo</option><option>Leg press</option><option>Cadeira extensora</option><option>Isometria de quadríceps</option><option>Elevação da perna estendida</option><option>Equilíbrio em uma perna</option><option>Levantamento terra</option><option>Supino</option><option>Desenvolvimento de ombro</option><option>Puxada alta</option><option>Corrida leve</option></datalist>
       </div>
-      <div class="card"><h2>Histórico de treinos</h2><div class="scroll"><table id="xhist"></table></div></div>
+      <details class="card fold"><summary><h2>Histórico de treinos</h2></summary><div class="scroll"><table id="xhist"></table></div></details>
     </div>
   </div>
 </section>
@@ -367,6 +396,10 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
   <h2 id="tt">Copie os dados</h2><p class="mut" style="margin:0">Selecione tudo e copie.</p><textarea id="ttx" readonly style="min-height:200px"></textarea>
   <div class="row"><button id="tx">Fechar</button></div>
 </div></div>
+<div class="gd" id="gd" hidden role="dialog" aria-modal="true" aria-label="Treino guiado">
+  <div class="gdbar"><button type="button" id="gdx" aria-label="Fechar treino">✕</button><div class="gdp"><i id="gdpb"></i></div><span class="mut" id="gdc"></span></div>
+  <div class="gdb" id="gdb"></div>
+</div>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
@@ -416,7 +449,9 @@ function norm(e){e={...e};for(const k in e)if(typeof e[k]==='string'&&k!=='local
   if(e.sonoH>1440)e.sonoH=+(e.sonoH/3600).toFixed(1);else if(e.sonoH>24)e.sonoH=+(e.sonoH/60).toFixed(1);
   if(e.spo2!=null&&e.spo2<=1)e.spo2=Math.round(e.spo2*100);return e}
 
-const TOKEN=(location.hash.match(/p=([0-9a-f-]{36})/i)||[])[1]||null;
+// App instalado abre sem o #p= do link: usa o último link de paciente aberto neste aparelho.
+const STAND=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+const TOKEN=(location.hash.match(/p=([0-9a-f-]{36})/i)||[])[1]||(STAND&&ls(K+'-pac'))||null;
 const MODE=SUPA_URL?(TOKEN?'pac':'pro'):'local';
 const db=SUPA_URL&&window.supabase?supabase.createClient(SUPA_URL,SUPA_KEY):null;
 document.body.dataset.mode=MODE;
@@ -434,7 +469,7 @@ function sample(){
     if(late&&i%2===0)e[iso(t)].treino={itens:{ex1:{n:'Caminhada',s:'1',r:'20 min',c:''},ex2:{n:'Sentar e levantar da cadeira',s:'3',r:'10',c:''},ex3:{n:'Ponte de glúteo',s:'2',r:'12',c:''}},dor:c(2+r()*3),pse:c(4+r()*2)}}
   const ev=new Date(d);ev.setDate(d.getDate()-9);
   return{id:uid(),name:'Maria S. (exemplo)',age:47,queixa:'Fibromialgia',aparelho:'Apple Watch / iPhone',entries:e,events:{[iso(ev)]:'Início do exercício graduado e educação em dor'},
-    presc:[{id:'ex1',nome:'Caminhada',series:'1',reps:'20 min',carga:'',freq:'5x por semana',obs:'Ritmo em que ainda dá para conversar',video:''},{id:'ex2',nome:'Sentar e levantar da cadeira',series:'3',reps:'10',carga:'',freq:'3x por semana',obs:'',video:''},{id:'ex3',nome:'Ponte de glúteo',series:'2',reps:'12',carga:'',freq:'3x por semana',obs:'Suba devagar',video:''}]}}
+    presc:[{id:'ex1',nome:'Caminhada',series:'1',reps:'20 min',carga:'',freq:'5x por semana',obs:'Ritmo em que ainda dá para conversar',video:''},{id:'ex2',nome:'Sentar e levantar da cadeira',series:'3',reps:'8 a 12',carga:'',freq:'3x por semana',obs:'',video:'',desc:'45',prog:'dupla',mus:'Quadríceps',mus2:['Glúteos']},{id:'ex3',nome:'Ponte de glúteo',series:'2',reps:'12',carga:'',freq:'3x por semana',obs:'Suba devagar',video:'',mus:'Glúteos',mus2:['Posteriores da coxa'],img:['Butt_Lift_Bridge/0.jpg','Butt_Lift_Bridge/1.jpg']}]}}
 
 let S={patients:[],cur:null};
 const BLANK={id:null,name:'Nenhum paciente',entries:{},events:{}};
@@ -584,15 +619,45 @@ const exImg=x=>{const i=(x.img||[]).filter(okImg);return i.length?`<div class="e
 const vidH=v=>!/^https:\/\//.test(v||'')?'':/\/storage\/v1\/object\/public\//.test(v)?`<video src="${esc(v)}" controls preload="metadata" playsinline></video>`:`<a href="${esc(v)}" target="_blank" rel="noopener" style="color:var(--acc);font-size:15px">Ver vídeo</a>`;
 const exMeta=x=>[x.series&&x.series+(x.series==='1'?' série':' séries'),x.reps,x.carga&&'carga '+x.carga,x.freq].filter(Boolean).join(' · ');
 function lastDone(id){const E=P().entries,d=days().reverse().find(d=>E[d].treino?.itens?.[id]);if(!d)return'';const v=E[d].treino.itens[id];return`Último: ${[v.s&&v.s+'x',v.r,v.c].filter(Boolean).join(' ')} (${br(d)})`}
-function renderExe(){const p=P(),L=p.presc||[],t=p.entries[$('#xdate').value]?.treino||{},it=t.itens||{};
-  $('#xlist').innerHTML=L.length?L.map(x=>{const v=it[x.id];const f=(k,l,dv)=>`<label>${l}<input type="text" data-f="${k}" maxlength="30" value="${esc(v?v[k]:dv)}"></label>`;
-    return`<div class="exi" data-x="${esc(x.id)}"><label class="row" style="gap:10px;font-weight:600;flex-wrap:nowrap"><input type="checkbox"${v?' checked':''}>${esc(x.nome)}</label><div class="mut">${esc(exMeta(x))}</div>${x.obs?`<div style="font-size:15px;margin-top:4px">${esc(x.obs)}</div>`:''}${exImg(x)}${vidH(x.video)}${x.passos?`<details class="guia"><summary>Como fazer</summary><ol>${x.passos.split('\n').filter(s=>s.trim()).map(s=>`<li>${esc(s)}</li>`).join('')}</ol></details>`:''}<div class="f3">${f('s','Séries',x.series||'')}${f('r','Reps / tempo',x.reps||'')}${f('c','Carga',x.carga||'')}</div></div>`}).join('')
-    :`<p class="mut">${MODE==='pac'?'Seu fisioterapeuta ainda não passou exercícios.':'Nenhum exercício prescrito ainda. Monte a prescrição ao lado.'}</p>`;
-  $('#xdor').value=t.dor??0;$('#oxdor').textContent=t.dor??0;$('#xpse').value=t.pse??5;$('#oxpse').textContent=t.pse??5;$('#xsave').hidden=!L.length;fillR();
-  $('#plist').innerHTML=L.length?L.map(x=>`<li><span><strong>${esc(x.nome)}</strong><br><span class="mut">${esc(exMeta(x))}</span>${lastDone(x.id)?`<br><span class="mut">${esc(lastDone(x.id))}</span>`:''}</span><span class="row" style="gap:6px;flex-wrap:nowrap"><button type="button" data-ed="${esc(x.id)}" style="min-height:36px;padding:4px 12px">Editar</button><button type="button" class="del" data-rm="${esc(x.id)}" aria-label="Remover ${esc(x.nome)}" style="min-height:36px;padding:4px 12px">Remover</button></span></li>`).join(''):'<li class="mut">Nenhum exercício na prescrição.</li>';
+// Progressão pela regra escolhida pelo fisioterapeuta: só sobe com todas as séries feitas, dor durante ≤ 3 e sem piora de 2+ no dia seguinte.
+const n1=v=>{const m=String(v??'').replace(',','.').match(/\d+(\.\d+)?/);return m?+m[0]:null};
+function sug(x){if(!x.prog)return null;const E=P().entries,d=days().reverse().find(d=>d<$('#xdate').value&&E[d].treino?.itens?.[x.id]);if(!d)return null;
+  const t=E[d].treino,v=t.itens[x.id],sets=v.sets?.length?v.sets:Array.from({length:n1(v.s)||1},()=>({r:v.r,c:v.c})),n=n1(x.series)||1,
+    rg=(String(x.reps||'').replace(',','.').match(/\d+(\.\d+)?/g)||[]).map(Number),lo=rg[0],hi=rg[1]??rg[0],
+    feito=sets.length>=n&&(hi==null||sets.every(s=>(n1(s.r)??0)>=hi)),a=num(E[d].dor),b=num(E[next(d)]?.dor),
+    dorOk=(num(t.dor)??0)<=3&&!(a!=null&&b!=null&&b-a>=2),c0=String(v.c||x.carga||''),inc=n1(x.inc)||(x.prog==='tempo'?5:1);
+  if(!dorOk)return{why:'Mantém: dor acima de 3 no treino ou piora no dia seguinte'};
+  if(x.prog==='tempo'){if(!feito||hi==null)return{why:'Mantém até completar o tempo em todas as séries'};const r=fmt(hi+inc)+' s';return{r,up:1,why:'Tempo sobe para '+r}}
+  if(x.prog==='dupla'&&!feito){const r0=Math.min(...sets.map(s=>n1(s.r)??0));if(hi==null)return null;const r=String(Math.max(lo,Math.min(hi,r0+1)));return{r,why:`Tente ${r} repetições em cada série`}}
+  if(!feito)return{why:'Mantém até completar todas as séries'};
+  const c=n1(c0)!=null?c0.replace(/\d+([.,]\d+)?/,m=>fmt(n1(m)+inc)):'';
+  return{c:c||c0,r:x.prog==='dupla'&&lo!=null?String(lo):'',up:1,why:c?'Carga sobe para '+c:'Suba um nível de carga (ex.: próximo elástico)'}}
+const alvo=(x,g)=>[[x.series,g?.r||x.reps].filter(Boolean).join(' × '),g?.c||x.carga].filter(Boolean).join(' · ')+(g?.up?' ↑':'');
+const sugTxt=x=>{const g=sug(x);return g?.why?`<br><span class="mut">${g.up?'↑ ':''}${esc(g.why)}</span>`:''};
+function renderExe(){const p=P(),L=p.presc||[],it=p.entries[$('#xdate').value]?.treino?.itens||{};
+  $('#xlist').innerHTML=L.length?L.map(x=>{const th=(x.img||[]).find(okImg);return`<div class="xr">${th?`<img src="${IMG+th}" alt="" loading="lazy">`:'<span class="xph"></span>'}<div><strong>${esc(x.nome)}</strong><br><span class="mut">${esc(alvo(x,sug(x)))}</span></div>${it[x.id]?'<span class="ok" aria-label="Feito">✓</span>':''}</div>`}).join('')
+    :`<p class="mut">${MODE==='pac'?'Seu fisioterapeuta ainda não passou exercícios.':'Monte a prescrição ao lado.'}</p>`;
+  const nd=Object.keys(it).length;$('#xgo').hidden=!L.length;$('#xgo').textContent=nd?'Rever treino':'Começar treino';$('#xstat').textContent=nd?`${nd} de ${L.length} feitos`:'';
+  $('#plist').innerHTML=L.length?L.map(x=>`<li><span><strong>${esc(x.nome)}</strong><br><span class="mut">${esc(exMeta(x))}</span>${sugTxt(x)}${lastDone(x.id)?`<br><span class="mut">${esc(lastDone(x.id))}</span>`:''}</span><span class="row" style="gap:6px;flex-wrap:nowrap"><button type="button" data-ed="${esc(x.id)}" style="min-height:36px;padding:4px 12px">Editar</button><button type="button" class="del" data-rm="${esc(x.id)}" aria-label="Remover ${esc(x.nome)}" style="min-height:36px;padding:4px 12px">Remover</button></span></li>`).join(''):'<li class="mut">Nenhum exercício na prescrição.</li>';
   const E=p.entries,hs=days().filter(d=>E[d].treino).slice(-14).reverse();
   $('#xhist').innerHTML=hs.length?'<tr><th>Data</th><th>Feitos</th><th>Dor durante</th><th>PSE</th><th>Dor no dia seguinte</th></tr>'+hs.map(d=>{const t=E[d].treino;return`<tr><td>${esc(br(d))}</td><td>${Object.keys(t.itens||{}).length}${L.length?' de '+L.length:''}</td><td>${fmt(num(t.dor))}</td><td>${fmt(num(t.pse))}</td><td>${fmt(num(E[next(d)]?.dor))}</td></tr>`}).join(''):'<tr><td class="empty">Nenhum treino registrado.</td></tr>'}
-function renderEvo(){renderKpis();renderDoms();renderFlags();renderIns();renderLast();draw()}
+const MUS=['Abdômen','Abdutores','Adutores','Antebraço','Bíceps','Dorsal','Glúteos','Lombar','Meio das costas','Ombros','Panturrilha','Peitoral','Pescoço','Posteriores da coxa','Quadríceps','Trapézio','Tríceps'];
+// [músculo, x, y, largura, altura, espelhar] num corpo de 100 × 185, frente e costas.
+const BODY={f:[['Pescoço',45,26,10,7],['Ombros',22,35,14,13,1],['Peitoral',37,36,13,18,1],['Bíceps',20,50,9,22,1],['Antebraço',17,74,9,24,1],['Abdômen',40,57,20,30],['Abdutores',31,86,8,14,1],['Quadríceps',34,101,12,42,1],['Adutores',46.5,101,3.5,26,1],['',37,147,9,32,1]],
+  b:[['Trapézio',38,27,24,14],['Ombros',22,35,14,13,1],['Meio das costas',43,43,14,20],['Dorsal',33,44,9,26,1],['Tríceps',20,50,9,22,1],['Antebraço',17,74,9,24,1],['Lombar',42,65,16,19],['Glúteos',36,86,13.5,17,1],['Posteriores da coxa',35,105,12,38,1],['Panturrilha',36,147,10,32,1]]};
+function renderMap(){const E=P().entries,L=P().presc||[],v={};
+  for(let i=0;i<7;i++){const t=new Date();t.setDate(t.getDate()-i);for(const[id,y]of Object.entries(E[iso(t)]?.treino?.itens||{})){const x=L.find(z=>z.id===id);if(!x)continue;const k=y.sets?.length||n1(y.s)||1;
+    if(MUS.includes(x.mus))v[x.mus]=(v[x.mus]||0)+k;(x.mus2||[]).forEach(m=>{if(MUS.includes(m))v[m]=(v[m]||0)+k/2})}}
+  const fig=(V,lab)=>`<svg viewBox="0 0 100 185" role="img" aria-label="${lab}"><circle cx="50" cy="13" r="10" class="mb"/>${BODY[V].map(([m,x,y,w,h,s])=>(s?[x,100-x-w]:[x]).map(X=>`<rect x="${X}" y="${y}" width="${w}" height="${h}" rx="4" class="mb"${v[m]?` style="fill:var(--acc);fill-opacity:${(.3+.7*Math.min(1,v[m]/12)).toFixed(2)}"`:''}>${m?`<title>${m}: ${fmt(v[m]||0)} séries</title>`:''}</rect>`).join('')).join('')}</svg>`;
+  $('#mmap').innerHTML=fig('f','Frente')+fig('b','Costas');
+  const zero=[...new Set(L.map(x=>x.mus).filter(m=>MUS.includes(m)&&!v[m]))];
+  $('#mmapt').textContent=!Object.keys(v).length?(L.length?'Nenhuma série nos últimos 7 dias.':'Sem exercícios prescritos.'):zero.length?'Sem treino na semana: '+zero.join(', '):'Todos os músculos prescritos foram treinados.'}
+function renderCal(){const E=P().entries,W=17,t0=new Date(),st=new Date(t0);st.setDate(st.getDate()-(t0.getDay()+6)%7-7*(W-1));let h='',nt=0,sq=0;const hoje=iso(t0);
+  for(let w=0;w<W;w++){h+='<div>';for(let k=0;k<7;k++){const d=new Date(st);d.setDate(st.getDate()+w*7+k);const s=iso(d),e=E[s];h+=`<i class="${s>hoje?'f':e?.treino?'t2':e?'t1':''}" title="${br(s)}${e?.treino?' · treino':e?' · registro':''}"></i>`}h+='</div>'}
+  for(let i=0;i<28;i++){const d=new Date(t0);d.setDate(d.getDate()-i);if(E[iso(d)]?.treino)nt++}
+  for(let i=E[hoje]?0:1;i<400;i++){const d=new Date(t0);d.setDate(d.getDate()-i);if(!E[iso(d)])break;sq++}
+  $('#cal').innerHTML=h;$('#calt').innerHTML=`<b>${sq}</b> ${sq===1?'dia seguido':'dias seguidos'} · <b>${nt}</b> ${nt===1?'treino':'treinos'} em 4 semanas<span class="lg"><i class="t1"></i>registro<i class="t2"></i>treino</span>`}
+function renderEvo(){renderKpis();renderDoms();renderFlags();renderIns();renderLast();draw();renderMap();renderCal()}
 
 $('#sliders').innerHTML=Object.entries(ITEMS).map(([d,its])=>`<fieldset><legend>${DN[d]}</legend><div class="items">${its.map(([k,l,,h])=>`<div class="sl"><div class="slh"><label for="r-${k}">${l}</label><button type="button" class="help" aria-expanded="false" aria-controls="b-${k}" aria-label="Exemplos para ${l}" data-b="b-${k}">?</button><output id="o-${k}">5</output></div><div class="balao" id="b-${k}" hidden><ul>${EX[k].map(([n,t])=>`<li><b>${n}</b>${t}</li>`).join('')}</ul></div><input type="range" id="r-${k}" min="0" max="10" step="1" value="5"><small>${h}</small></div>`).join('')}</div></fieldset>`).join('');
 $$('.help').forEach(b=>b.addEventListener('click',()=>{const o=b.getAttribute('aria-expanded')!=='true';
@@ -618,22 +683,55 @@ $('#dadd').addEventListener('click',e=>{const p=P(),d=$('#ddate').value;if(!p.id
   busy(e.currentTarget,async()=>{const ok=await putEntries(p,[d]);if(ok){['dlocal','dgat','dali','dnota'].forEach(i=>$('#'+i).value='');$('#dhora').value=hhmm()}renderAll();
     $('#dstat').textContent=ok?(MODE==='pac'?'Enviado ao seu fisioterapeuta.':'Anotado.'):'Não enviado. Toque em Adicionar de novo.';if(ok)toast('Anotação salva')})});
 $('#xdate').value=today;$('#xdate').addEventListener('change',renderExe);
-$('#xdor').addEventListener('input',e=>$('#oxdor').textContent=e.target.value);$('#xpse').addEventListener('input',e=>$('#oxpse').textContent=e.target.value);
-$('#xsave').addEventListener('click',e=>{const p=P(),d=$('#xdate').value;if(!p.id)return toast('Crie um paciente primeiro');if(!d)return toast('Escolha a data');const itens={};
-  $$('#xlist .exi').forEach(b=>{if(!b.querySelector('input[type=checkbox]').checked)return;const g=k=>b.querySelector(`[data-f=${k}]`).value.trim().slice(0,30);
-    itens[b.dataset.x]={n:((p.presc||[]).find(x=>x.id===b.dataset.x)||{}).nome||'',s:g('s'),r:g('r'),c:g('c')}});
-  if(!Object.keys(itens).length)return toast('Marque os exercícios que você fez');
-  const E=p.entries;E[d]=E[d]||{};E[d].treino={itens,dor:+$('#xdor').value,pse:+$('#xpse').value};
-  busy(e.currentTarget,async()=>{const ok=await putEntries(p,[d]);renderAll();$('#xstat').textContent=ok?(MODE==='pac'?'Enviado ao seu fisioterapeuta.':'Salvo.'):'Não enviado. Toque em Salvar de novo.';if(ok)toast('Treino salvo')})});
-let editX=null,pImg=[];const PF=['pnome','pser','preps','pcarga','pfreq','pvid','pobs','ppas'],PK=['nome','series','reps','carga','freq','video','obs','passos'];
-const resetPF=()=>{PF.forEach(i=>$('#'+i).value='');editX=null;pImg=[];$('#padd').textContent='Adicionar exercício';$('#pcancel').hidden=true};
+let G=null;
+const gsl=(id,l,v,h)=>`<div class="sl" style="margin-top:18px"><label for="${id}">${l} <output id="o${id}">${v}</output></label><input type="range" id="${id}" min="0" max="10" step="1" value="${v}"><small>${h}</small></div>`;
+function gOpen(){const p=P(),L=p.presc||[];if(!L.length)return;const t=p.entries[$('#xdate').value]?.treino,E=p.entries;
+  const lastV=id=>{const d=days().reverse().find(d=>d<$('#xdate').value&&E[d].treino?.itens?.[id]);return d?E[d].treino.itens[id]:null};
+  G={i:0,dor:t?.dor??0,pse:t?.pse??5,sets:Object.fromEntries(L.map(x=>{const v=t?.itens?.[x.id];
+    if(v)return[x.id,(v.sets?.length?v.sets:Array.from({length:n1(v.s)||1},()=>({r:v.r,c:v.c}))).map(s=>({r:s.r||'',c:s.c||'',ok:1}))];
+    const g=sug(x),r=g?.r||(n1(x.reps)!=null?String(n1(x.reps)):''),c=g?.c||lastV(x.id)?.c||x.carga||'';
+    return[x.id,Array.from({length:Math.min(n1(x.series)||1,10)},()=>({r,c,ok:0}))]}))};
+  $('#gd').hidden=false;document.body.style.overflow='hidden';gRender()}
+function gClose(force){if(!G)return;if(!force&&Object.values(G.sets).flat().some(s=>s.ok)&&!confirm('Sair sem salvar o treino?'))return;clearInterval(G.h);G=null;$('#gd').hidden=true;document.body.style.overflow=''}
+function gRender(){const L=P().presc||[],n=L.length,i=G.i;clearInterval(G.h);$('#gdpb').style.width=i/n*100+'%';$('#gdc').textContent=i<n?`${i+1} de ${n}`:'Fim';$('#gd').scrollTop=0;
+  if(i>=n){$('#gdb').innerHTML=`<h2 class="gdn">Como foi o treino?</h2>${gsl('gdor','Dor durante o exercício',G.dor,'0 sem dor · 10 pior dor imaginável')}${gsl('gpse','Esforço (PSE)',G.pse,'0 repouso · 10 esforço máximo')}<p class="gdsug" id="gdw" hidden>Dor acima de 5: pare o exercício e avise o seu fisioterapeuta.</p><div class="gdnav"><button type="button" data-g="-1">Voltar</button><button type="button" class="pri" id="gsave">Salvar treino</button></div>`;
+    $('#gdw').hidden=G.dor<=5;fillR();return}
+  const x=L[i],S=G.sets[x.id],g=sug(x);
+  $('#gdb').innerHTML=`<h2 class="gdn">${esc(x.nome)}</h2><p class="gdt">${esc(alvo(x,g))}</p>${g?.why?`<p class="gdsug">${g.up?'↑ ':''}${esc(g.why)}</p>`:''}${vidH(x.video)||exImg(x)}${x.obs?`<p style="margin:10px 0 0">${esc(x.obs)}</p>`:''}${x.passos?`<details class="guia"><summary>Como fazer</summary><ol>${x.passos.split('\n').filter(s=>s.trim()).map(s=>`<li>${esc(s)}</li>`).join('')}</ol></details>`:''}
+    <div class="gsh"><span>Reps / tempo</span><span>Carga</span></div>${S.map((s,k)=>`<div class="gs${s.ok?' on':''}" data-k="${k}"><span>${k+1}</span><input type="text" data-f="r" value="${esc(s.r)}" maxlength="10" aria-label="Série ${k+1}: repetições ou tempo"><input type="text" data-f="c" value="${esc(s.c)}" maxlength="20" aria-label="Série ${k+1}: carga"><button type="button" class="gck" aria-pressed="${!!s.ok}" aria-label="Série ${k+1} feita">✓</button></div>`).join('')}
+    <button type="button" class="gadd">+ série</button><div class="gtm" id="gtm" hidden><span class="mut">Descanso</span><b id="gtb"></b><span class="row" id="gtk" style="gap:8px;justify-content:center"><button type="button" data-tm="15">+15 s</button><button type="button" data-tm="0">Pular</button></span></div>
+    <div class="gdnav"><button type="button" data-g="-1"${i?'':' disabled'}>Anterior</button><button type="button" class="pri" data-g="1">${i<n-1?'Próximo':'Concluir'}</button></div>`}
+function gRest(x){clearInterval(G.h);G.end=Date.now()+(n1(x.desc)||60)*1e3;$('#gtm').hidden=false;$('#gtk').hidden=false;
+  const tick=()=>{const r=Math.max(0,Math.ceil((G.end-Date.now())/1e3));$('#gtb').textContent=r?Math.floor(r/60)+':'+String(r%60).padStart(2,'0'):'Pronto!';if(!r){clearInterval(G.h);$('#gtk').hidden=true;navigator.vibrate?.(300)}};tick();G.h=setInterval(tick,250)}
+$('#xgo').addEventListener('click',()=>{if(!P().id)return toast('Crie um paciente primeiro');gOpen()});
+$('#gdx').addEventListener('click',()=>gClose());document.addEventListener('keydown',e=>{if(e.key==='Escape'&&G)gClose()});
+$('#gdb').addEventListener('input',e=>{const t=e.target,x=(P().presc||[])[G.i];
+  if(t.id==='gdor'||t.id==='gpse'){G[t.id==='gdor'?'dor':'pse']=+t.value;$('#o'+t.id).textContent=t.value;$('#gdw').hidden=G.dor<=5;return}
+  const r=t.closest('.gs');if(r&&x)G.sets[x.id][+r.dataset.k][t.dataset.f]=t.value});
+$('#gdb').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const L=P().presc||[],x=L[G.i];
+  if(b.dataset.g){G.i=Math.max(0,G.i+ +b.dataset.g);gRender();return}
+  if(b.dataset.tm){G.end=b.dataset.tm==='0'?Date.now():G.end+15e3;return}
+  if(b.classList.contains('gadd')){const S=G.sets[x.id],l=S[S.length-1]||{r:'',c:''};if(S.length<10)S.push({r:l.r,c:l.c,ok:0});gRender();return}
+  if(b.classList.contains('gck')){const r=b.closest('.gs'),s=G.sets[x.id][+r.dataset.k];s.ok=s.ok?0:1;r.classList.toggle('on',!!s.ok);b.setAttribute('aria-pressed',!!s.ok);
+    if(s.ok&&!(G.i===L.length-1&&G.sets[x.id].every(z=>z.ok)))gRest(x);return}
+  if(b.id==='gsave'){const p=P(),d=$('#xdate').value,itens={};
+    L.forEach(x=>{const S=(G.sets[x.id]||[]).filter(s=>s.ok).map(s=>({r:String(s.r).trim().slice(0,10),c:String(s.c).trim().slice(0,20)}));
+      if(S.length){const l=S[S.length-1];itens[x.id]={n:x.nome.slice(0,80),s:String(S.length),r:l.r,c:l.c,sets:S}}});
+    if(!Object.keys(itens).length)return toast('Toque em ✓ nas séries que você fez');
+    // O servidor aceita até 6000 caracteres por treino: sem o detalhe por série se passar disso.
+    if(JSON.stringify(itens).length>5500)Object.values(itens).forEach(v=>delete v.sets);
+    const E=p.entries;E[d]=E[d]||{};E[d].treino={itens,dor:G.dor,pse:G.pse};
+    busy(b,async()=>{const ok=await putEntries(p,[d]);if(ok){gClose(true);toast(MODE==='pac'?'Treino enviado ao seu fisioterapeuta':'Treino salvo')}else toast('Não enviado. Toque em Salvar de novo.');renderAll()})}});
+let editX=null,pImg=[],pMus2=[];const PF=['pnome','pser','preps','pcarga','pfreq','pvid','pobs','ppas','pdesc','pprog','pinc','pmus'],PK=['nome','series','reps','carga','freq','video','obs','passos','desc','prog','inc','mus'];
+$('#pmus').innerHTML='<option value="">—</option>'+MUS.map(m=>`<option>${m}</option>`).join('');
+const resetPF=()=>{PF.forEach(i=>$('#'+i).value='');editX=null;pImg=[];pMus2=[];$('#padd').textContent='Adicionar exercício';$('#pcancel').hidden=true};
 $('#pcancel').addEventListener('click',resetPF);
 $('#padd').addEventListener('click',async()=>{const p=P();if(!p.id)return toast('Crie um paciente primeiro');const v=Object.fromEntries(PK.map((k,i)=>[k,$('#'+PF[i]).value.trim()]));
   if(!v.nome)return toast('Informe o exercício');if(v.video&&!/^https:\/\//.test(v.video))return toast('O link do vídeo precisa começar com https://');
-  const L=p.presc=p.presc||[],x={id:editX||uid(),...v,img:pImg},i=L.findIndex(y=>y.id===x.id);if(i>=0)L[i]=x;else L.push(x);resetPF();
+  const L=p.presc=p.presc||[],x={id:editX||uid(),...v,img:pImg,mus2:pMus2},i=L.findIndex(y=>y.id===x.id);if(i>=0)L[i]=x;else L.push(x);resetPF();
   const ok=await putPatient(p);renderAll();if(ok)toast('Prescrição salva')});
 $('#plist').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;const p=P(),L=p.presc||[];
-  if(b.dataset.ed){const x=L.find(y=>y.id===b.dataset.ed);if(!x)return;PK.forEach((k,i)=>$('#'+PF[i]).value=x[k]||'');pImg=x.img||[];editX=x.id;$('#padd').textContent='Salvar alteração';$('#pcancel').hidden=false;$('#pnome').focus();return}
+  if(b.dataset.ed){const x=L.find(y=>y.id===b.dataset.ed);if(!x)return;PK.forEach((k,i)=>$('#'+PF[i]).value=x[k]||'');pImg=x.img||[];pMus2=x.mus2||[];editX=x.id;$('#padd').textContent='Salvar alteração';$('#pcancel').hidden=false;$('#pnome').focus();return}
   if(b.dataset.rm){p.presc=L.filter(y=>y.id!==b.dataset.rm);if(editX===b.dataset.rm)resetPF();const ok=await putPatient(p);renderAll();if(ok)toast('Exercício removido')}});
 // Biblioteca: carrega o JSON só quando abre. "Seu" = exercícios já prescritos a qualquer paciente.
 let LIB=null,OWN=[];const fold=s=>String(s??'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
@@ -648,8 +746,8 @@ async function renderLib(){const L=await lib(),q=fold($('#lq').value.trim()),m=$
     +(r.length>40?`<p class="mut">Mostrando 40 de ${r.length}. Refine a busca.</p>`:'')+(!OWN.length&&!r.length?'<p class="mut">Nada encontrado.</p>':'')}
 $('#libbox').addEventListener('toggle',e=>{if(e.target.open)renderLib()});['lq','lm','le'].forEach(i=>$('#'+i).addEventListener('input',renderLib));
 $('#libres').addEventListener('click',e=>{const b=e.target.closest('[data-use]');if(!b)return;const[t,k]=b.dataset.use.split(':');
-  if(t==='o'){const x=OWN[+k];PK.forEach((k,i)=>$('#'+PF[i]).value=x[k]||'');pImg=x.img||[]}
-  else{const x=LIB.find(y=>y.id===k);if(!x)return;$('#pnome').value=x.n;$('#ppas').value=x.p.join('\n');pImg=x.i.slice(0,2)}
+  if(t==='o'){const x=OWN[+k];PK.forEach((k,i)=>$('#'+PF[i]).value=x[k]||'');pImg=x.img||[];pMus2=x.mus2||[]}
+  else{const x=LIB.find(y=>y.id===k);if(!x)return;$('#pnome').value=x.n;$('#ppas').value=x.p.join('\n');pImg=x.i.slice(0,2);$('#pmus').value=x.m[0]||'';pMus2=[...x.m.slice(1),...x.s]}
   $('#pser').focus();$('#pnome').scrollIntoView({block:'center'});toast('Ajuste séries e repetições e toque em Adicionar')});
 $('#pvup').addEventListener('change',async e=>{const f=e.target.files[0],st=$('#pvst');if(!f||!db)return;
   if(f.size>50*1048576){e.target.value='';return toast('Vídeo acima de 50 MB. Grave mais curto ou em qualidade menor.')}
@@ -716,7 +814,7 @@ const isDay=d=>/^\d{4}-\d{2}-\d{2}$/.test(d);
 function addPatient(o){if(!o||!o.entries||typeof o.entries!=='object'||Array.isArray(o.entries))throw 0;
   const entries=Object.fromEntries(Object.entries(o.entries).filter(([d,e])=>isDay(d)&&e&&typeof e==='object').map(([d,e])=>[d,norm(e)]));
   const events=Object.fromEntries(Object.entries(o.events&&typeof o.events==='object'?o.events:{}).filter(([d,t])=>isDay(d)&&typeof t==='string'));
-  const presc=(Array.isArray(o.presc)?o.presc:[]).filter(x=>x&&typeof x.nome==='string').slice(0,40).map(x=>({id:String(x.id||uid()),...Object.fromEntries(PK.map(k=>[k,String(x[k]??'').slice(0,k==='passos'?2000:300)])),img:(Array.isArray(x.img)?x.img:[]).filter(okImg).slice(0,2)})).map(x=>/^https:\/\//.test(x.video)?x:{...x,video:''});
+  const presc=(Array.isArray(o.presc)?o.presc:[]).filter(x=>x&&typeof x.nome==='string').slice(0,40).map(x=>({id:String(x.id||uid()),...Object.fromEntries(PK.map(k=>[k,String(x[k]??'').slice(0,k==='passos'?2000:300)])),img:(Array.isArray(x.img)?x.img:[]).filter(okImg).slice(0,2),mus2:(Array.isArray(x.mus2)?x.mus2:[]).filter(m=>MUS.includes(m)).slice(0,8)})).map(x=>/^https:\/\//.test(x.video)?x:{...x,video:''});
   const p={id:uid(),name:String(o.name||'Paciente importado').slice(0,120),age:num(o.age),queixa:String(o.queixa||''),aparelho:String(o.aparelho||''),entries,events,presc};
   const ex=S.patients.find(x=>x.name===p.name);if(ex){Object.assign(ex.entries,entries);ex.events=Object.assign(ex.events||{},events);if(presc.length)ex.presc=presc;S.cur=ex.id;return ex}
   S.patients.push(p);S.cur=p.id;return p}
@@ -783,11 +881,19 @@ async function boot(){
   if(MODE==='local'){try{S=JSON.parse(ls(K))||S}catch(e){}if(!Array.isArray(S.patients)||!S.patients.length){const p=sample();S={patients:[p],cur:p.id}}return start(ls(K+'-tab')||'evo')}
   if(!db)return off('Sem conexão com o servidor. Verifique a internet e recarregue a página.');
   if(MODE==='pac'){let r;try{r=await rpc('paciente',{p_token:TOKEN})}catch(e){return off('Sem conexão com o servidor. Verifique a internet e recarregue a página.')}
-    if(!r)return off('Este link não vale mais. Peça um novo ao seu fisioterapeuta.');
+    if(!r)return off('Este link não vale mais. Peça um novo ao seu fisioterapeuta.');ls(K+'-pac',TOKEN);
     S={patients:[{id:'me',name:r.nome||'',aparelho:r.aparelho||'',entries:Object.fromEntries(Object.entries(r.entries||{}).map(([d,e])=>[d,norm(e)])),events:{},presc:Array.isArray(r.prescricao)?r.prescricao:[]}],cur:'me'};return start('reg')}
   const{data:{session}}=await db.auth.getSession();if(!session){document.body.dataset.auth='out';return show('login')}
   startPro()}
 boot();
+// Instalar como aplicativo. No modo paciente o manifesto fica de fora: o atalho guarda o endereço com o link pessoal.
+if(MODE!=='pac')document.head.insertAdjacentHTML('beforeend','<link rel="manifest" href="manifest.webmanifest">');
+document.head.insertAdjacentHTML('beforeend','<link rel="apple-touch-icon" href="icon-180.png">');
+if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+let instP=null;$('#inst').hidden=STAND;
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();instP=e});
+$('#inst').addEventListener('click',async()=>{if(instP){instP.prompt();await instP.userChoice;instP=null;return}
+  alert(/iPhone|iPad/.test(navigator.userAgent)?'No Safari, toque em Compartilhar (quadrado com seta) e depois em “Adicionar à Tela de Início”.':'No menu do navegador (⋮), toque em “Instalar app” ou “Adicionar à tela inicial”.')});
 }
 </script>
 </body></html>
