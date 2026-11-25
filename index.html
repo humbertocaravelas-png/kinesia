@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0A3D35"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Painel HC">
+<title>Painel Biopsicossocial HC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+/* VOICE: clínico, calmo e preciso, ferramenta de consultório
+IDEA: uma ficha de acompanhamento diário que vira gráfico de evolução
+PICTURE: gráfico dor × sono/VFC e as barras dos três domínios logo no início
+COLOUR and TYPE: verde petróleo #0A3D35, turquesa #00E1D8, branco suave; Sora + Inter
+LAYOUT: faixa petróleo com paciente e abas; abaixo, cartões em duas colunas que empilham no celular */
+:root{color-scheme:light dark;--bg:light-dark(#F4F7F7,#06201d);--card:light-dark(#fff,#0A3D35);--ink:light-dark(#0b2522,#e9f4f3);--mut:light-dark(#4b6662,#a3c6c1);--line:light-dark(#d3e1df,#1f5a52);--acc:light-dark(#00807a,#00E1D8);--acc2:light-dark(#2A6F66,#7FF3EE);--warn:light-dark(#a53a1b,#ffb39a);--wbg:light-dark(#fdf1ec,#3b2620)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:Sora,Inter,sans-serif;line-height:1.1;margin:0;text-wrap:balance}
+.band{padding:clamp(20px,3vw,40px) max(5vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+header{background:#0A3D35;color:#F4F7F7;padding:clamp(20px,3vw,32px) max(5vw,16px) 0}
+body[data-auth=out] header{padding-bottom:clamp(20px,3vw,32px)}
+.top{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between}
+h1{font-size:clamp(26px,4vw,40px)}
+.sub{color:#7FF3EE;font-size:14px;margin-top:6px}
+.pat{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+select,input,textarea,button{font:inherit;font-size:16px}
+select,input[type=text],input[type=number],input[type=date],input[type=email],input[type=password],textarea{min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);width:100%}
+textarea{min-height:110px;font-size:14px;font-family:ui-monospace,monospace}
+header select{background:#06332F;color:#F4F7F7;border-color:#2A6F66;width:auto;max-width:240px}
+button{min-height:44px;padding:8px 16px;border-radius:10px;border:1px solid var(--acc);background:transparent;color:var(--acc);font-weight:600;cursor:pointer}
+button:disabled{opacity:.5;cursor:wait}
+button.pri{background:var(--acc);color:light-dark(#fff,#06332F)}
+button.del{border-color:var(--warn);color:var(--warn)}
+header button{border-color:#00E1D8;color:#00E1D8}
+:focus-visible{outline:3px solid #00E1D8;outline-offset:2px}
+nav{display:flex;gap:4px;margin-top:22px;overflow-x:auto}
+nav button{border:0;border-radius:12px 12px 0 0;color:#cfe9e6;flex:none;padding:10px 18px}
+nav button[aria-selected=true]{background:var(--bg);color:var(--ink)}
+.grid{display:grid;gap:20px;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);align-items:start}
+@media(max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+.stackc{display:grid;gap:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:clamp(16px,2vw,24px)}
+.card h2{font-size:20px;margin-bottom:6px}
+.mut{color:var(--mut);font-size:14px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.fig{position:relative;min-height:300px;margin-top:10px}.fig>svg{position:absolute;inset:0;width:100%;height:100%}
+.leg{display:flex;flex-wrap:wrap;gap:14px;font-size:14px;align-items:center}
+.leg i{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.dom{display:grid;grid-template-columns:5.5em minmax(0,1fr) 3.4em;gap:10px;align-items:center;margin:12px 0}
+.bar{height:14px;border-radius:7px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;background:var(--acc);transition:width .5s}
+.num{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.kpi b{display:block;font-family:Sora,sans-serif;font-size:clamp(24px,3vw,32px);line-height:1.1;margin:2px 0;white-space:nowrap}
+.flags{list-style:none;padding:0;margin:0}
+.flags li{background:var(--wbg);border-radius:10px;padding:10px 12px;margin:8px 0;font-size:15px}
+.flags li strong{color:var(--warn);display:block}
+.ins li{margin:6px 0}
+.items{display:grid;gap:18px 28px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));margin-top:10px}
+.sl label{display:flex;justify-content:space-between;gap:8px;font-weight:500}
+.slh{display:flex;align-items:center;gap:8px}.slh label{flex:1;font-weight:500}
+.help{min-height:36px;min-width:36px;padding:0;border-radius:50%;font-family:Sora,sans-serif;font-size:15px;line-height:1}
+.help[aria-expanded=true]{background:var(--acc);color:light-dark(#fff,#06332F)}
+.balao{position:relative;margin:8px 0 4px;padding:12px 14px;border-radius:12px;background:light-dark(#e2f6f4,#06332F);border:1px solid var(--line);font-size:15px}
+.balao::before{content:"";position:absolute;top:-7px;right:32px;width:12px;height:12px;background:inherit;border-left:1px solid var(--line);border-top:1px solid var(--line);transform:rotate(45deg)}
+.balao ul{margin:0;padding:0;list-style:none;display:grid;gap:4px}.balao b{display:inline-block;min-width:3.6em;color:var(--acc)}
+.wbal .balao::before{right:12px}
+.sl output{font-family:Sora,sans-serif;color:var(--acc);font-weight:700}
+.sl small{color:var(--mut);font-size:13px}
+input[type=range]{width:100%;accent-color:var(--acc);height:36px;margin:0}
+fieldset{border:0;padding:0;margin:22px 0 0}legend{font-family:Sora,sans-serif;font-weight:700;font-size:17px;padding:0}
+.f2{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.f2 label{font-size:14px;font-weight:500;display:grid;gap:4px}
+table{border-collapse:collapse;width:100%;font-size:15px}th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}th:first-child,td:first-child{text-align:left}th{font-weight:600;color:var(--mut);font-size:13px}
+.scroll{overflow-x:auto}
+.dlg{position:fixed;inset:0;background:rgba(3,20,18,.6);display:none;align-items:center;justify-content:center;padding:16px;z-index:9}
+.dlg.on{display:flex}.dlg .card{max-width:460px;width:100%;display:grid;gap:12px}
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#0A3D35;color:#fff;padding:10px 18px;border-radius:10px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:10;max-width:calc(100% - 32px)}
+.toast.on{opacity:1}
+.empty{padding:40px 10px;text-align:center;color:var(--mut)}
+.bk{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--wbg);border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:15px}
+.evl{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:6px;font-size:14px}.evl li{display:flex;gap:8px;align-items:center;justify-content:space-between}.evl b{color:var(--warn)}
+.guia{margin-top:18px;border-top:1px solid var(--line);padding-top:8px}
+.guia summary{cursor:pointer;font-weight:600;color:var(--acc);min-height:44px;display:flex;align-items:center}
+.guia ol{padding-left:22px;font-size:15px;margin:6px 0}.guia li{margin:6px 0}.guia ul{padding-left:18px}
+code{font-size:13px;word-break:break-all;background:var(--bg);padding:1px 5px;border-radius:4px}
+.rep{display:none}
+[hidden]{display:none!important}
+body[data-mode=pac] .npac,body:not([data-mode=pro]) .pro,body:not([data-mode=local]) .loc,body[data-auth=out] .auth{display:none!important}
+@media(max-width:600px){header select{max-width:100%;width:100%}.pat{width:100%}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{:root{color-scheme:light}body{background:#fff}header,.bk,.noprint{display:none!important}.rep{display:block!important}main section:not(#t-evo){display:none!important}#t-evo{display:block!important}.band{padding:0}.grid{grid-template-columns:minmax(0,1fr)}.card,.kpi{break-inside:avoid}.evl button{display:none}}
+</style></head><body data-mode="local">
+<header><div class="wrap">
+  <div class="top">
+    <div><h1 id="htitle">Painel biopsicossocial</h1><div class="sub" id="pinfo">Acompanhamento diário · Hugo Caravelas</div></div>
+    <div class="pat npac auth"><select id="psel" aria-label="Paciente"></select><button id="pnew">Novo paciente</button><button id="lout" class="pro">Sair</button></div>
+  </div>
+  <nav role="tablist" class="auth">
+    <button role="tab" data-t="evo" class="npac" aria-selected="true">Evolução</button>
+    <button role="tab" data-t="reg">Registrar dia</button>
+    <button role="tab" data-t="diario">Diário da dor</button>
+    <button role="tab" data-t="wear">Relógio / anel</button>
+    <button role="tab" data-t="dados" class="npac">Dados</button>
+  </nav>
+</div></header>
+
+<main class="band"><div class="wrap">
+<div class="bk" id="bk" hidden><span id="bkt"></span><button class="pri" id="bkx">Fazer backup agora</button></div>
+
+<section id="t-login" hidden>
+  <div class="card" style="max-width:420px;margin:0 auto;display:grid;gap:12px">
+    <h2>Entrar</h2><p class="mut" style="margin:0">Acesso do fisioterapeuta.</p>
+    <label style="display:grid;gap:4px;font-size:14px;font-weight:500">E-mail <input type="email" id="lmail" autocomplete="username"></label>
+    <label style="display:grid;gap:4px;font-size:14px;font-weight:500">Senha <input type="password" id="lpass" autocomplete="current-password"></label>
+    <button class="pri" id="lok">Entrar</button><span class="mut" id="lstat" role="status"></span>
+  </div>
+</section>
+
+<section id="t-off" hidden><div class="card" style="max-width:520px;margin:0 auto"><h2>Não foi possível abrir</h2><p id="offm" style="margin:8px 0 0"></p></div></section>
+
+<section id="t-evo">
+  <div class="rep"><h2>Relatório de acompanhamento biopsicossocial</h2><p id="rept" style="margin:6px 0 16px"></p></div>
+  <div class="row noprint" style="justify-content:flex-end;margin-bottom:12px"><button id="xprint">Relatório para imprimir</button></div>
+  <div class="kpis" id="kpis"></div>
+  <div class="grid">
+    <div class="card">
+      <div class="row" style="justify-content:space-between">
+        <h2>Dor ao longo do tempo</h2>
+        <div class="row"><select id="sec" aria-label="Comparar com" style="width:auto">
+          <option value="sonoH">Horas de sono</option><option value="vfc">VFC (HRV)</option><option value="passos">Passos</option><option value="sonoQ">Qualidade do sono</option><option value="humor">Humor</option><option value="ansiedade">Ansiedade / estresse</option><option value="medo">Medo de se movimentar</option><option value="fc">FC de repouso</option>
+        </select><select id="per" aria-label="Período" style="width:auto"><option value="14">14 dias</option><option value="28" selected>28 dias</option><option value="90">90 dias</option><option value="9999">Tudo</option></select></div>
+      </div>
+      <div class="leg"><span><i style="background:var(--acc)"></i>Dor (0–10, eixo esquerdo)</span><span><i style="background:var(--acc2);height:0;border-top:3px dashed var(--acc2)"></i><span id="secl">Horas de sono</span> (eixo direito)</span><span><i style="background:var(--warn);width:3px;height:14px"></i>Evento</span></div>
+      <div class="fig"><svg id="ch" role="img" aria-label="Gráfico de evolução da dor"></svg></div>
+      <div class="row noprint" style="margin-top:14px">
+        <input type="date" id="evd" style="width:auto" aria-label="Data do evento">
+        <input type="text" id="evt" placeholder="Evento: sessão, mudança de conduta, crise" aria-label="Descrição do evento" style="flex:1;width:auto;min-width:180px">
+        <button id="evadd">Marcar evento</button>
+      </div>
+      <ul class="evl" id="evl"></ul>
+    </div>
+    <div class="stackc">
+      <div class="card"><h2>Domínios · últimos 7 dias</h2><p class="mut" style="margin:0">0% = pior situação · 100% = melhor situação</p><div id="doms"></div></div>
+      <div class="card"><h2>Bandeiras de atenção</h2><ul class="flags" id="flags"></ul></div>
+    </div>
+  </div>
+  <div class="grid" style="margin-top:20px">
+    <div class="card"><h2>Últimos registros</h2><div class="scroll"><table id="last"></table></div></div>
+    <div class="card"><h2>O que acompanha a dor</h2><ul class="ins" id="ins"></ul><p class="mut">Correlação entre os dias registrados. Mostra associação, não causa. Use para guiar a conversa no atendimento.</p></div>
+  </div>
+  <p class="rep mut" style="margin-top:20px">Hugo Caravelas · Fisioterapeuta · CREFITO 423564-F. Dados de relógio e anel de consumo mostram a tendência de cada paciente e não servem para diagnóstico.</p>
+</section>
+
+<section id="t-reg" hidden>
+  <div class="card">
+    <div class="row" style="justify-content:space-between"><h2>Como foi o dia</h2><label class="row" style="gap:8px">Data <input type="date" id="rdate" style="width:auto"></label></div>
+    <p class="mut" style="margin:4px 0 0">Respostas de 0 a 10. Leva menos de um minuto.</p>
+    <div id="sliders"></div>
+    <fieldset><legend>Observações</legend><div class="f2" style="margin-top:10px">
+      <label>Onde dói? <input type="text" id="rlocal" placeholder="Ex.: lombar, ombro direito" maxlength="300"></label>
+      <label>Algo marcante hoje? <input type="text" id="robs" placeholder="Ex.: dormi mal, viagem, crise" maxlength="300"></label>
+    </div></fieldset>
+    <div class="row" style="margin-top:20px"><button class="pri" id="rsave">Salvar registro</button><span class="mut" id="rstat" role="status"></span></div>
+  </div>
+</section>
+
+<section id="t-diario" hidden>
+  <div class="grid">
+    <div class="card">
+      <h2>Diário da dor</h2>
+      <p class="mut" style="margin:4px 0 0">Anote cada vez que a dor mudar: quando foi, o que estava fazendo e o que ajudou.</p>
+      <div class="f2" style="margin-top:14px">
+        <label>Data <input type="date" id="ddate"></label>
+        <label>Hora <input type="time" id="dhora" style="min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);width:100%"></label>
+      </div>
+      <div class="sl" style="margin-top:14px"><label for="ddor">Intensidade da dor <output id="odor">5</output></label><input type="range" id="ddor" min="0" max="10" step="1" value="5"><small>0 sem dor · 10 pior dor imaginável</small></div>
+      <div class="f2" style="margin-top:12px">
+        <label>Onde dói? <input type="text" id="dlocal" maxlength="200" placeholder="Ex.: lombar, pescoço"></label>
+        <label>O que estava fazendo? <input type="text" id="dgat" maxlength="200" placeholder="Ex.: lavando louça, sentado no ônibus"></label>
+        <label>O que ajudou? <input type="text" id="dali" maxlength="200" placeholder="Ex.: calor, deitar, caminhar"></label>
+      </div>
+      <label style="display:grid;gap:4px;margin-top:12px;font-size:14px;font-weight:500">Anotação <input type="text" id="dnota" maxlength="300" placeholder="Como se sentiu, pensamentos, remédio que tomou"></label>
+      <div class="row" style="margin-top:18px"><button class="pri" id="dadd">Adicionar ao diário</button><span class="mut" id="dstat" role="status"></span></div>
+    </div>
+    <div class="card"><h2>Anotações</h2><ul class="evl" id="dlist" style="gap:14px"></ul></div>
+  </div>
+</section>
+
+<section id="t-wear" hidden>
+  <div class="grid">
+    <div class="card">
+      <h2>Dados do relógio ou anel</h2>
+      <div class="row wbal" style="gap:8px;margin-top:4px;flex-wrap:nowrap;align-items:flex-start"><p class="mut" style="margin:0;flex:1">Copie os valores do app do aparelho (Apple Saúde, Samsung Health, Oura, Garmin, Mi Fitness…)<span class="npac"> ou importe uma planilha ao lado</span>.</p><button type="button" class="help" aria-expanded="false" aria-controls="b-wear" aria-label="Onde encontro esses dados?" data-b="b-wear">?</button></div>
+      <div class="wbal"><div class="balao" id="b-wear" hidden><ul>
+        <li><b>FC</b>Procure “frequência cardíaca em repouso” na tela de coração do app.</li>
+        <li><b>VFC</b>Aparece como “variabilidade”, “HRV” ou “VFC”, quase sempre medida durante o sono.</li>
+        <li><b>Sono</b>Total de horas dormidas na noite anterior à data. Ex.: 6 h 30 min = 6,5.</li>
+        <li><b>Passos</b>Total do dia escolhido, na tela de atividade.</li>
+        <li><b>SpO₂</b>“Oxigênio no sangue”, em %. Normalmente entre 95 e 100.</li>
+      </ul></div></div>
+      <div class="f2" style="margin-top:14px">
+        <label>Data <input type="date" id="wdate"></label>
+        <label>FC de repouso (bpm) <input type="number" id="w-fc" inputmode="decimal"></label>
+        <label>VFC / HRV (ms) <span id="hrvt" class="mut"></span><input type="number" id="w-vfc" inputmode="decimal"></label>
+        <label>Sono da noite anterior (h) <input type="number" id="w-sonoH" step="0.1" inputmode="decimal"></label>
+        <label>Passos <input type="number" id="w-passos" inputmode="numeric"></label>
+        <label>SpO₂ (%) <input type="number" id="w-spo2" inputmode="decimal"></label>
+      </div>
+      <div class="row" style="margin-top:18px"><button class="pri" id="wsave">Salvar dados do dia</button><span class="mut" id="wstat" role="status"></span></div>
+      <div id="guia"></div>
+    </div>
+    <div class="card npac">
+      <h2>Importar planilha ou mensagens</h2>
+      <p class="mut" style="margin:4px 0 10px">Cole as mensagens <code>#HC</code> do atalho do iPhone (pode ser a conversa inteira do WhatsApp) ou uma planilha CSV, uma linha por dia. Na planilha, o app reconhece colunas como data, fc/resting, hrv/vfc, sono/sleep, passos/steps e spo2. Sono em minutos ou segundos é convertido para horas.</p>
+      <input type="file" id="wfile" accept=".csv,.txt,text/csv" aria-label="Arquivo CSV">
+      <textarea id="wcsv" style="margin-top:10px" placeholder="data;fc;vfc;sono;passos;spo2&#10;2026-11-20;64;38;6,5;5200;97"></textarea>
+      <div class="row" style="margin-top:10px"><button id="wimp">Importar</button><span class="mut" id="wistat" role="status"></span></div>
+    </div>
+  </div>
+</section>
+
+<section id="t-dados" hidden>
+  <div class="grid">
+    <div class="card">
+      <h2>Guardar e levar os dados</h2>
+      <p class="mut loc" style="margin:4px 0 14px">Os registros ficam salvos só neste navegador, neste aparelho. Faça backup com frequência para não perder nada.</p>
+      <p class="mut pro" style="margin:4px 0 14px">Os registros ficam no seu Supabase. O plano gratuito não guarda cópias automáticas: faça backup com frequência.</p>
+      <div class="row"><button class="pri" id="xall">Backup completo (todos os pacientes)</button><button id="xjson">Exportar paciente (JSON)</button><button id="xcsv">Exportar planilha (CSV)</button><button id="xcopy">Copiar dados</button></div>
+      <h3 style="font-size:17px;margin-top:22px">Importar paciente ou backup</h3>
+      <input type="file" id="ifile" accept=".json,application/json" style="margin-top:10px" aria-label="Arquivo JSON">
+      <textarea id="ijson" style="margin-top:10px" placeholder="Ou cole aqui o conteúdo JSON exportado"></textarea>
+      <div class="row" style="margin-top:10px"><button id="iimp">Importar</button><span class="mut" id="istat" role="status"></span></div>
+    </div>
+    <div class="stackc">
+      <div class="card pro">
+        <h2>Link do paciente</h2>
+        <p class="mut" style="margin:4px 0 10px">Envie ao paciente. Ele abre no celular, sem senha, e cada registro aparece aqui na hora. Quem tiver o link consegue registrar por esse paciente: se o link vazar, gere outro.</p>
+        <input type="text" id="plink" readonly aria-label="Link do paciente">
+        <div class="row" style="margin-top:10px"><button class="pri" id="lcopy">Copiar link</button><button id="lwa">Enviar por WhatsApp</button><button class="del" id="lnew">Gerar novo link</button></div>
+      </div>
+      <div class="card">
+        <h2>Paciente atual</h2>
+        <div class="f2" style="margin-top:10px">
+          <label>Nome <input type="text" id="ename"></label>
+          <label>Idade <input type="number" id="eage"></label>
+          <label>Aparelho <select id="eap"></select></label>
+        </div>
+        <label style="display:grid;gap:4px;margin-top:12px;font-size:14px;font-weight:500">Queixa principal <input type="text" id="eq"></label>
+        <div class="row" style="margin-top:14px"><button id="esave">Salvar alterações</button><button class="del" id="pdel">Excluir paciente</button></div>
+        <p class="mut" style="margin-top:18px">Dados de saúde são dados sensíveis pela LGPD. Peça o consentimento do paciente por escrito antes de registrar.</p>
+        <button id="psample" style="margin-top:4px">Adicionar paciente de exemplo</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div></main>
+
+<div class="dlg" id="dlg"><div class="card" role="dialog" aria-modal="true" aria-labelledby="dt">
+  <h2 id="dt">Novo paciente</h2>
+  <label style="display:grid;gap:4px;font-size:14px;font-weight:500">Nome <input type="text" id="nname"></label>
+  <div class="f2"><label>Idade <input type="number" id="nage"></label><label>Aparelho <select id="nap"></select></label></div>
+  <label style="display:grid;gap:4px;font-size:14px;font-weight:500">Queixa principal <input type="text" id="nq" placeholder="Ex.: fibromialgia, lombalgia crônica"></label>
+  <div class="row"><button class="pri" id="nok">Criar</button><button id="nx">Cancelar</button></div>
+</div></div>
+<div class="dlg" id="cdlg"><div class="card" role="dialog" aria-modal="true" aria-labelledby="ct">
+  <h2 id="ct">Excluir paciente?</h2><p id="ctx" style="margin:0"></p>
+  <div class="row"><button class="del" id="cok">Excluir</button><button id="cx">Cancelar</button></div>
+</div></div>
+<div class="dlg" id="tdlg"><div class="card" role="dialog" aria-modal="true" aria-labelledby="tt">
+  <h2 id="tt">Copie os dados</h2><p class="mut" style="margin:0">Selecione tudo e copie.</p><textarea id="ttx" readonly style="min-height:200px"></textarea>
+  <div class="row"><button id="tx">Fechar</button></div>
+</div></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+{
+// Projeto Supabase (Project Settings → API: Project URL e chave anon/publishable).
+// Deixe vazio para o modo local: dados só neste navegador, sem servidor.
+const SUPA_URL='https://exczndudfiqftmmzhtip.supabase.co', SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4Y3puZHVkZmlxZnRtbXpodGlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU2MzE2NzUsImV4cCI6MjExMTIwNzY3NX0.O8mbHWoZmsgVWAI7oTOYZEKGa5w7_GdqmL8fRKnxrJ0';
+
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const K='bps-hc-v1';
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ITEMS={
+  bio:[['dor','Dor agora',1,'0 sem dor · 10 pior dor imaginável'],['fadiga','Cansaço / fadiga',1,'0 nenhum · 10 exausto'],['sonoQ','Qualidade do sono',0,'0 péssimo · 10 excelente']],
+  psico:[['humor','Humor',0,'0 muito triste · 10 muito bem'],['ansiedade','Ansiedade / estresse',1,'0 tranquilo · 10 muito tenso'],['medo','Medo de se movimentar',1,'0 nenhum · 10 evito me mexer'],['autoef','Confiança para lidar com a dor',0,'0 nenhuma · 10 total']],
+  social:[['apoio','Apoio de família e amigos',0,'0 nenhum · 10 muito apoio'],['social','Participação em atividades sociais',0,'0 isolado · 10 participei de tudo'],['trabalho','Capacidade para trabalho e tarefas',0,'0 não consegui · 10 fiz tudo']]};
+const EX={
+  dor:[['0','Sem dor nenhuma'],['1–3','Dor leve: incomoda, mas faço tudo normalmente'],['4–6','Dor moderada: atrapalha algumas atividades'],['7–9','Dor forte: difícil se concentrar ou fazer tarefas'],['10','A pior dor que consigo imaginar']],
+  fadiga:[['0–3','Disposição normal, fiz tudo sem cansar'],['4–6','Cansaço que me fez parar e descansar algumas vezes'],['7–10','Exausto: precisei deitar, não terminei as tarefas']],
+  sonoQ:[['0–3','Acordei várias vezes e levantei mais cansado'],['4–6','Dormi, mas não descansei por completo'],['7–10','Dormi a noite toda e acordei descansado']],
+  humor:[['0–3','Triste, desanimado, sem vontade de nada'],['4–6','Normal, com altos e baixos'],['7–10','Animado, de bem com a vida']],
+  ansiedade:[['0–3','Tranquilo, sem preocupações fortes'],['4–6','Preocupado ou tenso em alguns momentos'],['7–10','Nervoso o dia todo, coração acelerado, difícil relaxar']],
+  medo:[['0–3','Me movimentei sem receio'],['4–6','Evitei alguns movimentos com medo de piorar'],['7–10','Evitei me mexer com medo de me machucar']],
+  autoef:[['0–3','Sinto que não consigo fazer nada pela minha dor'],['4–6','Às vezes consigo aliviar (calor, alongamento, pausa)'],['7–10','Sei o que fazer quando a dor aparece']],
+  apoio:[['0–3','Me senti sozinho, sem ajuda'],['4–6','Tive alguma ajuda quando precisei'],['7–10','Família e amigos ajudaram e me entenderam']],
+  social:[['0–3','Fiquei em casa, sem contato com ninguém'],['4–6','Algum contato: ligação, visita rápida, mensagens'],['7–10','Saí, encontrei pessoas, fui à igreja ou a um grupo']],
+  trabalho:[['0–3','Não consegui trabalhar nem cuidar da casa'],['4–6','Fiz parte das tarefas, com pausas'],['7–10','Fiz tudo o que tinha planejado']]};
+const DN={bio:'Biológico',psico:'Psicológico',social:'Social'};
+const ALL=Object.values(ITEMS).flat(); const INV=Object.fromEntries(ALL.map(i=>[i[0],i[2]]));
+const LBL={sonoH:'Horas de sono',vfc:'VFC (HRV)',passos:'Passos',sonoQ:'Qualidade do sono',humor:'Humor',ansiedade:'Ansiedade / estresse',medo:'Medo de se movimentar',fc:'FC de repouso'};
+const WK=['fc','vfc','sonoH','passos','spo2'];
+const DEV=['Apple Watch / iPhone','Samsung Galaxy Watch','Garmin','Oura','Xiaomi / Amazfit','Fitbit / Pixel Watch','Whoop','Outro','Não usa'];
+const iso=d=>{const z=new Date(d.getTime()-d.getTimezoneOffset()*6e4);return z.toISOString().slice(0,10)};
+const br=k=>k.slice(8,10)+'/'+k.slice(5,7);
+const num=v=>v===''||v==null||isNaN(v)?null:+v;
+const avg=a=>{a=a.filter(v=>v!=null);return a.length?a.reduce((x,y)=>x+y,0)/a.length:null};
+const med=a=>{a=a.filter(v=>v!=null).sort((x,y)=>x-y);const n=a.length;return n?(n%2?a[n>>1]:(a[n/2-1]+a[n/2])/2):null};
+const sd=a=>{a=a.filter(v=>v!=null);const m=avg(a);return a.length>1?Math.sqrt(a.reduce((s,v)=>s+(v-m)**2,0)/(a.length-1)):null};
+const prev=d=>{const t=new Date(d+'T12:00');t.setDate(t.getDate()-1);return iso(t)};
+const uid=()=>crypto.randomUUID?crypto.randomUUID():'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const fmt=(v,d=1)=>v==null?'—':v.toLocaleString('pt-BR',{maximumFractionDigits:d});
+const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),2600)};
+const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}};
+const today=iso(new Date());
+// Uniformiza o que chega do relógio: texto com vírgula vira número, sono em min/s vira horas, SpO₂ 0,97 vira 97.
+function norm(e){e={...e};for(const k in e)if(typeof e[k]==='string'&&k!=='local'&&k!=='obs'){const v=num(e[k].replace(',','.'));if(v==null)delete e[k];else e[k]=v}
+  if(e.sonoH>1440)e.sonoH=+(e.sonoH/3600).toFixed(1);else if(e.sonoH>24)e.sonoH=+(e.sonoH/60).toFixed(1);
+  if(e.spo2!=null&&e.spo2<=1)e.spo2=Math.round(e.spo2*100);return e}
+
+const TOKEN=(location.hash.match(/p=([0-9a-f-]{36})/i)||[])[1]||null;
+const MODE=SUPA_URL?(TOKEN?'pac':'pro'):'local';
+const db=SUPA_URL&&window.supabase?supabase.createClient(SUPA_URL,SUPA_KEY):null;
+document.body.dataset.mode=MODE;
+const rpc=async(f,a)=>{const{data,error}=await db.rpc(f,a);if(error)throw error;return data};
+
+function rng(s){return()=>(s=(s*16807)%2147483647)/2147483647}
+function sample(){
+  const r=rng(11),e={},d=new Date();
+  for(let i=27;i>=0;i--){const t=new Date(d);t.setDate(d.getDate()-i);const late=i<10;
+    const sonoH=+(5+r()*2.6+(late?.7:0)).toFixed(1), q=Math.round((sonoH-4.5)*2+r()*2);
+    const dor=Math.max(1,Math.min(10,Math.round(9.4-(sonoH-5)*1.1-(late?1.2:0)+(r()-.5)*2)));
+    const c=v=>Math.max(0,Math.min(10,Math.round(v)));
+    e[iso(t)]={dor,fadiga:c(dor-1+r()*2),sonoQ:c(q),humor:c(10-dor+r()*2-1),ansiedade:c(dor-1+r()*2),medo:c(late?4+r()*2:6+r()*2),autoef:c(late?6+r()*2:3+r()*2),apoio:c(5+r()*2),social:c(late?5+r()*2:3+r()*2),trabalho:c(10-dor+r()),
+      fc:Math.round(72-(sonoH-5)*2+r()*4),vfc:Math.round(24+(sonoH-5)*5+r()*6+(late?4:0)),sonoH,passos:Math.round((late?5200:3400)+r()*2500),spo2:Math.round(96+r()*2)}}
+  const ev=new Date(d);ev.setDate(d.getDate()-9);
+  return{id:uid(),name:'Maria S. (exemplo)',age:47,queixa:'Fibromialgia',aparelho:'Apple Watch / iPhone',entries:e,events:{[iso(ev)]:'Início do exercício graduado e educação em dor'}}}
+
+let S={patients:[],cur:null};
+const BLANK={id:null,name:'Nenhum paciente',entries:{},events:{}};
+const save=()=>{if(MODE==='local')ls(K,JSON.stringify(S));else if(MODE==='pro')ls(K+'-cur',S.cur||'')};
+const P=()=>S.patients.find(p=>p.id===S.cur)||S.patients[0]||BLANK;
+const days=()=>Object.keys(P().entries).sort();
+const hrvT=()=>{const a=P().aparelho||'';return/Apple/.test(a)?'SDNN':/Garmin|Oura|Whoop|Fitbit/.test(a)?'RMSSD':''};
+
+// Gravação: local = localStorage; pro = tabelas do Supabase; pac = função registrar() com o token do link.
+async function sync(fn){try{await fn();return true}catch(e){toast('Não salvou no servidor: '+(e.message||'sem conexão'));return false}}
+async function putEntries(p,ds){if(MODE==='local'){save();return true}if(!ds.length)return true;
+  if(MODE==='pac')return sync(async()=>{for(const d of ds)await rpc('registrar',{p_token:TOKEN,p_data:d,p_dados:p.entries[d]})});
+  return sync(async()=>{const{error}=await db.from('registros').upsert(ds.map(d=>({paciente_id:p.id,data:d,dados:p.entries[d]})));if(error)throw error})}
+async function putPatient(p){if(MODE!=='pro'){save();return true}
+  return sync(async()=>{const{data,error}=await db.from('pacientes').upsert({id:p.id,nome:p.name,idade:p.age??null,queixa:p.queixa||'',aparelho:p.aparelho||'',eventos:p.events||{}}).select('token').single();if(error)throw error;p.token=data.token})}
+async function delPatient(id){if(MODE!=='pro'){save();return true}
+  return sync(async()=>{const{error}=await db.from('pacientes').delete().eq('id',id);if(error)throw error})}
+
+function domScore(e,dom){const v=[];
+  for(const[k]of ITEMS[dom]){const x=num(e[k]);if(x!=null)v.push(INV[k]?10-x:x)}
+  if(dom==='bio'){const h=num(e.sonoH),p=num(e.passos);if(h!=null)v.push(Math.min(h/8,1)*10);if(p!=null)v.push(Math.min(p/8000,1)*10)}
+  const a=avg(v);return a==null?null:a*10}
+function win(n,off=0){const ds=days(),E=P().entries;return ds.slice(Math.max(0,ds.length-n-off),ds.length-off).map(d=>E[d])}
+const wavg=(arr,k)=>avg(arr.map(e=>num(e[k])));
+// Linha de base pessoal: mediana e desvio dos 28 registros anteriores aos 3 últimos.
+function base(k){const v=win(28,3).map(e=>num(e[k]));if(v.filter(x=>x!=null).length<10)return null;return{m:med(v),s:sd(v),now:avg(win(3).map(e=>num(e[k])))}}
+// Dias em que a dor subiu 2+ pontos depois de um dia com 30% mais passos que a mediana do paciente.
+function boom(ds){const E=P().entries,pm=med(Object.values(E).map(e=>num(e.passos)));if(!pm)return[];
+  return ds.filter(d=>{const y=E[prev(d)];if(!y)return false;const p=num(y.passos),a=num(y.dor),b=num(E[d].dor);return p!=null&&a!=null&&b!=null&&p>=pm*1.3&&b-a>=2})}
+function ades(){const E=P().entries,f=days()[0];if(!f)return null;
+  const span=Math.max(1,Math.min(28,Math.round((new Date(today+'T12:00')-new Date(f+'T12:00'))/864e5)+1));let n=0;
+  for(let i=0;i<span;i++){const t=new Date();t.setDate(t.getDate()-i);if(num(E[iso(t)]?.dor)!=null)n++}return[n,span]}
+
+function pear(a,b){const n=a.length;if(n<7)return null;const ma=avg(a),mb=avg(b);let s=0,sa=0,sb=0;
+  for(let i=0;i<n;i++){const x=a[i]-ma,y=b[i]-mb;s+=x*y;sa+=x*x;sb+=y*y}return sa&&sb?s/Math.sqrt(sa*sb):null}
+
+function renderHead(){
+  $('#psel').innerHTML=S.patients.map(p=>`<option value="${esc(p.id)}"${p.id===P().id?' selected':''}>${esc(p.name)}</option>`).join('');
+  const p=P();
+  if(MODE==='pac'){$('#htitle').textContent='Registro diário';$('#pinfo').textContent=`Olá${p.name?', '+p.name:''}. Seus registros vão direto para o seu fisioterapeuta.`}
+  else $('#pinfo').textContent=p.id?[p.age?p.age+' anos':'',p.queixa,p.aparelho,days().length+' dias registrados'].filter(Boolean).join(' · '):'Nenhum paciente ainda. Toque em “Novo paciente”.';
+  $('#hrvt').textContent=hrvT()?'('+hrvT()+')':''}
+
+function renderKpis(){
+  const a=win(7),b=win(7,7),t=hrvT();
+  const ga=geral(a),gb=geral(b);let gch='<span class="mut">sem comparação</span>';
+  if(ga!=null&&gb!=null){const df=ga-gb;gch=`<span class="mut">${df>0?'↑':df<0?'↓':'='} ${fmt(Math.abs(df),0)} pontos percentuais${Math.abs(df)>=1?(df>0?' · melhora':' · piora'):''}</span>`}
+  const gk=`<div class="kpi"><span class="mut">Índice biopsicossocial · 7 dias</span><b>${ga==null?'—':Math.round(ga)+'%'}</b>${gch}</div>`;
+  const k=[['dor','Dor média',1,1],['sonoH','Sono médio',1,0,' h'],['vfc','VFC média'+(t?' ('+t+')':''),0,0,' ms'],['passos','Passos / dia',0,0,'']];
+  $('#kpis').innerHTML=gk+k.map(([key,l,d,worseUp,u=''])=>{const x=wavg(a,key),y=wavg(b,key);let ch='';
+    if(x!=null&&y!=null){const df=x-y;const good=worseUp?df<0:df>0;ch=`<span class="mut">${df>0?'↑':df<0?'↓':'='} ${fmt(Math.abs(df),d)} vs semana anterior${Math.abs(df)>0.05?(good?' · melhora':' · piora'):''}</span>`}
+    return`<div class="kpi"><span class="mut">${l} · 7 dias</span><b>${fmt(x,d)}${x!=null?u:''}</b>${ch||'<span class="mut">sem comparação</span>'}</div>`}).join('');
+  const ad=ades();
+  if(ad)$('#kpis').insertAdjacentHTML('beforeend',`<div class="kpi"><span class="mut">Adesão · ${ad[1]} dias</span><b>${ad[0]} de ${ad[1]}</b><span class="mut">${Math.round(ad[0]/ad[1]*100)}% dos dias com registro</span></div>`)}
+
+const geral=arr=>avg(Object.keys(ITEMS).map(d=>avg(arr.map(e=>domScore(e,d)))));
+function renderDoms(){const a=win(7);
+  const row=(l,v,b)=>`<div class="dom"><span${b?' style="font-weight:700"':''}>${l}</span><div class="bar"><i style="width:${v==null?0:v.toFixed(0)}%"></i></div><span class="num">${v==null?'—':Math.round(v)+'%'}</span></div>`;
+  $('#doms').innerHTML=row('Geral',geral(a),1)+Object.keys(ITEMS).map(d=>row(DN[d],avg(a.map(e=>domScore(e,d))))).join('')}
+
+function renderFlags(){const a=win(7),ds=days(),f=[];
+  const m=k=>wavg(a,k);
+  if(m('dor')>=7)f.push(['Dor intensa persistente',`Média de ${fmt(m('dor'))} na semana. Reavaliar plano e manejo.`]);
+  if(m('medo')>=6)f.push(['Medo de movimento elevado',`Média ${fmt(m('medo'))}. Considere aplicar a escala de cinesiofobia (TSK) e educação em dor.`]);
+  if(m('humor')!=null&&m('humor')<=4||m('ansiedade')>=7)f.push(['Sofrimento emocional',`Humor ${fmt(m('humor'))} e ansiedade ${fmt(m('ansiedade'))}. Rastreie e avalie encaminhamento para psicologia.`]);
+  if(m('sonoH')!=null&&m('sonoH')<6||m('sonoQ')!=null&&m('sonoQ')<=4)f.push(['Sono insuficiente',`${fmt(m('sonoH'))} h por noite, qualidade ${fmt(m('sonoQ'))}/10. Higiene do sono e conversa com o médico.`]);
+  const fc=base('fc');if(fc&&fc.now!=null&&fc.now>=fc.m+5)f.push(['FC de repouso acima do habitual',`${fmt(fc.now,0)} bpm nos últimos 3 registros, contra ${fmt(fc.m,0)} bpm na linha de base do paciente. Pode indicar estresse, infecção, sono ruim ou sobrecarga.`]);
+  const hv=base('vfc');if(hv&&hv.now!=null&&hv.s&&hv.now<hv.m-hv.s)f.push(['VFC abaixo da faixa habitual',`${fmt(hv.now,0)} ms nos últimos 3 registros. A faixa habitual do paciente é ${fmt(hv.m-hv.s,0)} a ${fmt(hv.m+hv.s,0)} ms. Pode indicar estresse ou recuperação ruim.`]);
+  const bb=boom(ds.slice(-14));if(bb.length>=2)f.push(['Padrão de exagero e crise',`Em ${bb.length} dos últimos 14 registros, a dor subiu 2 pontos ou mais depois de um dia com bem mais passos que o habitual. Trabalhe o ritmo de atividade.`]);
+  if(m('apoio')!=null&&m('apoio')<=4)f.push(['Pouco apoio social',`Média ${fmt(m('apoio'))}. Explore rede de apoio e participação.`]);
+  if(m('passos')!=null&&m('passos')<4000)f.push(['Pouca atividade',`${fmt(m('passos'),0)} passos por dia. Avalie progressão gradual de atividade.`]);
+  $('#flags').innerHTML=f.length?f.map(([t,d])=>`<li><strong>${esc(t)}</strong>${esc(d)}</li>`).join(''):'<li style="background:none;padding:0" class="mut">Nenhuma bandeira nos últimos 7 dias.</li>'}
+
+function renderIns(){const ds=days(),E=P().entries,out=[];
+  const pair=(k,lag)=>{const a=[],b=[];for(const d of ds){const o=lag?E[prev(d)]:E[d],x=num(E[d].dor),y=o?num(o[k]):null;if(x!=null&&y!=null){a.push(x);b.push(y)}}
+    const r=pear(a,b);if(r!=null&&Math.abs(r)>=.3)out.push([r,lag?'ontem':k,a.length])};
+  for(const k of ['sonoH','vfc','passos','sonoQ','humor','ansiedade','medo','fc'])pair(k);pair('passos',1);
+  out.sort((x,y)=>Math.abs(y[0])-Math.abs(x[0]));
+  const ph=k=>k==='ontem'?'depois de dias com mais passos':'nos dias com mais '+esc(LBL[k].toLowerCase());
+  const bb=boom(ds);
+  $('#ins').innerHTML=(out.length?out.slice(0,5).map(([r,k,n])=>`<li>A dor tende a ser <strong>${r<0?'menor':'maior'}</strong> ${ph(k)} <span class="mut">(r = ${fmt(r,2)}, ${Math.abs(r)>=.5?'forte':'moderada'}, ${n} dias)</span></li>`).join(''):'<li class="mut">São necessários pelo menos 7 dias com dor e outro dado registrados.</li>')
+    +(bb.length?`<li>Em <strong>${bb.length} ${bb.length>1?'dias':'dia'}</strong>, a dor subiu 2 pontos ou mais logo depois de um dia com 30% mais passos que o habitual. Vale conversar sobre ritmo de atividade.</li>`:'')}
+
+function renderLast(){const ds=days().slice(-10).reverse(),E=P().entries;
+  $('#last').innerHTML=ds.length?`<tr><th>Data</th><th>Dor</th><th>Humor</th><th>Sono</th><th>VFC</th><th>Passos</th></tr>`+ds.map(d=>{const e=E[d];return`<tr><td>${esc(br(d))}</td><td>${fmt(num(e.dor))}</td><td>${fmt(num(e.humor))}</td><td>${num(e.sonoH)!=null?fmt(num(e.sonoH))+' h':'—'}</td><td>${num(e.vfc)!=null?fmt(num(e.vfc),0)+' ms':'—'}</td><td>${fmt(num(e.passos),0)}</td></tr>`}).join(''):'<tr><td class="empty">Nenhum registro ainda.</td></tr>'}
+
+const ch=$('#ch');
+function draw(){const W=ch.clientWidth,H=ch.clientHeight;if(!W)return;
+  ch.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  const all=days(),ds=all.slice(-(+$('#per').value)),E=P().entries,sec=$('#sec').value;
+  $('#secl').textContent=LBL[sec];
+  if(!ds.length){ch.innerHTML=`<text x="${W/2}" y="${H/2}" text-anchor="middle" fill="currentColor" opacity=".6" font-size="15">Sem registros ainda. Comece em “Registrar dia”.</text>`;return}
+  const nar=W<520,pl=nar?26:34,pr=nar?34:48,pt=14,pb=28,iw=W-pl-pr,ih=H-pt-pb;
+  const x=i=>pl+(ds.length<2?iw/2:i*iw/(ds.length-1)),yL=v=>pt+ih-v/10*ih;
+  const sv=ds.map(d=>num(E[d][sec])),vv=sv.filter(v=>v!=null);let mn=Math.min(...vv),mx=Math.max(...vv);
+  if(vv.length&&mn===mx){mn-=1;mx+=1}
+  const yR=v=>pt+ih-(v-mn)/(mx-mn)*ih;
+  const path=(vals,y)=>{let s='',pen=false;vals.forEach((v,i)=>{if(v==null){pen=false;return}s+=(pen?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1);pen=true});return s};
+  const dv=ds.map(d=>num(E[d].dor));
+  let g='';
+  for(const v of[0,5,10])g+=`<line x1="${pl}" x2="${W-pr}" y1="${yL(v)}" y2="${yL(v)}" stroke="currentColor" opacity=".12"/><text x="${pl-8}" y="${yL(v)+4}" text-anchor="end" font-size="12" fill="currentColor" opacity=".65">${v}</text>`;
+  if(vv.length)for(const v of[mn,mx])g+=`<text x="${W-pr+8}" y="${yR(v)+4}" font-size="12" fill="var(--acc2)">${fmt(v,v<20?1:0)}</text>`;
+  const idx=nar?[0,ds.length-1]:[0,Math.floor((ds.length-1)/2),ds.length-1];
+  for(const i of[...new Set(idx)])g+=`<text x="${x(i)}" y="${H-8}" text-anchor="${i===0&&ds.length>1?'start':i===ds.length-1&&ds.length>1?'end':'middle'}" font-size="12" fill="currentColor" opacity=".65">${esc(br(ds[i]))}</text>`;
+  for(const[d,t]of Object.entries(P().events||{})){if(d<ds[0]||d>ds[ds.length-1])continue;const xx=x(ds.findIndex(z=>z>=d)).toFixed(1);
+    g+=`<g><title>${esc(br(d))}: ${esc(t)}</title><line x1="${xx}" x2="${xx}" y1="${pt}" y2="${pt+ih}" stroke="var(--warn)" stroke-width="1.5" stroke-dasharray="2 3"/><circle cx="${xx}" cy="${pt}" r="5" fill="var(--warn)"/></g>`}
+  g+=`<path d="${path(sv,yR)}" fill="none" stroke="var(--acc2)" stroke-width="2" stroke-dasharray="5 4" stroke-linejoin="round"/>`;
+  g+=`<path d="${path(dv,yL)}" fill="none" stroke="var(--acc)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
+  if(ds.length<=31)dv.forEach((v,i)=>{if(v!=null)g+=`<circle cx="${x(i)}" cy="${yL(v)}" r="3.5" fill="var(--acc)"><title>${esc(br(ds[i]))}: dor ${v}</title></circle>`});
+  ch.innerHTML=g}
+const ro=new ResizeObserver(draw);ro.observe(ch);
+
+function renderEv(){const E=P().events||{};
+  $('#evl').innerHTML=Object.keys(E).sort().reverse().map(d=>`<li><span><b>${esc(d.slice(8,10)+'/'+d.slice(5,7)+'/'+d.slice(2,4))}</b> ${esc(E[d])}</span><button type="button" class="del" data-d="${esc(d)}" aria-label="Apagar evento de ${esc(br(d))}" style="min-height:36px;padding:4px 12px">Apagar</button></li>`).join('')}
+function renderBk(){const has=S.patients.some(p=>!/\(exemplo\)/.test(p.name)&&Object.keys(p.entries).length),le=+ls(K+'-bk')||0,dd=le?Math.floor((Date.now()-le)/864e5):null,on=MODE!=='pac'&&has&&(dd==null||dd>=7);
+  $('#bk').hidden=!on;if(on)$('#bkt').textContent=dd==null?(MODE==='local'?'Os dados ainda não têm backup. Se o navegador for limpo, tudo se perde.':'Ainda não há backup. O plano gratuito do Supabase não guarda cópias.'):`Último backup há ${dd} dias. Faça um novo para não perder registros.`}
+function renderLink(){const t=P().token;$('#plink').value=t?location.origin+location.pathname+'#p='+t:''}
+function renderGuide(){const tk=MODE==='pac'?TOKEN:P().token,remote=MODE!=='local'&&tk;
+  const get=`<li>Para cada dado, adicione <b>Encontrar Amostras de Saúde</b> com “Data de Início está nos últimos 1 dias”:<ul>
+    <li><b>Frequência Cardíaca em Repouso</b>: ordenar pela mais recente, limite 1.</li>
+    <li><b>Variabilidade da Frequência Cardíaca</b>: ordenar pela mais recente, limite 1.</li>
+    <li><b>Passos</b>: em seguida, <b>Calcular Estatísticas</b> → Soma.</li>
+    <li><b>Análise do Sono</b>, sem os valores “Na Cama” e “Acordado”: em seguida, <b>Obter Detalhes de Amostras de Saúde</b> → Duração e <b>Calcular Estatísticas</b> → Soma.</li>
+    <li><b>Saturação de Oxigênio</b>: em seguida, <b>Calcular Estatísticas</b> → Média.</li></ul></li>
+    <li>Use <b>Arredondar Número</b> em cada valor (sono com 1 casa decimal).</li>`;
+  const send=remote?`<li>Adicione <b>Obter Conteúdo do URL</b>:<ul>
+    <li>URL: <code>${esc(SUPA_URL)}/rest/v1/rpc/registrar</code></li>
+    <li>Método <b>POST</b>. Cabeçalhos: <code>apikey</code> = <code>${esc(SUPA_KEY)}</code> e <code>Content-Type</code> = <code>application/json</code></li>
+    <li>Corpo <b>JSON</b>: <code>p_token</code> (Texto) = <code>${esc(tk)}</code>; <code>p_data</code> (Texto) = Data Atual no formato <code>yyyy-MM-dd</code>; <code>p_dados</code> (Dicionário) com os números <code>fc</code>, <code>vfc</code>, <code>sonoH</code>, <code>passos</code> e <code>spo2</code>.</li></ul></li>
+    <li>Em <b>Automação</b> → <b>Hora do Dia</b>, escolha 21h e “Executar Imediatamente”. Os dados chegam sozinhos ao painel toda noite.</li>`
+   :`<li>Adicione <b>Texto</b> com: <code>#HC data=[Data Atual, formato yyyy-MM-dd];fc=[FC];vfc=[VFC];sono=[Sono];passos=[Passos];spo2=[SpO₂]</code></li>
+    <li>Termine com <b>Enviar Mensagem</b> para o WhatsApp do fisioterapeuta.</li>
+    <li>Em <b>Automação</b> → <b>Hora do Dia</b>, escolha 21h para rodar todo dia.</li>
+    <li>Cole as mensagens recebidas (pode ser a conversa inteira) em “Importar”. O app lê só as linhas que começam com #HC.</li>`;
+  $('#guia').innerHTML=`<details class="guia"><summary>Atalho do iPhone: dados do relógio ${remote?'enviados sozinhos':'com um toque'}</summary><ol><li>No iPhone, abra o app <b>Atalhos</b> e crie um atalho chamado “Enviar HC”.</li>${get}${send}</ol><p class="mut">Os nomes das ações mudam um pouco conforme a versão do iOS: teste com um paciente antes de distribuir. O sono pode vir em horas, minutos ou segundos e a SpO₂ como fração (0,97): o painel converte.</p></details>`}
+
+function renderDiario(){const E=P().entries,ds=days().filter(d=>E[d].diario?.length).reverse().slice(0,60);
+  $('#dlist').innerHTML=ds.length?ds.map(d=>`<li style="display:block"><b>${esc(br(d)+'/'+d.slice(2,4))}</b><ul class="evl">${E[d].diario.map((x,i)=>`<li><span><strong>${esc(x.h||'—')}</strong> · dor ${esc(x.dor)}${x.local?' · '+esc(x.local):''}${x.gat?`<br><span class="mut">Fazendo: ${esc(x.gat)}</span>`:''}${x.ali?`<br><span class="mut">Ajudou: ${esc(x.ali)}</span>`:''}${x.nota?`<br>${esc(x.nota)}`:''}</span><button type="button" class="del" data-d="${esc(d)}" data-i="${i}" aria-label="Apagar anotação" style="min-height:36px;padding:4px 12px">Apagar</button></li>`).join('')}</ul></li>`).join(''):'<li class="mut">Nenhuma anotação ainda.</li>'}
+function renderEvo(){renderKpis();renderDoms();renderFlags();renderIns();renderLast();draw()}
+
+$('#sliders').innerHTML=Object.entries(ITEMS).map(([d,its])=>`<fieldset><legend>${DN[d]}</legend><div class="items">${its.map(([k,l,,h])=>`<div class="sl"><div class="slh"><label for="r-${k}">${l}</label><button type="button" class="help" aria-expanded="false" aria-controls="b-${k}" aria-label="Exemplos para ${l}" data-b="b-${k}">?</button><output id="o-${k}">5</output></div><div class="balao" id="b-${k}" hidden><ul>${EX[k].map(([n,t])=>`<li><b>${n}</b>${t}</li>`).join('')}</ul></div><input type="range" id="r-${k}" min="0" max="10" step="1" value="5"><small>${h}</small></div>`).join('')}</div></fieldset>`).join('');
+$$('.help').forEach(b=>b.addEventListener('click',()=>{const o=b.getAttribute('aria-expanded')!=='true';
+  $$('.help').forEach(x=>{x.setAttribute('aria-expanded','false');$('#'+x.dataset.b).hidden=true});
+  b.setAttribute('aria-expanded',o);$('#'+b.dataset.b).hidden=!o}));
+ALL.forEach(([k])=>$('#r-'+k).addEventListener('input',e=>$('#o-'+k).textContent=e.target.value));
+const devOpts='<option value="">Não informado</option>'+DEV.map(d=>`<option>${d}</option>`).join('');$('#nap').innerHTML=$('#eap').innerHTML=devOpts;
+function loadReg(){const e=P().entries[$('#rdate').value]||{};
+  ALL.forEach(([k])=>{const v=num(e[k]);$('#r-'+k).value=v??5;$('#o-'+k).textContent=v??5});
+  $('#rlocal').value=e.local||'';$('#robs').value=e.obs||'';
+  $('#rstat').textContent=e.dor!=null?'Já existe registro nesta data. Salvar atualiza.':''}
+function loadWear(){const e=P().entries[$('#wdate').value]||{};WK.forEach(k=>$('#w-'+k).value=e[k]??'')}
+$('#rdate').value=today;$('#wdate').value=today;$('#evd').value=today;$('#ddate').value=today;
+const hhmm=()=>new Date().toTimeString().slice(0,5);$('#dhora').value=hhmm();
+$('#ddor').addEventListener('input',e=>$('#odor').textContent=e.target.value);
+$('#dadd').addEventListener('click',e=>{const p=P(),d=$('#ddate').value;if(!p.id)return toast('Crie um paciente primeiro');if(!d)return toast('Escolha a data');
+  const t=id=>$('#'+id).value.trim().slice(0,300),E=p.entries;E[d]=E[d]||{};
+  (E[d].diario=E[d].diario||[]).push({h:$('#dhora').value,dor:+$('#ddor').value,local:t('dlocal'),gat:t('dgat'),ali:t('dali'),nota:t('dnota')});
+  E[d].diario.sort((a,b)=>(a.h||'').localeCompare(b.h||''));
+  busy(e.currentTarget,async()=>{const ok=await putEntries(p,[d]);if(ok){['dlocal','dgat','dali','dnota'].forEach(i=>$('#'+i).value='');$('#dhora').value=hhmm()}renderAll();
+    $('#dstat').textContent=ok?(MODE==='pac'?'Enviado ao seu fisioterapeuta.':'Anotado.'):'Não enviado. Toque em Adicionar de novo.';if(ok)toast('Anotação salva')})});
+$('#dlist').addEventListener('click',async e=>{const b=e.target.closest('button[data-i]');if(!b)return;const p=P(),x=p.entries[b.dataset.d];if(!x?.diario)return;
+  x.diario.splice(+b.dataset.i,1);await putEntries(p,[b.dataset.d]);renderAll()});
+$('#rdate').addEventListener('change',loadReg);$('#wdate').addEventListener('change',loadWear);
+const busy=async(b,fn)=>{b.disabled=true;try{return await fn()}finally{b.disabled=false}};
+$('#rsave').addEventListener('click',e=>{const p=P(),d=$('#rdate').value;if(!p.id)return toast('Crie um paciente primeiro');if(!d)return toast('Escolha a data');const E=p.entries;E[d]=E[d]||{};
+  ALL.forEach(([k])=>E[d][k]=+$('#r-'+k).value);E[d].local=$('#rlocal').value.trim();E[d].obs=$('#robs').value.trim();
+  busy(e.currentTarget,async()=>{const ok=await putEntries(p,[d]);renderAll();
+    $('#rstat').textContent=ok?(MODE==='pac'?'Enviado ao seu fisioterapeuta.':'Salvo.'):'Não enviado. Verifique a internet e toque em Salvar de novo.';if(ok)toast(MODE==='pac'?'Registro enviado':'Registro salvo')})});
+$('#wsave').addEventListener('click',e=>{const p=P(),d=$('#wdate').value;if(!p.id)return toast('Crie um paciente primeiro');if(!d)return toast('Escolha a data');const E=p.entries;E[d]=E[d]||{};
+  WK.forEach(k=>{const v=num(String($('#w-'+k).value).replace(',','.'));if(v!=null)E[d][k]=v;else delete E[d][k]});
+  busy(e.currentTarget,async()=>{const ok=await putEntries(p,[d]);renderAll();$('#wstat').textContent=ok?'Salvo.':'Não enviado. Toque em Salvar de novo.';if(ok)toast('Dados do aparelho salvos')})});
+
+function parseDate(s){s=String(s).trim().replace(/"/g,'');let m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);if(m)return m[1]+'-'+m[2]+'-'+m[3];
+  m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);if(m)return m[3]+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0');return null}
+function importCSV(txt){const L=txt.split(/\r?\n/).filter(l=>l.trim());if(L.length<2)return[];
+  const dl=L[0].includes(';')?';':L[0].includes('\t')?'\t':',';const H=L[0].split(dl).map(h=>h.trim().toLowerCase().replace(/"/g,''));
+  const find=re=>H.findIndex(h=>re.test(h));
+  const col={date:find(/data|date|dia|day/),fc:find(/resting|repouso|^fc|heart/),vfc:find(/hrv|vfc|rmssd/),sonoH:find(/sleep|sono/),passos:find(/step|passo/),spo2:find(/spo2|oxig/)};
+  if(col.date<0)return-1;const E=P().entries,out=[];
+  for(const l of L.slice(1)){const c=l.split(dl),d=parseDate(c[col.date]);if(!d)continue;E[d]=E[d]||{};
+    for(const k of WK){if(col[k]<0)continue;const v=num(String(c[col[k]]||'').trim().replace(/"/g,'').replace(',','.'));if(v!=null)E[d][k]=v}E[d]=norm(E[d]);out.push(d)}
+  return out}
+// Linhas "#HC data=2026-11-25;fc=62 bpm;vfc=45;sono=6,8;passos=5.300;spo2=0,97" vindas do atalho do iPhone.
+function importHC(txt){const E=P().entries,out=[];
+  for(const m of txt.matchAll(/#HC\s+([^\r\n]+)/gi)){const d=parseDate(m[1].match(/data=\s*([\d\/-]+)/i)?.[1]||'');if(!d)continue;const o={};
+    for(const s of m[1].split(';')){const i=s.indexOf('=');if(i>0)o[s.slice(0,i).trim().toLowerCase()]=s.slice(i+1).replace(/[^\d,.\-]/g,'')}
+    E[d]=E[d]||{};
+    for(const[k,f]of[['fc','fc'],['vfc','vfc'],['sono','sonoH'],['passos','passos'],['spo2','spo2']]){let s=o[k];if(!s)continue;if(f==='passos')s=s.replace(/[.,](?=\d{3}$)/,'');
+      const v=num(s.replace(',','.'));if(v!=null)E[d][f]=f==='passos'||f==='fc'?Math.round(v):v}
+    E[d]=norm(E[d]);out.push(d)}
+  return out}
+$('#wfile').addEventListener('change',e=>{const f=e.target.files[0];if(f)f.text().then(t=>$('#wcsv').value=t)});
+$('#wimp').addEventListener('click',async()=>{const p=P();if(!p.id)return toast('Crie um paciente primeiro');const t=$('#wcsv').value,r=/#HC/i.test(t)?importHC(t):importCSV(t);
+  if(r===-1)return $('#wistat').textContent='Não encontrei a coluna de data.';if(!r.length)return $('#wistat').textContent='Nada para importar.';
+  const ok=await putEntries(p,r);renderAll();$('#wistat').textContent=ok?r.length+' dias importados.':'Importado só neste aparelho: o servidor não respondeu.'});
+
+let dlc=null;
+if(window.claude&&claude.use)claude.use('downloads').then(d=>{dlc=d}).catch(()=>{});
+function showCopy(t){$('#ttx').value=t;$('#tdlg').classList.add('on');$('#ttx').focus();$('#ttx').select()}
+async function give(name,data){
+  if(dlc){try{await dlc.save({filename:name,data});toast('Arquivo salvo');return}catch(e){}}
+  if(!window.claude){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/octet-stream'}));a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);toast('Arquivo baixado');return}
+  try{await navigator.clipboard.writeText(data);toast('Download indisponível aqui: dados copiados')}catch(e){showCopy(data)}}
+const strip=({token,...p})=>p; // o token do link não sai nos arquivos
+const slug=()=>P().name.normalize('NFD').replace(/[^\w]+/g,'-').toLowerCase().replace(/^-|-$/g,'')||'paciente';
+function csv(){const keys=[...ALL.map(i=>i[0]),...WK,'local','obs'],E=P().entries;
+  return['data;'+keys.join(';'),...days().map(d=>d+';'+keys.map(k=>String(E[d][k]??'').replace(/;/g,',').replace(/\./g,typeof E[d][k]==='number'?',':'.')).join(';'))].join('\n')}
+const backup=()=>{give('backup-painel-bps-'+today+'.json',JSON.stringify({patients:S.patients.map(strip)},null,1));ls(K+'-bk',String(Date.now()));renderBk()};
+$('#xall').addEventListener('click',backup);$('#bkx').addEventListener('click',backup);
+$('#xjson').addEventListener('click',()=>give(slug()+'-bps.json',JSON.stringify(strip(P()),null,1)));
+$('#xcsv').addEventListener('click',()=>give(slug()+'-bps.csv',csv()));
+$('#xcopy').addEventListener('click',async()=>{const t=JSON.stringify(strip(P()));try{await navigator.clipboard.writeText(t);toast('Dados copiados')}catch(e){showCopy(t)}});
+$('#tx').addEventListener('click',()=>$('#tdlg').classList.remove('on'));
+$('#ifile').addEventListener('change',e=>{const f=e.target.files[0];if(f)f.text().then(t=>$('#ijson').value=t)});
+const isDay=d=>/^\d{4}-\d{2}-\d{2}$/.test(d);
+function addPatient(o){if(!o||!o.entries||typeof o.entries!=='object'||Array.isArray(o.entries))throw 0;
+  const entries=Object.fromEntries(Object.entries(o.entries).filter(([d,e])=>isDay(d)&&e&&typeof e==='object').map(([d,e])=>[d,norm(e)]));
+  const events=Object.fromEntries(Object.entries(o.events&&typeof o.events==='object'?o.events:{}).filter(([d,t])=>isDay(d)&&typeof t==='string'));
+  const p={id:uid(),name:String(o.name||'Paciente importado').slice(0,120),age:num(o.age),queixa:String(o.queixa||''),aparelho:String(o.aparelho||''),entries,events};
+  const ex=S.patients.find(x=>x.name===p.name);if(ex){Object.assign(ex.entries,entries);ex.events=Object.assign(ex.events||{},events);S.cur=ex.id;return ex}
+  S.patients.push(p);S.cur=p.id;return p}
+$('#iimp').addEventListener('click',e=>{let ps;try{const o=JSON.parse($('#ijson').value);ps=(Array.isArray(o.patients)?o.patients:[o]).map(addPatient)}catch(err){return $('#istat').textContent='Arquivo inválido.'}
+  busy(e.currentTarget,async()=>{let ok=true;for(const p of ps)ok=await putPatient(p)&&await putEntries(p,Object.keys(p.entries))&&ok;save();renderAll();
+    $('#istat').textContent=(ok?'Importado: ':'Importado com erro no servidor: ')+ps.map(p=>p.name).join(', ');if(ok)$('#ijson').value=''})});
+
+function loadEdit(){const p=P();$('#ename').value=p.id?p.name:'';$('#eage').value=p.age??'';$('#eap').value=p.aparelho||'';$('#eq').value=p.queixa||''}
+$('#esave').addEventListener('click',async()=>{const p=P();if(!p.id)return toast('Crie um paciente primeiro');p.name=$('#ename').value.trim()||p.name;p.age=num($('#eage').value);p.aparelho=$('#eap').value;p.queixa=$('#eq').value.trim();
+  const ok=await putPatient(p);renderAll();if(ok)toast('Paciente atualizado')});
+$('#pdel').addEventListener('click',()=>{if(!P().id)return;$('#ctx').textContent=`Todos os registros de ${P().name} serão apagados${MODE==='pro'?' do servidor':' deste navegador'}. Faça backup antes se quiser guardar.`;$('#cdlg').classList.add('on')});
+$('#cx').addEventListener('click',()=>$('#cdlg').classList.remove('on'));
+$('#cok').addEventListener('click',async()=>{const id=P().id;S.patients=S.patients.filter(p=>p.id!==id);if(MODE==='local'&&!S.patients.length)S.patients=[sample()];S.cur=S.patients[0]?.id||null;
+  $('#cdlg').classList.remove('on');const ok=await delPatient(id);save();renderAll();if(ok)toast('Paciente excluído')});
+$('#psample').addEventListener('click',async()=>{const p=sample();S.patients.push(p);S.cur=p.id;const ok=await putPatient(p)&&await putEntries(p,Object.keys(p.entries));save();renderAll();if(ok)toast('Exemplo adicionado')});
+$('#pnew').addEventListener('click',()=>{['nname','nage','nq','nap'].forEach(i=>$('#'+i).value='');$('#dlg').classList.add('on');$('#nname').focus()});
+$('#nx').addEventListener('click',()=>$('#dlg').classList.remove('on'));
+$('#nok').addEventListener('click',async()=>{const n=$('#nname').value.trim();if(!n)return $('#nname').focus();
+  const p={id:uid(),name:n,age:num($('#nage').value),queixa:$('#nq').value.trim(),aparelho:$('#nap').value,entries:{},events:{}};S.patients.push(p);S.cur=p.id;$('#dlg').classList.remove('on');
+  const ok=await putPatient(p);save();renderAll();show('reg');if(ok)toast(MODE==='pro'?'Paciente criado. O link dele está na aba Dados.':'Paciente criado')});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$$('.dlg.on').forEach(d=>d.classList.remove('on'))});
+$('#psel').addEventListener('change',e=>{S.cur=e.target.value;save();renderAll()});
+$('#sec').addEventListener('change',draw);$('#per').addEventListener('change',draw);
+
+$('#evadd').addEventListener('click',async()=>{const p=P(),d=$('#evd').value,t=$('#evt').value.trim();if(!p.id)return toast('Crie um paciente primeiro');if(!d||!t)return toast('Informe a data e o evento');
+  (p.events||(p.events={}))[d]=t.slice(0,200);$('#evt').value='';const ok=await putPatient(p);renderAll();if(ok)toast('Evento marcado')});
+$('#evl').addEventListener('click',async e=>{const d=e.target.dataset.d;if(!d)return;const p=P();delete p.events[d];await putPatient(p);renderAll()});
+$('#xprint').addEventListener('click',()=>{const p=P();
+  $('#rept').textContent=[p.name,p.age?p.age+' anos':'',p.queixa,p.aparelho&&'Aparelho: '+p.aparelho,'Gráfico: '+$('#per').selectedOptions[0].text+', dor × '+LBL[$('#sec').value].toLowerCase(),'Emitido em '+new Date().toLocaleDateString('pt-BR')].filter(Boolean).join(' · ');
+  setTimeout(()=>print(),100)});
+
+$('#lcopy').addEventListener('click',async()=>{const u=$('#plink').value;if(!u)return;try{await navigator.clipboard.writeText(u);toast('Link copiado')}catch(e){showCopy(u)}});
+$('#lwa').addEventListener('click',()=>{const u=$('#plink').value;if(!u)return;open('https://wa.me/?text='+encodeURIComponent(`Olá! Este é o seu link para o registro diário. Guarde nos favoritos ou adicione à tela inicial: ${u}`),'_blank','noopener')});
+$('#lnew').addEventListener('click',async()=>{const p=P();if(!p.id)return;const t=uid();
+  if(await sync(async()=>{const{error}=await db.from('pacientes').update({token:t}).eq('id',p.id);if(error)throw error})){p.token=t;renderLink();renderGuide();toast('Link novo gerado. O antigo parou de funcionar.')}});
+
+$('#lok').addEventListener('click',e=>busy(e.currentTarget,async()=>{$('#lstat').textContent='Entrando…';
+  const{error}=await db.auth.signInWithPassword({email:$('#lmail').value.trim(),password:$('#lpass').value});
+  if(error)return $('#lstat').textContent='E-mail ou senha incorretos.';$('#lpass').value='';$('#lstat').textContent='';startPro()}));
+$('#lpass').addEventListener('keydown',e=>{if(e.key==='Enter')$('#lok').click()});
+$('#lout').addEventListener('click',async()=>{await db.auth.signOut();location.reload()});
+
+function show(t){if(MODE==='pac'&&!['reg','diario','wear','off'].includes(t))t='reg';
+  $$('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===t));$$('main section').forEach(s=>s.hidden=s.id!=='t-'+t);if(t==='evo')draw();
+  if(t!=='login'&&t!=='off')ls(K+'-tab',t)}
+$$('nav button').forEach(b=>b.addEventListener('click',()=>show(b.dataset.t)));
+function renderAll(){renderHead();renderEvo();renderEv();renderDiario();renderBk();renderLink();renderGuide();loadReg();loadWear();loadEdit()}
+
+function off(m){$('#offm').textContent=m;document.body.dataset.auth='out';show('off')}
+function start(t){document.body.dataset.auth='in';renderAll();show(t)}
+async function fetchAll(){let out=[];for(let from=0;;from+=1000){const{data,error}=await db.from('registros').select('paciente_id,data,dados').order('paciente_id').order('data').range(from,from+999);
+  if(error)throw error;out=out.concat(data);if(data.length<1000)return out}}
+const sig=e=>JSON.stringify(Object.keys(e||{}).sort().map(k=>[k,e[k]]));
+function live(){db.channel('registros').on('postgres_changes',{event:'*',schema:'public',table:'registros'},({new:r})=>{
+  const p=r&&S.patients.find(x=>x.id===r.paciente_id);if(!p||!r.data)return;const e=norm(r.dados);if(sig(e)===sig(p.entries[r.data]))return;
+  p.entries[r.data]=e;renderHead();if(p.id===P().id){renderEvo();renderDiario();renderBk()}toast('Novo registro de '+p.name)}).subscribe()}
+async function startPro(){toast('Carregando…');
+  try{const[{data:ps,error},rs]=await Promise.all([db.from('pacientes').select('*').order('criado'),fetchAll()]);if(error)throw error;const by={};
+    S={patients:ps.map(p=>(by[p.id]={id:p.id,name:p.nome,age:p.idade,queixa:p.queixa,aparelho:p.aparelho,events:p.eventos||{},token:p.token,entries:{}})),cur:ls(K+'-cur')};
+    for(const r of rs)if(by[r.paciente_id])by[r.paciente_id].entries[r.data]=norm(r.dados)}
+  catch(e){return off('Não consegui carregar os dados: '+(e.message||'sem conexão'))}
+  live();start(ls(K+'-tab')||'evo')}
+async function boot(){
+  if(MODE==='local'){try{S=JSON.parse(ls(K))||S}catch(e){}if(!Array.isArray(S.patients)||!S.patients.length){const p=sample();S={patients:[p],cur:p.id}}return start(ls(K+'-tab')||'evo')}
+  if(!db)return off('Sem conexão com o servidor. Verifique a internet e recarregue a página.');
+  if(MODE==='pac'){let r;try{r=await rpc('paciente',{p_token:TOKEN})}catch(e){return off('Sem conexão com o servidor. Verifique a internet e recarregue a página.')}
+    if(!r)return off('Este link não vale mais. Peça um novo ao seu fisioterapeuta.');
+    S={patients:[{id:'me',name:r.nome||'',aparelho:r.aparelho||'',entries:Object.fromEntries(Object.entries(r.entries||{}).map(([d,e])=>[d,norm(e)])),events:{}}],cur:'me'};return start('reg')}
+  const{data:{session}}=await db.auth.getSession();if(!session){document.body.dataset.auth='out';return show('login')}
+  startPro()}
+boot();
+}
+</script>
+</body></html>
