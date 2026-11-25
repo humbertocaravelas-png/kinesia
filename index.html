@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0A3D35"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Painel HC">
-<title>Painel Biopsicossocial HC</title>
+<meta name="theme-color" content="#0A3D35"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Kinesia">
+<title>Kinesia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <style>
@@ -96,7 +96,7 @@ body[data-mode=pac] .npac,body:not([data-mode=pro]) .pro,body:not([data-mode=loc
 </style></head><body data-mode="local">
 <header><div class="wrap">
   <div class="top">
-    <div><h1 id="htitle">Painel biopsicossocial</h1><div class="sub" id="pinfo">Acompanhamento diário · Hugo Caravelas</div></div>
+    <div><h1 id="htitle">Kinesia</h1><div class="sub" id="pinfo">Acompanhamento diário · Hugo Caravelas</div></div>
     <div class="pat npac auth"><select id="psel" aria-label="Paciente"></select><button id="pnew">Novo paciente</button><button id="lout" class="pro">Sair</button></div>
   </div>
   <nav role="tablist" class="auth">
@@ -124,7 +124,7 @@ body[data-mode=pac] .npac,body:not([data-mode=pro]) .pro,body:not([data-mode=loc
 <section id="t-off" hidden><div class="card" style="max-width:520px;margin:0 auto"><h2>Não foi possível abrir</h2><p id="offm" style="margin:8px 0 0"></p></div></section>
 
 <section id="t-evo">
-  <div class="rep"><h2>Relatório de acompanhamento biopsicossocial</h2><p id="rept" style="margin:6px 0 16px"></p></div>
+  <div class="rep"><h2>Kinesia · Relatório de acompanhamento</h2><p id="rept" style="margin:6px 0 16px"></p></div>
   <div class="row noprint" style="justify-content:flex-end;margin-bottom:12px"><button id="xprint">Relatório para imprimir</button></div>
   <div class="kpis" id="kpis"></div>
   <div class="grid">
@@ -221,7 +221,7 @@ body[data-mode=pac] .npac,body:not([data-mode=pro]) .pro,body:not([data-mode=loc
         </div>
         <label style="display:grid;gap:4px;margin-top:12px;font-size:14px;font-weight:500">Orientação <input type="text" id="pobs" maxlength="300" placeholder="Ex.: suba devagar, pare se a dor passar de 5"></label>
         <div class="row" style="margin-top:12px"><button class="pri" id="padd">Adicionar exercício</button><button id="pcancel" hidden>Cancelar edição</button></div>
-        <datalist id="exlib"><option>Caminhada</option><option>Bicicleta ergométrica</option><option>Sentar e levantar da cadeira</option><option>Ponte de glúteo</option><option>Prancha</option><option>Quatro apoios (perdigueiro)</option><option>Remada com elástico</option><option>Rotação externa de ombro com elástico</option><option>Elevação lateral com halter</option><option>Panturrilha em pé</option><option>Subir degrau (step)</option><option>Gato-camelo (mobilidade de coluna)</option><option>Alongamento de posteriores de coxa</option><option>Respiração diafragmática</option><option>Hidroginástica</option></datalist>
+        <datalist id="exlib"><option>Caminhada</option><option>Bicicleta ergométrica</option><option>Sentar e levantar da cadeira</option><option>Ponte de glúteo</option><option>Prancha</option><option>Quatro apoios (perdigueiro)</option><option>Remada com elástico</option><option>Rotação externa de ombro com elástico</option><option>Elevação lateral com halter</option><option>Panturrilha em pé</option><option>Subir degrau (step)</option><option>Gato-camelo (mobilidade de coluna)</option><option>Alongamento de posteriores de coxa</option><option>Respiração diafragmática</option><option>Hidroginástica</option><option>Agachamento</option><option>Afundo</option><option>Leg press</option><option>Cadeira extensora</option><option>Isometria de quadríceps</option><option>Elevação da perna estendida</option><option>Equilíbrio em uma perna</option><option>Levantamento terra</option><option>Supino</option><option>Desenvolvimento de ombro</option><option>Puxada alta</option><option>Corrida leve</option></datalist>
       </div>
       <div class="card"><h2>Histórico de treinos</h2><div class="scroll"><table id="xhist"></table></div></div>
     </div>
@@ -302,7 +302,7 @@ body[data-mode=pac] .npac,body:not([data-mode=pro]) .pro,body:not([data-mode=loc
   <h2 id="dt">Novo paciente</h2>
   <label style="display:grid;gap:4px;font-size:14px;font-weight:500">Nome <input type="text" id="nname"></label>
   <div class="f2"><label>Idade <input type="number" id="nage"></label><label>Aparelho <select id="nap"></select></label></div>
-  <label style="display:grid;gap:4px;font-size:14px;font-weight:500">Queixa principal <input type="text" id="nq" placeholder="Ex.: fibromialgia, lombalgia crônica"></label>
+  <label style="display:grid;gap:4px;font-size:14px;font-weight:500">Queixa principal <input type="text" id="nq" placeholder="Ex.: pós-operatório de LCA, lombalgia, tendinopatia"></label>
   <div class="row"><button class="pri" id="nok">Criar</button><button id="nx">Cancelar</button></div>
 </div></div>
 <div class="dlg" id="cdlg"><div class="card" role="dialog" aria-modal="true" aria-labelledby="ct">
@@ -520,7 +520,7 @@ function renderGuide(){const tk=MODE==='pac'?TOKEN:P().token,remote=MODE!=='loca
     <li>Termine com <b>Enviar Mensagem</b> para o WhatsApp do fisioterapeuta.</li>
     <li>Em <b>Automação</b> → <b>Hora do Dia</b>, escolha 21h para rodar todo dia.</li>
     <li>Cole as mensagens recebidas (pode ser a conversa inteira) em “Importar”. O app lê só as linhas que começam com #HC.</li>`;
-  $('#guia').innerHTML=`<details class="guia"><summary>Atalho do iPhone: dados do relógio ${remote?'enviados sozinhos':'com um toque'}</summary><ol><li>No iPhone, abra o app <b>Atalhos</b> e crie um atalho chamado “Enviar HC”.</li>${get}${send}</ol><p class="mut">Os nomes das ações mudam um pouco conforme a versão do iOS: teste com um paciente antes de distribuir. O sono pode vir em horas, minutos ou segundos e a SpO₂ como fração (0,97): o painel converte.</p></details>`}
+  $('#guia').innerHTML=`<details class="guia"><summary>Atalho do iPhone: dados do relógio ${remote?'enviados sozinhos':'com um toque'}</summary><ol><li>No iPhone, abra o app <b>Atalhos</b> e crie um atalho chamado “Enviar Kinesia”.</li>${get}${send}</ol><p class="mut">Os nomes das ações mudam um pouco conforme a versão do iOS: teste com um paciente antes de distribuir. O sono pode vir em horas, minutos ou segundos e a SpO₂ como fração (0,97): o painel converte.</p></details>`}
 
 function renderDiario(){const E=P().entries,ds=days().filter(d=>E[d].diario?.length).reverse().slice(0,60);
   $('#dlist').innerHTML=ds.length?ds.map(d=>`<li style="display:block"><b>${esc(br(d)+'/'+d.slice(2,4))}</b><ul class="evl">${E[d].diario.map((x,i)=>`<li><span><strong>${esc(x.h||'—')}</strong> · dor ${esc(x.dor)}${x.local?' · '+esc(x.local):''}${x.gat?`<br><span class="mut">Fazendo: ${esc(x.gat)}</span>`:''}${x.ali?`<br><span class="mut">Ajudou: ${esc(x.ali)}</span>`:''}${x.nota?`<br>${esc(x.nota)}`:''}</span><button type="button" class="del" data-d="${esc(d)}" data-i="${i}" aria-label="Apagar anotação" style="min-height:36px;padding:4px 12px">Apagar</button></li>`).join('')}</ul></li>`).join(''):'<li class="mut">Nenhuma anotação ainda.</li>'}
@@ -621,7 +621,7 @@ const strip=({token,...p})=>p; // o token do link não sai nos arquivos
 const slug=()=>P().name.normalize('NFD').replace(/[^\w]+/g,'-').toLowerCase().replace(/^-|-$/g,'')||'paciente';
 function csv(){const keys=[...ALL.map(i=>i[0]),...WK,'local','obs'],E=P().entries;
   return['data;'+keys.join(';'),...days().map(d=>d+';'+keys.map(k=>String(E[d][k]??'').replace(/;/g,',').replace(/\./g,typeof E[d][k]==='number'?',':'.')).join(';'))].join('\n')}
-const backup=()=>{give('backup-painel-bps-'+today+'.json',JSON.stringify({patients:S.patients.map(strip)},null,1));ls(K+'-bk',String(Date.now()));renderBk()};
+const backup=()=>{give('backup-kinesia-'+today+'.json',JSON.stringify({patients:S.patients.map(strip)},null,1));ls(K+'-bk',String(Date.now()));renderBk()};
 $('#xall').addEventListener('click',backup);$('#bkx').addEventListener('click',backup);
 $('#xjson').addEventListener('click',()=>give(slug()+'-bps.json',JSON.stringify(strip(P()),null,1)));
 $('#xcsv').addEventListener('click',()=>give(slug()+'-bps.csv',csv()));
@@ -665,7 +665,7 @@ $('#xprint').addEventListener('click',()=>{const p=P();
   setTimeout(()=>print(),100)});
 
 $('#lcopy').addEventListener('click',async()=>{const u=$('#plink').value;if(!u)return;try{await navigator.clipboard.writeText(u);toast('Link copiado')}catch(e){showCopy(u)}});
-$('#lwa').addEventListener('click',()=>{const u=$('#plink').value;if(!u)return;open('https://wa.me/?text='+encodeURIComponent(`Olá! Este é o seu link para o registro diário. Guarde nos favoritos ou adicione à tela inicial: ${u}`),'_blank','noopener')});
+$('#lwa').addEventListener('click',()=>{const u=$('#plink').value;if(!u)return;open('https://wa.me/?text='+encodeURIComponent(`Olá! Este é o seu link do Kinesia para o registro diário. Guarde nos favoritos ou adicione à tela inicial: ${u}`),'_blank','noopener')});
 $('#lnew').addEventListener('click',async()=>{const p=P();if(!p.id)return;const t=uid();
   if(await sync(async()=>{const{error}=await db.from('pacientes').update({token:t}).eq('id',p.id);if(error)throw error})){p.token=t;renderLink();renderGuide();toast('Link novo gerado. O antigo parou de funcionar.')}});
 
