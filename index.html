@@ -1008,7 +1008,7 @@ const backup=()=>{give('backup-kinesia-'+today+'.json',JSON.stringify({patients:
 // um toque envia direto para a pasta "Kinesia backups" do Drive dele; o app só enxerga os arquivos que ele mesmo criou.
 // Sem GCID: no celular abre o Compartilhar (escolher Drive); no computador baixa o arquivo e abre o Drive.
 // shortcut: precisa de um toque (o Google exige um gesto para liberar o acesso); 100% em segundo plano exigiria servidor com refresh token.
-const GCID='';
+const GCID='90788193104-9tca4ge76kk85vr2aibbbtab9d3jo7h4.apps.googleusercontent.com';
 const bkJson=()=>JSON.stringify({patients:S.patients.map(strip)},null,1);
 const gsi=()=>window.google?.accounts?.oauth2?Promise.resolve():new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.onload=ok;s.onerror=()=>no(new Error('não carregou o login do Google'));document.head.append(s)});
 let gTok=null;
