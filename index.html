@@ -145,6 +145,7 @@ code{font-size:12.5px;word-break:break-all;background:var(--accs);color:var(--ac
 .gs.on .gck{background:var(--acc);color:var(--on);border-color:var(--acc)}.gs.on input{opacity:.65}.gadd{margin-top:10px}
 .gtm{margin-top:16px;text-align:center;padding:16px;border-radius:16px;background:var(--card2);border:1px solid var(--line2);display:grid;gap:6px}.gtm b{font-family:Sora,sans-serif;font-size:46px;font-variant-numeric:tabular-nums;color:var(--acc)}
 .gdnav{display:flex;gap:10px;margin-top:24px}.gdnav button{flex:1;min-height:52px}
+.lnk{background:none;border:0;box-shadow:none;color:var(--acc);min-height:36px;padding:0;text-decoration:underline;justify-self:start}
 .m3{position:relative}.m3 canvas{display:block;width:100%;height:400px;touch-action:none;cursor:grab}
 .m3b{position:absolute;top:6px;right:6px;display:flex;gap:6px}.m3b button{min-height:34px;padding:2px 12px;font-size:13px}
 .m3sel{position:absolute;left:8px;bottom:8px;font-size:13px;font-weight:600;color:var(--acc);pointer-events:none}
@@ -199,7 +200,7 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
   <details class="card fold" style="max-width:420px;margin:0 auto"><summary><h2>Sou fisioterapeuta</h2></summary><div style="display:grid;gap:12px">
     <label style="display:grid;gap:4px;font-size:14px;font-weight:500">E-mail <input type="email" id="lmail" autocomplete="username"></label>
     <label style="display:grid;gap:4px;font-size:14px;font-weight:500">Senha <input type="password" id="lpass" autocomplete="current-password"></label>
-    <button class="pri" id="lok">Entrar</button><span class="mut" id="lstat" role="status"></span>
+    <button class="pri" id="lok">Entrar</button><button type="button" id="lforgot" class="lnk">Esqueci a senha</button><span class="mut" id="lstat" role="status"></span>
   </div></details>
 </section>
 
@@ -416,6 +417,12 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
   <div class="gdbar"><button type="button" id="gdx" aria-label="Fechar treino">✕</button><div class="gdp"><i id="gdpb"></i></div><span class="mut" id="gdc"></span></div>
   <div class="gdb" id="gdb"></div>
 </div>
+<div class="dlg" id="npw" role="dialog" aria-modal="true" aria-labelledby="npwt"><div class="card">
+  <h2 id="npwt">Nova senha</h2>
+  <label style="display:grid;gap:4px;font-size:14px;font-weight:500">Nova senha (mínimo 8 caracteres) <input type="password" id="npw1" autocomplete="new-password"></label>
+  <label style="display:grid;gap:4px;font-size:14px;font-weight:500">Repita a senha <input type="password" id="npw2" autocomplete="new-password"></label>
+  <button class="pri" id="npwok">Salvar nova senha</button><span class="mut" id="npwst" role="status"></span>
+</div></div>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
@@ -915,6 +922,15 @@ $('#lok').addEventListener('click',e=>busy(e.currentTarget,async()=>{$('#lstat')
   const{error}=await db.auth.signInWithPassword({email:$('#lmail').value.trim(),password:$('#lpass').value});
   if(error)return $('#lstat').textContent='E-mail ou senha incorretos.';$('#lpass').value='';$('#lstat').textContent='';startPro()}));
 $('#lpass').addEventListener('keydown',e=>{if(e.key==='Enter')$('#lok').click()});
+// Esqueci a senha: o Supabase manda um e-mail com link de volta para este endereço; ao abrir, o app pede a senha nova.
+$('#lforgot').addEventListener('click',e=>busy(e.currentTarget,async()=>{const m=$('#lmail').value.trim(),st=$('#lstat');if(!/^\S+@\S+\.\S+$/.test(m)){st.textContent='Digite o seu e-mail acima e toque de novo em “Esqueci a senha”.';return}
+  const{error}=await db.auth.resetPasswordForEmail(m,{redirectTo:location.origin+location.pathname});
+  st.textContent=error?(/rate|limit|seconds/i.test(error.message)?'Muitos pedidos seguidos. Espere alguns minutos e tente de novo.':'Não deu certo: '+error.message):'Pronto. Abra o e-mail “Reset Your Password” (veja também o spam) e toque no link neste aparelho.'}));
+if(db)db.auth.onAuthStateChange(ev=>{if(ev==='PASSWORD_RECOVERY'){$('#npw').classList.add('on');$('#npw1').focus()}});
+$('#npwok').addEventListener('click',e=>busy(e.currentTarget,async()=>{const a=$('#npw1').value,b=$('#npw2').value,st=$('#npwst');
+  if(a.length<8){st.textContent='Use pelo menos 8 caracteres.';return}if(a!==b){st.textContent='As duas senhas não são iguais.';return}
+  const{error}=await db.auth.updateUser({password:a});if(error){st.textContent='Não deu certo: '+error.message;return}
+  $('#npw').classList.remove('on');history.replaceState(null,'',location.pathname);toast('Senha nova salva');location.reload()}));
 $('#ppin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#pok').click()});
 $('#pok').addEventListener('click',e=>busy(e.currentTarget,async()=>{const c=$('#pcod').value.trim().toUpperCase(),pin=$('#ppin').value.trim(),st=$('#pstat');
   if(!/^[A-Z0-9]{6}$/.test(c)||!/^\d{4,6}$/.test(pin)){st.textContent='Digite o código de 6 letras e o PIN.';return}
