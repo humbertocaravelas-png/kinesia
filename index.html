@@ -63,9 +63,10 @@ button.del:hover{border-color:var(--warn);color:var(--warn)}
 :focus-visible{outline:2px solid var(--acc);outline-offset:3px}
 nav{display:flex;gap:4px;margin-top:14px;padding-bottom:10px;overflow-x:auto;scrollbar-width:none}
 nav::-webkit-scrollbar{display:none}
-nav button{border:0;flex:none;padding:8px 16px;min-height:40px;font-weight:500;color:var(--mut);background:transparent}
-nav button:hover{color:var(--ink)}
-nav button[aria-selected=true]{background:var(--accs);color:var(--acc);box-shadow:inset 0 0 0 1px var(--line2)}
+.ltabs{display:flex;gap:2px;justify-content:center;max-width:420px;margin:0 auto 16px}.ltabs button{flex:1 1 auto!important;padding:8px 10px!important}
+nav button,.ltabs button{border:0;flex:none;padding:8px 16px;min-height:40px;font-weight:500;color:var(--mut);background:transparent}
+nav button:hover,.ltabs button:hover{color:var(--ink)}
+nav button[aria-selected=true],.ltabs button[aria-selected=true]{background:var(--accs);color:var(--acc);box-shadow:inset 0 0 0 1px var(--line2)}
 .grid{display:grid;gap:18px;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);align-items:start}
 @media(max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
 .stackc{display:grid;gap:18px}
@@ -193,18 +194,21 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
 <div class="bk" id="bk" hidden><span id="bkt"></span><span class="row" style="gap:8px"><button id="bksn">Lembrar depois</button><button class="pri" id="bkx">Fazer backup agora</button></span></div>
 
 <section id="t-login" hidden>
-  <div class="card" style="max-width:420px;margin:0 auto 16px;display:grid;gap:12px">
+  <div class="ltabs" role="tablist"><button role="tab" data-lt="lpac" aria-selected="true">Paciente</button><button role="tab" data-lt="lpro">Fisioterapeuta</button><button role="tab" data-lt="lnew">Criar conta</button></div>
+  <div class="card" id="lpac" style="max-width:420px;margin:0 auto;display:grid;gap:12px">
     <h2>Sou paciente</h2>
     <label style="display:grid;gap:4px;font-size:14px;font-weight:500">Código <input type="text" id="pcod" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Ex.: KX7P2Q" style="text-transform:uppercase;letter-spacing:.2em"></label>
     <label style="display:grid;gap:4px;font-size:14px;font-weight:500">PIN <input type="password" id="ppin" inputmode="numeric" maxlength="6" autocomplete="off"></label>
     <button class="pri" id="pok">Entrar</button><span class="mut" id="pstat" role="status"></span>
   </div>
-  <details class="card fold" style="max-width:420px;margin:0 auto"><summary><h2>Sou fisioterapeuta</h2></summary><div style="display:grid;gap:12px">
+  <div class="card" id="lpro" hidden style="max-width:420px;margin:0 auto;display:grid;gap:12px">
+    <h2>Sou fisioterapeuta</h2>
     <label style="display:grid;gap:4px;font-size:14px;font-weight:500">E-mail <input type="email" id="lmail" autocomplete="username"></label>
     <label style="display:grid;gap:4px;font-size:14px;font-weight:500">Senha <input type="password" id="lpass" autocomplete="current-password"></label>
-    <button class="pri" id="lok">Entrar</button><button type="button" id="lforgot" class="lnk">Esqueci a senha</button><span class="mut" id="lstat" role="status"></span>
-  </div></details>
-  <details class="card fold" style="max-width:420px;margin:16px auto 0"><summary><h2>Criar conta de fisioterapeuta</h2></summary><div style="display:grid;gap:12px">
+    <button class="pri" id="lok">Entrar</button><button type="button" id="lforgot" class="lnk">Esqueci a senha</button><span class="mut" id="lstat" role="status"></span><button type="button" class="lnk" data-lt="lnew">Ainda não tem conta? Criar conta</button>
+  </div>
+  <div class="card" id="lnew" hidden style="max-width:420px;margin:0 auto;display:grid;gap:12px">
+    <h2>Criar conta de fisioterapeuta</h2>
     <label style="display:grid;gap:4px;font-size:14px;font-weight:500">Nome completo <input type="text" id="snome" maxlength="120" autocomplete="name"></label>
     <label style="display:grid;gap:4px;font-size:14px;font-weight:500">Área de atuação <select id="sarea"><option value="">Escolha</option><option>Traumato-ortopédica</option><option>Esportiva</option><option>Dor crônica</option><option>Neurofuncional</option><option>Cardiorrespiratória</option><option>Saúde da mulher / pélvica</option><option>Gerontologia</option><option>Pediatria</option><option>Outra</option></select></label>
     <label style="display:grid;gap:4px;font-size:14px;font-weight:500">Registro profissional <input type="text" id="sreg" maxlength="40" placeholder="Ex.: CREFITO-15 123456-F"></label>
@@ -212,7 +216,7 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
     <label style="display:grid;gap:4px;font-size:14px;font-weight:500">Senha (mínimo 8 caracteres) <input type="password" id="spass" autocomplete="new-password"></label>
     <label style="display:flex;gap:8px;align-items:flex-start;font-size:14px"><input type="checkbox" id="slgpd" style="margin-top:3px"> Sou responsável por pedir o consentimento por escrito dos meus pacientes para o uso dos dados de saúde (LGPD).</label>
     <button class="pri" id="sok">Criar conta</button><span class="mut" id="sstat" role="status"></span>
-  </div></details>
+  </div>
 </section>
 
 <section id="t-off" hidden><div class="card" style="max-width:520px;margin:0 auto"><h2>Não foi possível abrir</h2><p id="offm" style="margin:8px 0 0"></p></div></section>
@@ -949,6 +953,9 @@ $('#lnew').addEventListener('click',async()=>{const p=P();if(!p.id)return;const 
 $('#lok').addEventListener('click',e=>busy(e.currentTarget,async()=>{$('#lstat').textContent='Entrando…';
   const{error}=await db.auth.signInWithPassword({email:$('#lmail').value.trim(),password:$('#lpass').value});
   if(error)return $('#lstat').textContent='E-mail ou senha incorretos.';$('#lpass').value='';$('#lstat').textContent='';startPro()}));
+// Abas da tela inicial (paciente, entrar, criar conta). #cadastro abre direto em "Criar conta".
+function ltab(id){$$('.ltabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.lt===id));['lpac','lpro','lnew'].forEach(k=>$('#'+k).hidden=k!==id)}
+$('#t-login').addEventListener('click',e=>{const id=e.target.dataset?.lt;if(id)ltab(id)});if(location.hash==='#cadastro')ltab('lnew');
 $('#lpass').addEventListener('keydown',e=>{if(e.key==='Enter')$('#lok').click()});
 // Cadastro do fisioterapeuta: nome, área e registro ficam no perfil da conta (user_metadata).
 $('#sok').addEventListener('click',e=>busy(e.currentTarget,async()=>{const st=$('#sstat'),nome=$('#snome').value.trim(),area=$('#sarea').value,registro=$('#sreg').value.trim(),email=$('#smail').value.trim(),pw=$('#spass').value;
