@@ -29,6 +29,8 @@ LAYOUT: barra de vidro fixa com marca e abas em pílula; cartões translúcidos 
 --wbg:light-dark(rgba(178,67,31,.06),rgba(255,159,128,.07));
 --r:20px}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+/* Navegador/WebView sem light-dark() (Chrome < 123): mesmas cores, claro e escuro */
+@supports not (color:light-dark(#000,#fff)){:root{--bg:#eef4f3;--card:rgba(255,255,255,.74);--card2:#fff;--field:rgba(255,255,255,.92);--ink:#0b2522;--mut:#55736f;--line:rgba(10,61,53,.11);--line2:rgba(10,61,53,.2);--grid:rgba(10,61,53,.045);--acc:#00857e;--acc2:#2A6F66;--accs:rgba(0,133,126,.1);--glow:0 8px 24px rgba(0,133,126,.22);--on:#fff;--warn:#b2431f;--wbg:rgba(178,67,31,.06)}@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#021210;--card:rgba(10,61,53,.26);--card2:#072823;--field:rgba(2,18,16,.6);--ink:#e4f6f4;--mut:#86aca7;--line:rgba(127,243,238,.09);--line2:rgba(127,243,238,.2);--grid:rgba(127,243,238,.03);--acc:#00E1D8;--acc2:#7FF3EE;--accs:rgba(0,225,216,.1);--glow:0 0 26px rgba(0,225,216,.28);--on:#022320;--warn:#ff9f80;--wbg:rgba(255,159,128,.07)}}:root[data-theme=dark]{--bg:#021210;--card:rgba(10,61,53,.26);--card2:#072823;--field:rgba(2,18,16,.6);--ink:#e4f6f4;--mut:#86aca7;--line:rgba(127,243,238,.09);--line2:rgba(127,243,238,.2);--grid:rgba(127,243,238,.03);--acc:#00E1D8;--acc2:#7FF3EE;--accs:rgba(0,225,216,.1);--glow:0 0 26px rgba(0,225,216,.28);--on:#022320;--warn:#ff9f80;--wbg:rgba(255,159,128,.07)}}
 *{box-sizing:border-box;min-width:0}
 body{margin:0;min-height:100vh;color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip;-webkit-font-smoothing:antialiased;
   background-color:var(--bg);
