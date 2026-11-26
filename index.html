@@ -624,6 +624,12 @@ function renderGuide(){const tk=MODE==='pac'?TOKEN:P().token,remote=MODE!=='loca
     <li><b>Xiaomi, Amazfit, Huawei</b>: no app do relógio (Mi Fitness, Zepp, Huawei Saúde) → Perfil → <b>Apple Saúde</b> → ativar.</li>
     <li><b>Celular Android</b>: veja “Android: Health Connect” abaixo.</li></ul>`;
   const hk=remote?`${SUPA_URL}/functions/v1/hc?t=${tk}`:'';
+  const app=window.KinesiaApp?JSON.parse(KinesiaApp.info()):null,ok=v=>v?'✅':'⚠️';
+  const pApp=app?`<ul><li>${ok(app.passosCelular)} Passos e sono pelo celular${app.passosCelular?'':': falta permitir “Atividade física”'}</li>
+    <li>${ok(app.healthConnect==='sim')} Health Connect${app.healthConnect==='sim'?' (relógio, Google Fit, Samsung Health)':app.healthConnect==='atualizar'?': atualize o app Health Connect na Play Store':': não disponível neste celular'}</li>
+    <li>Último envio: ${app.ultimoEnvio?new Date(app.ultimoEnvio).toLocaleString('pt-BR'):'ainda não'}</li></ul>
+    <p class="mut">Google Fit: no app Fit → Perfil → Configurações → <b>Sincronizar o Fit com o Health Connect</b>.</p>
+    <div class="row"><button type="button" id="apsync">Enviar agora</button><button type="button" id="apperm">Permissões</button><button type="button" id="aphc">Abrir Health Connect</button></div>`:'';
   const pA=remote?`<ol><li>No app do relógio, ligue o <b>Health Connect</b> e permita tudo. <b>CO FIT</b>: aba <b>Eu</b> → Health Connect → ligar. (Samsung Health, Mi Fitness, Zepp, Fitbit e Garmin Connect têm a mesma opção.)</li>
     <li>Instale o app <a href="https://play.google.com/store/apps/details?id=com.hcwebhook.app" target="_blank" rel="noopener">HC Webhook</a> na Play Store, abra e dê acesso ao Health Connect: Passos, Sono, Frequência cardíaca, FC em repouso, Variabilidade e Oxigênio.</li>
     <li>Em <b>Webhook URL</b>, cole o link abaixo (ele é pessoal, não compartilhe):<br><code style="word-break:break-all">${esc(hk)}</code><div class="row" style="margin-top:6px"><button type="button" id="hkcopy">Copiar link</button></div></li>
@@ -653,8 +659,9 @@ function renderGuide(){const tk=MODE==='pac'?TOKEN:P().token,remote=MODE!=='loca
   const dica=MODE==='pro'&&remote?D('Dica: monte o atalho uma vez e compartilhe com todos',`<ol><li>Monte o atalho no seu iPhone com o código de um paciente no campo <code>p_token</code>.</li>
     <li>Nos detalhes do atalho (ⓘ), em <b>Configuração</b>, adicione uma <b>Pergunta de Importação</b> no campo <code>p_token</code>: “Cole o seu código do atalho”.</li>
     <li>Toque em Compartilhar → <b>Copiar Link do iCloud</b> e envie aos pacientes. Cada um instala, cola o próprio código (botão na aba Relógio dele) e faz só a parte 3.</li></ol>`):'';
-  $('#guia').innerHTML=`<h3 class="gh">Coleta automática do relógio</h3>${D('iPhone 1. Ligar o relógio ao app Saúde',p1,1)}${D('iPhone 2. Criar o atalho “Enviar Kinesia” (uma vez)',p2)}${D('iPhone 3. Deixar automático todo dia',p3)}${dica}${D('Android: Health Connect (CO FIT e outros)',pA)}${MODE==='pac'&&remote?'<div class="row" style="margin-top:12px"><button type="button" id="tkcopy">Copiar meu código do atalho</button></div>':''}`}
-$('#guia').addEventListener('click',async e=>{const id=e.target.id;if(id!=='tkcopy'&&id!=='hkcopy')return;const v=id==='tkcopy'?TOKEN:`${SUPA_URL}/functions/v1/hc?t=${MODE==='pac'?TOKEN:P().token}`;try{await navigator.clipboard.writeText(v);toast(id==='tkcopy'?'Código copiado. Cole no atalho.':'Link copiado. Cole no HC Webhook.')}catch{prompt('Copie:',v)}});
+  $('#guia').innerHTML=`<h3 class="gh">Coleta automática do relógio</h3>${D('iPhone 1. Ligar o relógio ao app Saúde',p1,1)}${D('iPhone 2. Criar o atalho “Enviar Kinesia” (uma vez)',p2)}${D('iPhone 3. Deixar automático todo dia',p3)}${dica}${app?D('App Kinesia: envio automático',pApp,1):D('Android: Health Connect (CO FIT e outros)',pA)}${MODE==='pac'&&remote?'<div class="row" style="margin-top:12px"><button type="button" id="tkcopy">Copiar meu código do atalho</button></div>':''}`}
+$('#guia').addEventListener('click',async e=>{const id=e.target.id;
+  if(window.KinesiaApp&&id in{apsync:1,apperm:1,aphc:1}){({apsync:()=>KinesiaApp.sincronizar(),apperm:()=>KinesiaApp.permissoes(),aphc:()=>KinesiaApp.healthConnect()})[id]();setTimeout(renderGuide,4000);return}if(id!=='tkcopy'&&id!=='hkcopy')return;const v=id==='tkcopy'?TOKEN:`${SUPA_URL}/functions/v1/hc?t=${MODE==='pac'?TOKEN:P().token}`;try{await navigator.clipboard.writeText(v);toast(id==='tkcopy'?'Código copiado. Cole no atalho.':'Link copiado. Cole no HC Webhook.')}catch{prompt('Copie:',v)}});
 
 function renderDiario(){const E=P().entries,ds=days().filter(d=>E[d].diario?.length).reverse().slice(0,60);
   $('#dlist').innerHTML=ds.length?ds.map(d=>`<li style="display:block"><b>${esc(br(d)+'/'+d.slice(2,4))}</b><ul class="evl">${E[d].diario.map((x,i)=>`<li><span><strong>${esc(x.h||'—')}</strong> · dor ${esc(x.dor)}${x.local?' · '+esc(x.local):''}${x.gat?`<br><span class="mut">Fazendo: ${esc(x.gat)}</span>`:''}${x.ali?`<br><span class="mut">Ajudou: ${esc(x.ali)}</span>`:''}${x.nota?`<br>${esc(x.nota)}`:''}</span><button type="button" class="del" data-d="${esc(d)}" data-i="${i}" aria-label="Apagar anotação" style="min-height:36px;padding:4px 12px">Apagar</button></li>`).join('')}</ul></li>`).join(''):'<li class="mut">Nenhuma anotação ainda.</li>'}
@@ -984,7 +991,7 @@ boot();
 document.head.insertAdjacentHTML('beforeend','<link rel="manifest" href="manifest.webmanifest">');
 document.head.insertAdjacentHTML('beforeend','<link rel="apple-touch-icon" href="icon-180.png">');
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
-let instP=null;$('#inst').hidden=STAND;
+let instP=null;$('#inst').hidden=STAND||!!window.KinesiaApp;
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();instP=e});
 $('#inst').addEventListener('click',async()=>{if(instP){instP.prompt();await instP.userChoice;instP=null;return}
   alert(/iPhone|iPad/.test(navigator.userAgent)?'No Safari, toque em Compartilhar (quadrado com seta) e depois em “Adicionar à Tela de Início”.':'No menu do navegador (⋮), toque em “Instalar app” ou “Adicionar à tela inicial”.')});
