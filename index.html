@@ -129,6 +129,7 @@ html[data-fs=g] body{zoom:1.18}
 .slh{display:flex;align-items:center;gap:8px}.slh label{flex:1;font-weight:500}
 .help{min-height:32px;min-width:32px;padding:0;border-radius:50%;font-family:Sora,sans-serif;font-size:14px;line-height:1;color:var(--mut)}
 .help[aria-expanded=true]{background:var(--acc);border-color:var(--acc);color:var(--on)}
+.tag{min-height:36px;padding:4px 14px;font-weight:500;font-size:14px}.tag[aria-pressed=true]{background:var(--acc);color:var(--on);border-color:transparent}
 .balao{position:relative;margin:10px 0 6px;padding:12px 14px;border-radius:14px;background:var(--card2);border:1px solid var(--line2);font-size:14.5px;box-shadow:0 10px 30px light-dark(rgba(10,61,53,.08),rgba(0,0,0,.35))}
 .balao::before{content:"";position:absolute;top:-7px;right:30px;width:12px;height:12px;background:inherit;border-left:1px solid var(--line2);border-top:1px solid var(--line2);transform:rotate(45deg)}
 .balao ul{margin:0;padding:0;list-style:none;display:grid;gap:5px}.balao b{display:inline-block;min-width:3.6em;color:var(--acc);font-family:Sora,sans-serif;font-weight:600}
@@ -496,11 +497,12 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const K='bps-hc-v1';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ITEMS={
-  bio:[['dor','Dor agora',1,'0 sem dor · 10 pior dor imaginável'],['fadiga','Cansaço / fadiga',1,'0 nenhum · 10 exausto'],['sonoQ','Qualidade do sono',0,'0 péssimo · 10 excelente']],
-  psico:[['humor','Humor',0,'0 muito triste · 10 muito bem'],['ansiedade','Ansiedade / estresse',1,'0 tranquilo · 10 muito tenso'],['medo','Medo de se movimentar',1,'0 nenhum · 10 evito me mexer'],['autoef','Confiança para lidar com a dor',0,'0 nenhuma · 10 total']],
+  bio:[['dor','Dor agora',1,'0 sem dor · 10 pior dor imaginável'],['interf','Quanto a dor atrapalhou o seu dia',1,'0 nada · 10 não consegui fazer nada'],['fadiga','Cansaço / fadiga',1,'0 nenhum · 10 exausto'],['sonoQ','Qualidade do sono',0,'0 péssimo · 10 excelente']],
+  psico:[['humor','Humor',0,'0 muito triste · 10 muito bem'],['ansiedade','Nervosismo / tensão',1,'0 tranquilo · 10 muito tenso'],['medo','Medo de se movimentar',1,'0 nenhum · 10 evito me mexer'],['autoef','Confiança para lidar com a dor',0,'0 nenhuma · 10 total']],
   social:[['apoio','Apoio de família e amigos',0,'0 nenhum · 10 muito apoio'],['social','Participação em atividades sociais',0,'0 isolado · 10 participei de tudo'],['trabalho','Capacidade para trabalho e tarefas',0,'0 não consegui · 10 fiz tudo']]};
 const EX={
   dor:[['0','Sem dor nenhuma'],['1–3','Dor leve: incomoda, mas faço tudo normalmente'],['4–6','Dor moderada: atrapalha algumas atividades'],['7–9','Dor forte: difícil se concentrar ou fazer tarefas'],['10','A pior dor que consigo imaginar']],
+  interf:[['0','A dor não atrapalhou nada'],['1–3','Fiz tudo, mas com algum incômodo'],['4–6','Deixei de fazer ou adiei algumas coisas'],['7–9','Deixei de fazer a maior parte do que queria'],['10','Não consegui fazer nada por causa da dor']],
   fadiga:[['0–3','Disposição normal, fiz tudo sem cansar'],['4–6','Cansaço que me fez parar e descansar algumas vezes'],['7–10','Exausto: precisei deitar, não terminei as tarefas']],
   sonoQ:[['0–3','Acordei várias vezes e levantei mais cansado'],['4–6','Dormi, mas não descansei por completo'],['7–10','Dormi a noite toda e acordei descansado']],
   humor:[['0–3','Triste, desanimado, sem vontade de nada'],['4–6','Normal, com altos e baixos'],['7–10','Animado, de bem com a vida']],
@@ -619,6 +621,7 @@ function renderDoms(){const a=win(7);
 function renderFlags(){const a=win(7),ds=days(),f=[];
   const m=k=>wavg(a,k);
   if(m('dor')>=7)f.push(['Dor intensa persistente',`Média de ${fmt(m('dor'))} na semana. Reavaliar plano e manejo.`]);
+  if(m('interf')>=7)f.push(['Dor limitando as atividades',`Interferência média de ${fmt(m('interf'))}/10 na semana. Reveja metas funcionais e o ritmo de atividade.`]);
   if(m('medo')>=6)f.push(['Medo de movimento elevado',`Média ${fmt(m('medo'))}. Considere aplicar a escala de cinesiofobia (TSK) e educação em dor.`]);
   if(m('humor')!=null&&m('humor')<=4||m('ansiedade')>=7)f.push(['Sofrimento emocional',`Humor ${fmt(m('humor'))} e ansiedade ${fmt(m('ansiedade'))}. Rastreie e avalie encaminhamento para psicologia.`]);
   if(m('sonoH')!=null&&m('sonoH')<6||m('sonoQ')!=null&&m('sonoQ')<=4)f.push(['Sono insuficiente',`${fmt(m('sonoH'))} h por noite, qualidade ${fmt(m('sonoQ'))}/10. Higiene do sono e conversa com o médico.`]);
@@ -811,7 +814,20 @@ function paint3(){if(!M3)return;const base=new THREE.Color(matchMedia('(prefers-
   M3.ms.forEach(m=>{const v=Math.max(0,...m.userData.g.map(g=>M3v[g]||0));m.material.color.copy(base);if(v)m.material.color.lerp(acc,.35+.65*Math.min(1,v/12))});M3.draw()}
 function renderEvo(){renderKpis();renderDoms();renderFlags();renderIns();renderLast();draw();renderMap();renderCal()}
 
-$('#sliders').innerHTML=Object.entries(ITEMS).map(([d,its])=>`<fieldset><legend>${DN[d]}</legend><div class="items">${its.map(([k,l,,h])=>`<div class="sl"><div class="slh"><label for="r-${k}">${l}</label><button type="button" class="help" aria-expanded="false" aria-controls="b-${k}" aria-label="Exemplos para ${l}" data-b="b-${k}">?</button><output id="o-${k}">5</output></div><div class="balao" id="b-${k}" hidden><ul>${EX[k].map(([n,t])=>`<li><b>${n}</b>${t}</li>`).join('')}</ul></div><input type="range" id="r-${k}" min="0" max="10" step="1" value="5"><small>${h}</small></div>`).join('')}</div></fieldset>`).join('');
+// Questionário: 4 perguntas todo dia; as outras 7 no check-in da semana (abre sozinho quando faz 7 dias sem resposta).
+const SEM=new Set(['fadiga','ansiedade','medo','autoef','apoio','social','trabalho']);
+const REG=['Lombar','Cervical','Ombro','Joelho','Quadril','Tornozelo / pé','Punho / mão','Cabeça','Generalizada'];
+const slv=its=>`<div class="items">${its.map(([k,l,,h])=>`<div class="sl"><div class="slh"><label for="r-${k}">${l}</label><button type="button" class="help" aria-expanded="false" aria-controls="b-${k}" aria-label="Exemplos para ${l}" data-b="b-${k}">?</button><output id="o-${k}">5</output></div><div class="balao" id="b-${k}" hidden><ul>${EX[k].map(([n,t])=>`<li><b>${n}</b>${t}</li>`).join('')}</ul></div><input type="range" id="r-${k}" min="0" max="10" step="1" value="5"><small>${h}</small></div>`).join('')}</div>`;
+$('#sliders').innerHTML=`<fieldset><legend>Todo dia</legend>${slv(ALL.filter(i=>!SEM.has(i[0])))}
+  <div style="margin-top:18px"><span style="font-weight:500">Onde dói hoje?</span><div class="row" id="rreg" style="gap:6px;margin-top:8px">${REG.map(r=>`<button type="button" class="tag" aria-pressed="false">${r}</button>`).join('')}</div></div></fieldset>
+  <details class="guia" id="rsem" style="margin-top:22px"><summary>Check-in da semana (7 perguntas, 1 vez por semana)</summary><p class="mut" style="margin:8px 0 0">Responda pensando na última semana.</p>${slv(ALL.filter(i=>SEM.has(i[0])))}</details>`;
+// Botões de região escrevem no campo “Onde dói?” (texto livre continua valendo).
+const regSync=()=>{const v=$('#rlocal').value.toLowerCase();$$('#rreg .tag').forEach(b=>b.setAttribute('aria-pressed',v.split(/\s*,\s*/).includes(b.textContent.toLowerCase())))};
+$('#rreg').addEventListener('click',e=>{const b=e.target.closest('.tag');if(!b)return;const t=b.textContent,L=$('#rlocal').value.split(/\s*,\s*/).filter(Boolean),i=L.findIndex(x=>x.toLowerCase()===t.toLowerCase());
+  if(i>=0)L.splice(i,1);else L.push(t);$('#rlocal').value=L.join(', ').slice(0,300);regSync()});
+$('#rlocal').addEventListener('input',regSync);
+// Check-in da semana vence quando nenhum dos 6 dias anteriores tem essas respostas.
+const semDue=d=>{const E=P().entries;for(let i=1;i<=6;i++){const t=new Date(d+'T12:00');t.setDate(t.getDate()-i);const e=E[iso(t)];if(e&&[...SEM].some(k=>num(e[k])!=null))return false}return true};
 $$('.help').forEach(b=>b.addEventListener('click',()=>{const o=b.getAttribute('aria-expanded')!=='true';
   $$('.help').forEach(x=>{x.setAttribute('aria-expanded','false');$('#'+x.dataset.b).hidden=true});
   b.setAttribute('aria-expanded',o);$('#'+b.dataset.b).hidden=!o}));
@@ -829,7 +845,8 @@ document.addEventListener('input',e=>{if(e.target.type==='range')e.target.style.
 const devOpts='<option value="">Não informado</option>'+DEV.map(d=>`<option>${d}</option>`).join('');$('#nap').innerHTML=$('#eap').innerHTML=devOpts;
 function loadReg(){const e=P().entries[$('#rdate').value]||{};
   ALL.forEach(([k])=>setR(k,num(e[k])??5));
-  $('#rlocal').value=e.local||'';$('#robs').value=e.obs||'';
+  $('#rlocal').value=e.local||'';$('#robs').value=e.obs||'';regSync();
+  $('#rsem').open=[...SEM].some(k=>num(e[k])!=null)||semDue($('#rdate').value);
   $('#rstat').textContent=e.dor!=null?'Já existe registro nesta data. Salvar atualiza.':'';fillR()}
 function loadWear(){const e=P().entries[$('#wdate').value]||{};WK.forEach(k=>$('#w-'+k).value=e[k]??'')}
 $('#rdate').value=today;$('#wdate').value=today;$('#evd').value=today;$('#ddate').value=today;
@@ -919,7 +936,7 @@ $('#dlist').addEventListener('click',async e=>{const b=e.target.closest('button[
 $('#rdate').addEventListener('change',loadReg);$('#wdate').addEventListener('change',loadWear);
 const busy=async(b,fn)=>{b.disabled=true;try{return await fn()}finally{b.disabled=false}};
 $('#rsave').addEventListener('click',e=>{const p=P(),d=$('#rdate').value;if(!p.id)return toast('Crie um paciente primeiro');if(!d)return toast('Escolha a data');const E=p.entries;E[d]=E[d]||{};
-  ALL.forEach(([k])=>E[d][k]=+$('#r-'+k).value);E[d].local=$('#rlocal').value.trim();E[d].obs=$('#robs').value.trim();
+  const sem=$('#rsem').open;ALL.forEach(([k])=>{if(!SEM.has(k)||sem)E[d][k]=+$('#r-'+k).value});E[d].local=$('#rlocal').value.trim();E[d].obs=$('#robs').value.trim();
   busy(e.currentTarget,async()=>{const ok=await putEntries(p,[d]);renderAll();
     $('#rstat').textContent=ok?(MODE==='pac'?'Enviado ao seu fisioterapeuta.':'Salvo.'):'Não enviado. Verifique a internet e toque em Salvar de novo.';if(ok)toast(MODE==='pac'?'Registro enviado':'Registro salvo')})});
 $('#rontem').addEventListener('click',()=>{const y=P().entries[prev($('#rdate').value)];if(!y||num(y.dor)==null)return toast('Não há registro do dia anterior');
