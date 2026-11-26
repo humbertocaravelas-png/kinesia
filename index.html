@@ -118,8 +118,21 @@ html[data-fs=g] body{zoom:1.18}
   body[data-auth=in] nav{position:fixed;left:0;right:0;bottom:0;z-index:20;margin:0;padding:6px 4px calc(6px + env(safe-area-inset-bottom));justify-content:space-around;gap:0;background:light-dark(rgba(238,244,243,.94),rgba(2,18,16,.94));backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--line)}
   body[data-auth=in] nav button{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 2px;min-height:52px;font-size:10.5px;line-height:1.15;border-radius:12px;white-space:normal;text-align:center}
   body[data-auth=in] nav button::before{font-size:19px;line-height:1}
-  nav [data-t=evo]::before{content:"📈"}nav [data-t=reg]::before{content:"✍️"}nav [data-t=diario]::before{content:"📓"}nav [data-t=exe]::before{content:"🏋️"}nav [data-t=wear]::before{content:"❤️"}nav [data-t=dados]::before{content:"🗂️"}
+  nav [data-t=rel]::before{content:"📄"}nav [data-t=evo]::before{content:"📈"}nav [data-t=reg]::before{content:"✍️"}nav [data-t=diario]::before{content:"📓"}nav [data-t=exe]::before{content:"🏋️"}nav [data-t=wear]::before{content:"❤️"}nav [data-t=dados]::before{content:"🗂️"}
 }
+/* Relatório visual (aba Relatório e PDF) */
+.rhead{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px;align-items:center;padding:22px 26px;border-radius:var(--r);background:linear-gradient(135deg,#0A3D35,#2A6F66);color:#F4F7F7;margin-bottom:16px}
+.rhead h3{font-size:22px;color:#fff}.rhead p{margin:4px 0 0;font-size:13.5px;color:#cfe9e6}.rhead .mark{width:46px;height:46px}
+.rks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.rk{border:1px solid var(--line);border-radius:16px;padding:14px 16px;background:var(--card)}.rk span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--mut)}
+.rk b{display:block;font:600 30px/1.1 Sora,sans-serif;margin:8px 0 4px;color:var(--acc);font-variant-numeric:tabular-nums}.rk small{color:var(--mut);font-size:12.5px}.rk.bad b{color:var(--warn)}
+.rgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}.rgrid .full{grid-column:1/-1}@media(max-width:760px){.rgrid{grid-template-columns:minmax(0,1fr)}}
+.rl{width:100%;height:auto;display:block}.dnw{display:flex;flex-wrap:wrap;gap:18px;align-items:center}.dn{width:150px;height:150px;flex:none}
+.lgd{list-style:none;padding:0;margin:0;display:grid;gap:8px;font-size:14px}.lgd i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:8px;vertical-align:-1px}
+.hb{display:grid;grid-template-columns:9em minmax(0,1fr) 3.6em;gap:10px;align-items:center;margin:10px 0;font-size:14px}.hb b{text-align:right;font-family:Sora,sans-serif;font-variant-numeric:tabular-nums}
+.pista{border-left:4px solid var(--acc);background:var(--accs);border-radius:12px;padding:10px 14px;margin:10px 0;font-size:14.5px}.pista.w{border-color:var(--warn);background:var(--wbg)}.pista strong{display:block;margin-bottom:2px}
+@media print{body.prel main section:not(#t-rel),body.prel #t-evo{display:none!important}body.prel #t-rel{display:block!important}body.prel .rgrid{grid-template-columns:1fr 1fr}
+  body.prel *{-webkit-print-color-adjust:exact;print-color-adjust:exact}body.prel .rk,body.prel .card,body.prel .pista{break-inside:avoid}@page{margin:12mm}}
 .flags{list-style:none;padding:0;margin:0}
 .flags li{background:var(--wbg);border:1px solid color-mix(in srgb,var(--warn) 22%,transparent);border-radius:14px;padding:11px 14px;margin:8px 0;font-size:14.5px}
 .flags li strong{color:var(--warn);display:block;font-weight:600;margin-bottom:2px}
@@ -214,6 +227,7 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
   </div>
   <nav role="tablist" class="auth">
     <button role="tab" data-t="evo" class="npac" aria-selected="true">Evolução</button>
+    <button role="tab" data-t="rel" class="npac">Relatório</button>
     <button role="tab" data-t="reg">Registrar dia</button>
     <button role="tab" data-t="diario">Diário da dor</button>
     <button role="tab" data-t="exe">Exercícios</button>
@@ -290,6 +304,11 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
     <details class="card fold"><summary><h2>O que acompanha a dor</h2></summary><ul class="ins" id="ins"></ul><p class="mut">Associação entre os dias, não causa.</p></details>
   </div>
   <p class="rep mut" style="margin-top:20px"><span id="repsig">Hugo Caravelas · Fisioterapeuta · CREFITO 423564-F</span>. Dados de relógio e anel de consumo mostram a tendência de cada paciente e não servem para diagnóstico.</p>
+</section>
+
+<section id="t-rel" hidden>
+  <div class="row noprint" style="justify-content:space-between;margin-bottom:14px"><label class="row" style="gap:8px">Período <select id="rper" style="width:auto"><option value="7">Últimos 7 dias</option><option value="28" selected>Últimos 28 dias</option><option value="90">Últimos 90 dias</option></select></label><button class="pri" id="rpdf" type="button">Gerar PDF</button></div>
+  <div id="relat"></div>
 </section>
 
 <section id="t-reg" hidden>
@@ -985,12 +1004,32 @@ const slug=()=>P().name.normalize('NFD').replace(/[^\w]+/g,'-').toLowerCase().re
 function csv(){const keys=[...ALL.map(i=>i[0]),...WK,'local','obs'],E=P().entries;
   return['data;'+keys.join(';'),...days().map(d=>d+';'+keys.map(k=>String(E[d][k]??'').replace(/;/g,',').replace(/\./g,typeof E[d][k]==='number'?',':'.')).join(';'))].join('\n')}
 const backup=()=>{give('backup-kinesia-'+today+'.json',JSON.stringify({patients:S.patients.map(strip)},null,1));ls(K+'-bk',String(Date.now()));renderBk()};
-// Backup no Google Drive: no celular abre o menu Compartilhar (escolher “Drive”); no computador baixa o arquivo e abre o Drive para arrastar.
-// shortcut: envio manual pelo menu do sistema; envio automático exige um ID OAuth do Google Cloud (escopo drive.file).
-$('#xdrive').addEventListener('click',async()=>{const name='backup-kinesia-'+today+'.json',f=new File([JSON.stringify({patients:S.patients.map(strip)},null,1)],name,{type:'application/json'});
+// Backup no Google Drive do fisioterapeuta. Com GCID (ID OAuth "Aplicativo da Web" do Google Cloud, público, escopo drive.file):
+// um toque envia direto para a pasta "Kinesia backups" do Drive dele; o app só enxerga os arquivos que ele mesmo criou.
+// Sem GCID: no celular abre o Compartilhar (escolher Drive); no computador baixa o arquivo e abre o Drive.
+// shortcut: precisa de um toque (o Google exige um gesto para liberar o acesso); 100% em segundo plano exigiria servidor com refresh token.
+const GCID='';
+const bkJson=()=>JSON.stringify({patients:S.patients.map(strip)},null,1);
+const gsi=()=>window.google?.accounts?.oauth2?Promise.resolve():new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.onload=ok;s.onerror=()=>no(new Error('não carregou o login do Google'));document.head.append(s)});
+let gTok=null;
+async function driveUp(){await gsi();
+  if(!gTok||gTok.exp<Date.now())gTok=await new Promise((ok,no)=>google.accounts.oauth2.initTokenClient({client_id:GCID,scope:'https://www.googleapis.com/auth/drive.file',
+    callback:r=>r.error?no(new Error(r.error)):ok({t:r.access_token,exp:Date.now()+(r.expires_in-60)*1000}),error_callback:e=>no(new Error(e.type==='popup_closed'?'janela fechada':e.type||'acesso negado'))}).requestAccessToken({prompt:ls(K+'-gd')?'':'consent'}));
+  const H={Authorization:'Bearer '+gTok.t},api='https://www.googleapis.com/drive/v3/files';
+  const q=encodeURIComponent("name='Kinesia backups' and mimeType='application/vnd.google-apps.folder' and trashed=false");
+  let r=await(await fetch(`${api}?q=${q}&fields=files(id)`,{headers:H})).json();if(r.error)throw new Error(r.error.message);
+  let dir=r.files?.[0]?.id;
+  if(!dir){r=await(await fetch(api,{method:'POST',headers:{...H,'Content-Type':'application/json'},body:JSON.stringify({name:'Kinesia backups',mimeType:'application/vnd.google-apps.folder'})})).json();if(r.error)throw new Error(r.error.message);dir=r.id}
+  const fd=new FormData();fd.append('metadata',new Blob([JSON.stringify({name:'backup-kinesia-'+today+'-'+new Date().toTimeString().slice(0,5).replace(':','h')+'.json',parents:[dir]})],{type:'application/json'}));
+  fd.append('file',new Blob([bkJson()],{type:'application/json'}));
+  r=await(await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',headers:H,body:fd})).json();if(r.error)throw new Error(r.error.message);
+  ls(K+'-gd',String(Date.now()));ls(K+'-bk',String(Date.now()));renderBk()}
+async function drive(b){if(GCID){b.disabled=true;try{toast('Enviando para o Drive…');await driveUp();toast('Backup salvo no seu Drive, pasta “Kinesia backups”.')}catch(e){toast('Não salvou no Drive: '+e.message)}finally{b.disabled=false}return}
+  const name='backup-kinesia-'+today+'.json',f=new File([bkJson()],name,{type:'application/json'});
   if(navigator.canShare?.({files:[f]})){try{await navigator.share({files:[f],title:name});ls(K+'-bk',String(Date.now()));renderBk();toast('Backup enviado. Confira no Drive.')}catch(e){if(e.name!=='AbortError')toast('Não deu certo: '+e.message)}return}
-  backup();open('https://drive.google.com/drive/my-drive','_blank','noopener');toast('Arraste o arquivo baixado para a pasta do Drive que abriu.')});
-$('#xall').addEventListener('click',backup);$('#bkx').addEventListener('click',backup);
+  backup();open('https://drive.google.com/drive/my-drive','_blank','noopener');toast('Arraste o arquivo baixado para a pasta do Drive que abriu.')}
+$('#xdrive').addEventListener('click',e=>drive(e.currentTarget));
+$('#xall').addEventListener('click',backup);$('#bkx').addEventListener('click',e=>GCID&&MODE==='pro'?drive(e.currentTarget):backup());
 $('#bksn').addEventListener('click',()=>{ls(K+'-bksn',String(Date.now()));renderBk();toast('Lembro de novo em 3 dias')});
 $('#xjson').addEventListener('click',()=>give(slug()+'-bps.json',JSON.stringify(strip(P()),null,1)));
 $('#xcsv').addEventListener('click',()=>give(slug()+'-bps.csv',csv()));
@@ -1150,7 +1189,72 @@ $('#tri').addEventListener('click',e=>{const id=e.target.dataset?.pid;if(!id)ret
 // Letra grande (pacientes idosos), lembrada neste aparelho.
 function fsz(on){document.documentElement.dataset.fs=on?'g':'';$('#fsz').setAttribute('aria-pressed',!!on)}
 fsz(ls(K+'-fs')==='g');$('#fsz').addEventListener('click',()=>{const on=$('#fsz').getAttribute('aria-pressed')!=='true';fsz(on);ls(K+'-fs',on?'g':'');requestAnimationFrame(draw)});
-function renderAll(){renderHead();renderTri();renderJor();renderEvo();renderEv();renderDiario();renderExe();renderBk();renderLink();renderGuide();loadReg();loadWear();loadEdit();fillR()}
+// ===== Relatório visual: KPIs em %, gráficos e pistas para o raciocínio clínico. PDF = imprimir só esta aba.
+const relDays=(n,off=0)=>Array.from({length:n},(_,i)=>{const t=new Date();t.setDate(t.getDate()-(n-1+off-i));return iso(t)});
+function donut(parts){const tot=parts.reduce((s,p)=>s+p[1],0)||1,R=54,C=2*Math.PI*R;let off=0;
+  return`<svg viewBox="0 0 140 140" class="dn" role="img" aria-label="Dias por intensidade da dor">${parts.map(([,v,c])=>{const len=v/tot*C,s=`<circle cx="70" cy="70" r="${R}" fill="none" stroke="${c}" stroke-width="22" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)"/>`;off+=len;return s}).join('')}</svg>`}
+const hbars=(rows,max)=>rows.map(([l,v,t])=>`<div class="hb"><span>${esc(l)}</span><div class="bar"><i style="width:${max?Math.min(v/max,1)*100:0}%"></i></div><b>${t}</b></div>`).join('');
+function lineSvg(ds,E){const W=700,H=220,pl=30,pr=12,pt=12,pb=26,iw=W-pl-pr,ih=H-pt-pb,n=ds.length,x=i=>pl+(n<2?iw/2:i*iw/(n-1)),y=v=>pt+ih-v/10*ih;
+  const dv=ds.map(d=>num(E[d]?.dor)),pts=dv.map((v,i)=>v==null?null:[x(i),y(v)]).filter(Boolean),ma=ds.map((_,i)=>avg(dv.slice(Math.max(0,i-6),i+1)));
+  const pth=a=>{let s='',pen=0;a.forEach((v,i)=>{if(v==null){pen=0;return}s+=(pen?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1);pen=1});return s};
+  let g='';for(const v of[0,5,10])g+=`<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="currentColor" opacity=".12"/><text x="${pl-6}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="currentColor" opacity=".6">${v}</text>`;
+  [0,Math.floor((n-1)/2),n-1].forEach((i,k)=>g+=`<text x="${x(i)}" y="${H-6}" text-anchor="${['start','middle','end'][k]}" font-size="11" fill="currentColor" opacity=".6">${br(ds[i])}</text>`);
+  if(pts.length>1)g+=`<path d="M${pts[0][0].toFixed(1)} ${pt+ih}${pts.map(q=>`L${q[0].toFixed(1)} ${q[1].toFixed(1)}`).join('')}L${pts[pts.length-1][0].toFixed(1)} ${pt+ih}Z" fill="var(--acc)" opacity=".15"/>`;
+  g+=`<path d="${pth(dv)}" fill="none" stroke="var(--acc)" stroke-width="2.5" stroke-linejoin="round"/><path d="${pth(ma)}" fill="none" stroke="var(--warn)" stroke-width="2" stroke-dasharray="6 4"/>`;
+  if(n<=31)pts.forEach(q=>g+=`<circle cx="${q[0]}" cy="${q[1]}" r="3" fill="var(--acc)"/>`);
+  return`<svg viewBox="0 0 ${W} ${H}" class="rl" role="img" aria-label="Dor ao longo do período">${g}</svg>`}
+// Pistas: padrões nos registros para orientar a avaliação. Não é diagnóstico (ver Cuidados/ANVISA no CLAUDE.md).
+function pistas(ds,es,ep,RG){const m=k=>wavg(es,k),out=[],E=P().entries,dA=m('dor'),dB=wavg(ep,'dor');
+  if(es.filter(e=>num(e.dor)!=null).length<5)return[['Poucos registros','São necessários pelo menos 5 dias com dor registrada no período para ler padrões.','']];
+  if(dA!=null&&dB){const v=(dA-dB)/dB*100;
+    if(v<=-30)out.push(['Melhora importante',`A dor média caiu ${Math.round(-v)}% em relação ao período anterior. Reduções de 30% ou mais costumam ser clinicamente importantes (IMMPACT). Mantenha a conduta e a progressão.`,'']);
+    else if(v<=-15)out.push(['Melhora em curso',`A dor média caiu ${Math.round(-v)}% em relação ao período anterior.`,'']);
+    else if(v>=30)out.push(['Piora relevante',`A dor média subiu ${Math.round(v)}% em relação ao período anterior. Vale reavaliar carga, sono, estresse e eventos recentes.`,'w'])}
+  const gen=RG.some(([r])=>/generaliz/.test(r))||RG.length>=3;
+  if(gen&&m('fadiga')>=6&&(m('sonoQ')!=null&&m('sonoQ')<=4))out.push(['Possível componente nociplástico (sensibilização)','Dor difusa ou em várias regiões, junto com fadiga alta e sono ruim. Considere avaliar critérios de fibromialgia (ACR 2016) e sinais de sensibilização central; educação em neurociência da dor e exercício graduado costumam ajudar.','w']);
+  else if(!gen&&RG.length){const tr=ds.filter(d=>E[d]?.treino),ok=tr.filter(d=>{const t=num(E[d].treino.dor),a=num(E[d].dor),b=num(E[next(d)]?.dor);return t!=null&&t<=3&&!(a!=null&&b!=null&&b-a>=2)}).length;
+    if(tr.length>=3&&ok/tr.length>=.7)out.push(['Dor localizada e responsiva ao exercício',`Dor em ${RG.map(r=>r[0]).join(', ')} e ${Math.round(ok/tr.length*100)}% dos treinos dentro da zona segura, sem piora no dia seguinte. Padrão compatível com origem mecânica que tolera carga: siga a progressão.`,''])}
+  const bb=boom(ds);if(bb.length>=2)out.push(['Padrão de exagero e crise',`Em ${bb.length} dias a dor subiu 2+ pontos depois de um dia bem mais ativo que o habitual. Trabalhe ritmo de atividade (pacing) e progressão graduada.`,'w']);
+  const ps=[];if(m('medo')>=6)ps.push('medo de se movimentar');if(m('autoef')!=null&&m('autoef')<=4)ps.push('pouca confiança para lidar com a dor');if(m('ansiedade')>=7)ps.push('tensão alta');if(m('humor')!=null&&m('humor')<=4)ps.push('humor baixo');
+  if(ps.length)out.push(['Fatores psicossociais (bandeiras amarelas)',`Presentes: ${ps.join(', ')}. Considere aplicar TSK e PCS, educação em dor, exposição gradual e, se preciso, encaminhamento à psicologia.`,'w']);
+  const a=[],b=[];for(const d of ds){const x=num(E[d]?.dor),y=num(E[d]?.sonoH)??num(E[d]?.sonoQ);if(x!=null&&y!=null){a.push(x);b.push(y)}}const r=pear(a,b);
+  if(r!=null&&r<=-.3)out.push(['A dor acompanha o sono',`Nos dias com menos sono ou sono pior, a dor tende a ser maior (r = ${fmt(r,2)}). Higiene do sono e conversa com o médico podem reduzir a dor.`,'']);
+  if(m('interf')!=null&&dA!=null&&m('interf')-dA>=2)out.push(['A dor atrapalha mais do que a intensidade sugere',`Interferência média ${fmt(m('interf'))}/10 com dor média ${fmt(dA)}/10. Investigue evitação de atividades e trabalhe metas funcionais.`,'w']);
+  if(m('passos')!=null&&m('passos')<4000)out.push(['Pouca atividade no dia a dia',`Média de ${fmt(m('passos'),0)} passos por dia. Progressão gradual de caminhada pode ajudar.`,'']);
+  return out.length?out:[['Sem padrão marcante','Os registros do período não mostram um padrão claro. Siga acompanhando.','']]}
+function renderRel(){const el=$('#relat'),p=P();if(!p.id){el.innerHTML='<div class="card"><p class="mut" style="margin:0">Nenhum paciente selecionado.</p></div>';return}
+  const n=+$('#rper').value,ds=relDays(n),dp=relDays(n,n),E=p.entries,es=ds.map(d=>E[d]).filter(Boolean),ep=dp.map(d=>E[d]).filter(Boolean);
+  const reg=ds.filter(d=>E[d]&&(num(E[d].dor)!=null||E[d].crise)).length,dA=wavg(es,'dor'),dB=wavg(ep,'dor'),vr=dA!=null&&dB?Math.round((dA-dB)/dB*100):null;
+  const g=geral(es),gp=geral(ep),it=wavg(es,'interf'),sh=wavg(es,'sonoH'),tr=ds.filter(d=>E[d]?.treino),seg=tr.filter(d=>num(E[d].treino.dor)!=null&&num(E[d].treino.dor)<=3).length;
+  const dv=es.map(e=>num(e.dor)).filter(v=>v!=null),LV=[['Leve (0–3)',dv.filter(v=>v<=3).length,'#14b8a6'],['Moderada (4–6)',dv.filter(v=>v>=4&&v<=6).length,'#e3a33b'],['Forte (7–10)',dv.filter(v=>v>=7).length,'#d4572e']];
+  const rc={};es.forEach(e=>String(e.local||'').split(/\s*,\s*/).filter(Boolean).forEach(r=>{const k=r.trim().toLowerCase();rc[k]=(rc[k]||0)+1}));
+  const RG=Object.entries(rc).sort((a,b)=>b[1]-a[1]).slice(0,6),wk={};ds.forEach(d=>{const v=num(E[d]?.dor);if(v!=null)(wk[wkey(d)]=wk[wkey(d)]||[]).push(v)});
+  const J=jornada(),k=(l,v,s,bad)=>`<div class="rk${bad?' bad':''}"><span>${l}</span><b>${v}</b><small>${s}</small></div>`,cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+  el.innerHTML=`<div class="rhead"><div class="brand"><svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><rect x="1" y="1" width="38" height="38" rx="12" fill="#0A3D35" stroke="#00E1D8" stroke-opacity=".5"/><path d="M8 21h6l3-8 5 15 3-7h7" fill="none" stroke="#7FF3EE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div><h3>Relatório de acompanhamento</h3><p>${esc([p.name,p.age?p.age+' anos':'',p.queixa].filter(Boolean).join(' · '))}</p></div></div>
+      <div style="text-align:right"><p><b>Período:</b> ${br(ds[0])}/${ds[0].slice(2,4)} a ${br(ds[n-1])}/${ds[n-1].slice(2,4)} (${n} dias)</p><p>Emitido em ${new Date().toLocaleDateString('pt-BR')}</p></div></div>
+    <div class="rks">${k('Adesão',PCTs(reg,n),`${reg} de ${n} dias registrados`,reg/n<.5)}
+      ${k('Dor média',dA==null?'—':fmt(dA)+'/10',vr==null?'sem período anterior':`${vr>0?'↑':'↓'} ${Math.abs(vr)}% vs período anterior`,vr>0)}
+      ${k('Índice biopsicossocial',g==null?'—':Math.round(g)+'%',gp==null||g==null?'quanto maior, melhor':`${g-gp>=0?'↑':'↓'} ${Math.abs(Math.round(g-gp))} pontos vs anterior`,g!=null&&gp!=null&&g<gp)}
+      ${k('Interferência da dor',it==null?'—':Math.round(it*10)+'%','do dia atrapalhado pela dor',it>=6)}
+      ${k('Sono médio',sh==null?'—':fmt(sh)+' h','por noite',sh!=null&&sh<6)}
+      ${k('Treinos',tr.length+'',tr.length?`${Math.round(seg/tr.length*100)}% com dor ≤ 3/10`:'nenhum no período')}
+      ${k('Jornada',J.lv,`${J.met} ${J.met===1?'semana':'semanas'} na meta`)}</div>
+    <div class="rgrid">
+      <div class="card full"><h2>Dor ao longo do período</h2>${lineSvg(ds,E)}<div class="leg" style="margin-top:8px"><span><i style="background:var(--acc)"></i>Dor do dia</span><span><i style="background:var(--warn)"></i>Média de 7 dias</span></div></div>
+      <div class="card"><h2>Dias por intensidade</h2>${dv.length?`<div class="dnw">${donut(LV)}<ul class="lgd">${LV.map(([l,v,c])=>`<li><i style="background:${c}"></i>${l}: <b>${Math.round(v/dv.length*100)}%</b> <span class="mut">(${v} dias)</span></li>`).join('')}</ul></div>`:'<p class="mut">Sem dor registrada no período.</p>'}</div>
+      <div class="card"><h2>Domínios</h2>${hbars(Object.keys(ITEMS).map(d=>{const v=avg(es.map(e=>domScore(e,d)));return[DN[d],v??0,v==null?'—':Math.round(v)+'%']}),100)}<p class="mut" style="margin:6px 0 0">Quanto maior, melhor o domínio.</p></div>
+      <div class="card"><h2>Onde dói</h2>${RG.length?hbars(RG.map(([r,c])=>[cap(r),c,Math.round(c/Math.max(reg,1)*100)+'%']),Math.max(reg,1)):'<p class="mut">Nenhuma região marcada no período.</p>'}</div>
+      <div class="card"><h2>Média semanal da dor</h2>${Object.keys(wk).length?hbars(Object.keys(wk).sort().map(w=>{const v=avg(wk[w]);return['Semana de '+br(w),v,fmt(v)]}),10):'<p class="mut">Sem dados.</p>'}</div>
+      <div class="card full"><h2>Pistas para o raciocínio clínico</h2>${pistas(ds,es,ep,RG).map(([t,d,w])=>`<div class="pista ${w}"><strong>${esc(t)}</strong>${esc(d)}</div>`).join('')}
+        <p class="mut" style="margin:10px 0 0">Pistas automáticas a partir dos registros do paciente, para apoiar a avaliação. Não são diagnóstico: a interpretação e a conduta são do fisioterapeuta.</p></div>
+    </div>
+    <p class="mut" style="margin-top:16px">${esc($('#repsig').textContent)}. Dados de relógio e anel de consumo mostram tendências e não servem para diagnóstico.</p>`}
+const PCTs=(a,b)=>(b?Math.round(a/b*100):0)+'%';
+$('#rper').addEventListener('change',renderRel);
+$('#rpdf').addEventListener('click',()=>{renderRel();document.body.classList.add('prel');toast('Na janela de impressão, escolha “Salvar como PDF”.');setTimeout(()=>print(),150)});
+addEventListener('afterprint',()=>document.body.classList.remove('prel'));
+function renderAll(){renderHead();renderTri();renderJor();renderEvo();renderRel();renderEv();renderDiario();renderExe();renderBk();renderLink();renderGuide();loadReg();loadWear();loadEdit();fillR()}
 
 function off(m){$('#offm').textContent=m;document.body.dataset.auth='out';show('off')}
 function start(t){document.body.dataset.auth='in';renderAll();show(t)}
