@@ -184,7 +184,7 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
     <button role="tab" data-t="reg">Registrar dia</button>
     <button role="tab" data-t="diario">Diário da dor</button>
     <button role="tab" data-t="exe">Exercícios</button>
-    <button role="tab" data-t="wear">Relógio / anel</button>
+    <button role="tab" data-t="wear">Sinais vitais</button>
     <button role="tab" data-t="dados" class="npac">Dados</button>
   </nav>
 </div></header>
@@ -203,6 +203,15 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
     <label style="display:grid;gap:4px;font-size:14px;font-weight:500">E-mail <input type="email" id="lmail" autocomplete="username"></label>
     <label style="display:grid;gap:4px;font-size:14px;font-weight:500">Senha <input type="password" id="lpass" autocomplete="current-password"></label>
     <button class="pri" id="lok">Entrar</button><button type="button" id="lforgot" class="lnk">Esqueci a senha</button><span class="mut" id="lstat" role="status"></span>
+  </div></details>
+  <details class="card fold" style="max-width:420px;margin:16px auto 0"><summary><h2>Criar conta de fisioterapeuta</h2></summary><div style="display:grid;gap:12px">
+    <label style="display:grid;gap:4px;font-size:14px;font-weight:500">Nome completo <input type="text" id="snome" maxlength="120" autocomplete="name"></label>
+    <label style="display:grid;gap:4px;font-size:14px;font-weight:500">Área de atuação <select id="sarea"><option value="">Escolha</option><option>Traumato-ortopédica</option><option>Esportiva</option><option>Dor crônica</option><option>Neurofuncional</option><option>Cardiorrespiratória</option><option>Saúde da mulher / pélvica</option><option>Gerontologia</option><option>Pediatria</option><option>Outra</option></select></label>
+    <label style="display:grid;gap:4px;font-size:14px;font-weight:500">Registro profissional <input type="text" id="sreg" maxlength="40" placeholder="Ex.: CREFITO-15 123456-F"></label>
+    <label style="display:grid;gap:4px;font-size:14px;font-weight:500">E-mail <input type="email" id="smail" autocomplete="email"></label>
+    <label style="display:grid;gap:4px;font-size:14px;font-weight:500">Senha (mínimo 8 caracteres) <input type="password" id="spass" autocomplete="new-password"></label>
+    <label style="display:flex;gap:8px;align-items:flex-start;font-size:14px"><input type="checkbox" id="slgpd" style="margin-top:3px"> Sou responsável por pedir o consentimento por escrito dos meus pacientes para o uso dos dados de saúde (LGPD).</label>
+    <button class="pri" id="sok">Criar conta</button><span class="mut" id="sstat" role="status"></span>
   </div></details>
 </section>
 
@@ -242,7 +251,7 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
     <details class="card fold"><summary><h2>Últimos registros</h2></summary><div class="scroll"><table id="last"></table></div></details>
     <details class="card fold"><summary><h2>O que acompanha a dor</h2></summary><ul class="ins" id="ins"></ul><p class="mut">Associação entre os dias, não causa.</p></details>
   </div>
-  <p class="rep mut" style="margin-top:20px">Hugo Caravelas · Fisioterapeuta · CREFITO 423564-F. Dados de relógio e anel de consumo mostram a tendência de cada paciente e não servem para diagnóstico.</p>
+  <p class="rep mut" style="margin-top:20px"><span id="repsig">Hugo Caravelas · Fisioterapeuta · CREFITO 423564-F</span>. Dados de relógio e anel de consumo mostram a tendência de cada paciente e não servem para diagnóstico.</p>
 </section>
 
 <section id="t-reg" hidden>
@@ -327,7 +336,7 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
 <section id="t-wear" hidden>
   <div class="grid">
     <div class="card">
-      <h2>Dados do relógio ou anel</h2>
+      <h2>Sinais vitais</h2>
       <div class="row wbal" style="gap:8px;margin-top:4px;flex-wrap:nowrap;align-items:flex-start"><p class="mut" style="margin:0;flex:1">Copie os valores do app do aparelho (Apple Saúde, Samsung Health, Oura, Garmin, Mi Fitness…)<span class="npac"> ou importe uma planilha ao lado</span>.</p><button type="button" class="help" aria-expanded="false" aria-controls="b-wear" aria-label="Onde encontro esses dados?" data-b="b-wear">?</button></div>
       <div class="wbal"><div class="balao" id="b-wear" hidden><ul>
         <li><b>FC</b>Procure “frequência cardíaca em repouso” na tela de coração do app.</li>
@@ -455,7 +464,7 @@ const DN={bio:'Biológico',psico:'Psicológico',social:'Social'};
 const ALL=Object.values(ITEMS).flat(); const INV=Object.fromEntries(ALL.map(i=>[i[0],i[2]]));
 const LBL={sonoH:'Horas de sono',vfc:'VFC (HRV)',passos:'Passos',sonoQ:'Qualidade do sono',humor:'Humor',ansiedade:'Ansiedade / estresse',medo:'Medo de se movimentar',fc:'FC de repouso'};
 const WK=['fc','vfc','sonoH','passos','spo2'];
-const DEV=['Apple Watch / iPhone','Samsung Galaxy Watch','Garmin','Oura','Xiaomi / Amazfit','Fitbit / Pixel Watch','Whoop','Outro','Não usa'];
+const DEV=['Google Fit / Health Connect','Apple Watch / iPhone','Samsung Galaxy Watch','Garmin','Oura','Xiaomi / Amazfit','Fitbit / Pixel Watch','Whoop','Outro','Não usa'];
 const iso=d=>{const z=new Date(d.getTime()-d.getTimezoneOffset()*6e4);return z.toISOString().slice(0,10)};
 const br=k=>k.slice(8,10)+'/'+k.slice(5,7);
 const num=v=>v===''||v==null||isNaN(v)?null:+v;
@@ -501,7 +510,7 @@ const BLANK={id:null,name:'Nenhum paciente',entries:{},events:{}};
 const save=()=>{if(MODE==='local')ls(K,JSON.stringify(S));else if(MODE==='pro')ls(K+'-cur',S.cur||'')};
 const P=()=>S.patients.find(p=>p.id===S.cur)||S.patients[0]||BLANK;
 const days=()=>Object.keys(P().entries).sort();
-const hrvT=()=>{const a=P().aparelho||'';return/Apple/.test(a)?'SDNN':/Garmin|Oura|Whoop|Fitbit/.test(a)?'RMSSD':''};
+const hrvT=()=>{const a=P().aparelho||'';return/Apple/.test(a)?'SDNN':/Garmin|Oura|Whoop|Fitbit|Health Connect/.test(a)?'RMSSD':''};
 
 // Gravação: local = localStorage; pro = tabelas do Supabase; pac = função registrar() com o token do link.
 async function sync(fn){try{await fn();return true}catch(e){toast('Não salvou no servidor: '+(e.message||'sem conexão'));return false}}
@@ -624,19 +633,20 @@ function renderGuide(){const tk=MODE==='pac'?TOKEN:P().token,remote=MODE!=='loca
     <li><b>Garmin</b>: app Garmin Connect → <b>Mais</b> → Configurações → <b>Apps Conectados</b> → <b>Apple Saúde</b> → ative todos os dados.</li>
     <li><b>Oura</b>: app Oura → Configurações → <b>Integrações</b> → <b>Apple Saúde</b> → Conectar.</li>
     <li><b>Xiaomi, Amazfit, Huawei</b>: no app do relógio (Mi Fitness, Zepp, Huawei Saúde) → Perfil → <b>Apple Saúde</b> → ativar.</li>
-    <li><b>Celular Android</b>: veja “Android: Health Connect” abaixo.</li></ul>`;
-  const hk=remote?`${SUPA_URL}/functions/v1/hc?t=${tk}`:'';
+    <li><b>Celular Android</b>: veja “Android: Google Fit e Health Connect”.</li></ul>`;
+  const FIT='https://play.google.com/store/apps/details?id=com.google.android.apps.fitness',HCP='https://play.google.com/store/apps/details?id=com.google.android.apps.healthdata';
   const app=window.KinesiaApp?JSON.parse(KinesiaApp.info()):null,ok=v=>v?'✅':'⚠️';
   const pApp=app?`<ul><li>${ok(app.passosCelular)} Passos e sono pelo celular${app.passosCelular?'':': falta permitir “Atividade física”'}</li>
     <li>${ok(app.healthConnect==='sim')} Health Connect${app.healthConnect==='sim'?' (relógio, Google Fit, Samsung Health)':app.healthConnect==='atualizar'?': atualize o app Health Connect na Play Store':': não disponível neste celular'}</li>
     <li>Último envio: ${app.ultimoEnvio?new Date(app.ultimoEnvio).toLocaleString('pt-BR'):'ainda não'}</li></ul>
-    <p class="mut">Google Fit: no app Fit → Perfil → Configurações → <b>Sincronizar o Fit com o Health Connect</b>.</p>
+    <p class="mut">Google Fit (<a href="${FIT}" target="_blank" rel="noopener">instalar</a>): no app Fit → Perfil → Configurações → <b>Sincronizar o Fit com o Health Connect</b>.</p>
     <div class="row"><button type="button" id="apsync">Enviar agora</button><button type="button" id="apperm">Permissões</button><button type="button" id="aphc">Abrir Health Connect</button></div>`:'';
-  const pA=remote?`<ol><li>No app do relógio, ligue o <b>Health Connect</b> e permita tudo. <b>CO FIT</b>: aba <b>Eu</b> → Health Connect → ligar. (Samsung Health, Mi Fitness, Zepp, Fitbit e Garmin Connect têm a mesma opção.)</li>
-    <li>Instale o app <a href="https://play.google.com/store/apps/details?id=com.hcwebhook.app" target="_blank" rel="noopener">HC Webhook</a> na Play Store, abra e dê acesso ao Health Connect: Passos, Sono, Frequência cardíaca, FC em repouso, Variabilidade e Oxigênio.</li>
-    <li>Em <b>Webhook URL</b>, cole o link abaixo (ele é pessoal, não compartilhe):<br><code style="word-break:break-all">${esc(hk)}</code><div class="row" style="margin-top:6px"><button type="button" id="hkcopy">Copiar link</button></div></li>
-    <li>Agendamento: <b>horário fixo</b>, todo dia às <b>21:00</b>. Toque em sincronizar agora para testar.</li>
-    <li>Em Configurações do Android → Apps → HC Webhook → Bateria, escolha <b>Sem restrição</b>. Senão o envio da noite pode não acontecer.</li></ol>`
+  const pA=remote?`<ol><li>Baixe o <a href="Kinesia.apk" download><b>app Kinesia para Android</b></a> e toque no arquivo. Se o celular avisar, toque em Configurações → <b>Permitir desta fonte</b>.</li>
+    <li>Instale o <a href="${FIT}" target="_blank" rel="noopener"><b>Google Fit</b></a>. No Android 13 ou mais antigo, instale também o <a href="${HCP}" target="_blank" rel="noopener"><b>Health Connect</b></a> (no 14 em diante ele já vem no celular, às vezes com o nome Saúde Connect).</li>
+    <li>No Google Fit: Perfil → Configurações → ligue <b>Sincronizar o Fit com o Health Connect</b>.</li>
+    <li>Se o app do relógio tiver a opção Google Fit ou Health Connect (Samsung Health, Mi Fitness, Zepp, Fitbit, Garmin Connect), ligue também.</li>
+    <li>Abra o Kinesia, entre com o código e o PIN e permita <b>Atividade física</b> e o <b>Health Connect</b> (marque tudo).</li>
+    <li>Em Configurações do Android → Apps → Kinesia → Bateria, escolha <b>Sem restrição</b>. Pronto: passos, sono e frequência cardíaca vão sozinhos.</li></ol>`
     :'<p>Funciona só no modo online, com o link do paciente.</p>';
   const p2=`<ol><li>Abra o app <b>Atalhos</b> → toque em <b>+</b>. No topo, renomeie para <b>Enviar Kinesia</b>.</li>
     <li>Para cada dado, adicione a ação <b>Encontrar Amostras de Saúde</b> com o filtro “Data de Início está nos últimos 1 dias”:<ul>
@@ -660,10 +670,12 @@ function renderGuide(){const tk=MODE==='pac'?TOKEN:P().token,remote=MODE!=='loca
     <li>Use o iPhone pelo menos uma vez no dia: com o aparelho bloqueado desde cedo, o Saúde não libera os dados.</li></ol>`;
   const dica=MODE==='pro'&&remote?D('Dica: monte o atalho uma vez e compartilhe com todos',`<ol><li>Monte o atalho no seu iPhone com o código de um paciente no campo <code>p_token</code>.</li>
     <li>Nos detalhes do atalho (ⓘ), em <b>Configuração</b>, adicione uma <b>Pergunta de Importação</b> no campo <code>p_token</code>: “Cole o seu código do atalho”.</li>
-    <li>Toque em Compartilhar → <b>Copiar Link do iCloud</b> e envie aos pacientes. Cada um instala, cola o próprio código (botão na aba Relógio dele) e faz só a parte 3.</li></ol>`):'';
-  $('#guia').innerHTML=`<h3 class="gh">Coleta automática do relógio</h3>${D('iPhone 1. Ligar o relógio ao app Saúde',p1,1)}${D('iPhone 2. Criar o atalho “Enviar Kinesia” (uma vez)',p2)}${D('iPhone 3. Deixar automático todo dia',p3)}${dica}${app?D('App Kinesia: envio automático',pApp,1):D('Android: Health Connect (CO FIT e outros)',pA)}${MODE==='pac'&&remote?'<div class="row" style="margin-top:12px"><button type="button" id="tkcopy">Copiar meu código do atalho</button></div>':''}`}
+    <li>Toque em Compartilhar → <b>Copiar Link do iCloud</b> e envie aos pacientes. Cada um instala, cola o próprio código (botão na aba Sinais vitais dele) e faz só a parte 3.</li></ol>`):'';
+  const and=/Android/.test(navigator.userAgent),pAnd=app?D('App Kinesia: Google Fit e Health Connect',pApp,1):D('Android: Google Fit e Health Connect',pA,and),
+    pIos=`${D('iPhone 1. Ligar o relógio ao app Saúde',p1,!and)}${D('iPhone 2. Criar o atalho “Enviar Kinesia” (uma vez)',p2)}${D('iPhone 3. Deixar automático todo dia',p3)}${dica}`;
+  $('#guia').innerHTML=`<h3 class="gh">Coleta automática do relógio</h3>${and||app?pAnd+pIos:pIos+pAnd}${MODE==='pac'&&remote?'<div class="row" style="margin-top:12px"><button type="button" id="tkcopy">Copiar meu código do atalho</button></div>':''}`}
 $('#guia').addEventListener('click',async e=>{const id=e.target.id;
-  if(window.KinesiaApp&&id in{apsync:1,apperm:1,aphc:1}){({apsync:()=>KinesiaApp.sincronizar(),apperm:()=>KinesiaApp.permissoes(),aphc:()=>KinesiaApp.healthConnect()})[id]();setTimeout(renderGuide,4000);return}if(id!=='tkcopy'&&id!=='hkcopy')return;const v=id==='tkcopy'?TOKEN:`${SUPA_URL}/functions/v1/hc?t=${MODE==='pac'?TOKEN:P().token}`;try{await navigator.clipboard.writeText(v);toast(id==='tkcopy'?'Código copiado. Cole no atalho.':'Link copiado. Cole no HC Webhook.')}catch{prompt('Copie:',v)}});
+  if(window.KinesiaApp&&id in{apsync:1,apperm:1,aphc:1}){({apsync:()=>KinesiaApp.sincronizar(),apperm:()=>KinesiaApp.permissoes(),aphc:()=>KinesiaApp.healthConnect()})[id]();setTimeout(renderGuide,4000);return}if(id!=='tkcopy')return;try{await navigator.clipboard.writeText(TOKEN);toast('Código copiado. Cole no atalho.')}catch{prompt('Copie:',TOKEN)}});
 
 function renderDiario(){const E=P().entries,ds=days().filter(d=>E[d].diario?.length).reverse().slice(0,60);
   $('#dlist').innerHTML=ds.length?ds.map(d=>`<li style="display:block"><b>${esc(br(d)+'/'+d.slice(2,4))}</b><ul class="evl">${E[d].diario.map((x,i)=>`<li><span><strong>${esc(x.h||'—')}</strong> · dor ${esc(x.dor)}${x.local?' · '+esc(x.local):''}${x.gat?`<br><span class="mut">Fazendo: ${esc(x.gat)}</span>`:''}${x.ali?`<br><span class="mut">Ajudou: ${esc(x.ali)}</span>`:''}${x.nota?`<br>${esc(x.nota)}`:''}</span><button type="button" class="del" data-d="${esc(d)}" data-i="${i}" aria-label="Apagar anotação" style="min-height:36px;padding:4px 12px">Apagar</button></li>`).join('')}</ul></li>`).join(''):'<li class="mut">Nenhuma anotação ainda.</li>'}
@@ -938,6 +950,14 @@ $('#lok').addEventListener('click',e=>busy(e.currentTarget,async()=>{$('#lstat')
   const{error}=await db.auth.signInWithPassword({email:$('#lmail').value.trim(),password:$('#lpass').value});
   if(error)return $('#lstat').textContent='E-mail ou senha incorretos.';$('#lpass').value='';$('#lstat').textContent='';startPro()}));
 $('#lpass').addEventListener('keydown',e=>{if(e.key==='Enter')$('#lok').click()});
+// Cadastro do fisioterapeuta: nome, área e registro ficam no perfil da conta (user_metadata).
+$('#sok').addEventListener('click',e=>busy(e.currentTarget,async()=>{const st=$('#sstat'),nome=$('#snome').value.trim(),area=$('#sarea').value,registro=$('#sreg').value.trim(),email=$('#smail').value.trim(),pw=$('#spass').value;
+  if(nome.split(/\s+/).length<2){st.textContent='Digite o nome completo.';return}if(!area){st.textContent='Escolha a área de atuação.';return}
+  if(registro.length<4){st.textContent='Digite o registro profissional (ex.: CREFITO-15 123456-F).';return}if(!/^\S+@\S+\.\S+$/.test(email)){st.textContent='Digite um e-mail válido.';return}
+  if(pw.length<8){st.textContent='A senha precisa ter pelo menos 8 caracteres.';return}if(!$('#slgpd').checked){st.textContent='Marque a caixa do consentimento (LGPD).';return}
+  st.textContent='Criando a conta…';const{data,error}=await db.auth.signUp({email,password:pw,options:{data:{nome,area,registro}}});
+  if(error){st.textContent=/registered|exists/i.test(error.message)?'Este e-mail já tem conta. Use “Sou fisioterapeuta” para entrar.':/rate|limit|seconds/i.test(error.message)?'Muitos pedidos seguidos. Espere alguns minutos.':'Não deu certo: '+error.message;return}
+  $('#spass').value='';if(!data.session){st.textContent='Conta criada. Confirme pelo e-mail que enviamos e depois entre.';return}st.textContent='';toast('Conta criada. Bem-vindo(a)!');startPro()}));
 // Esqueci a senha: o Supabase manda um e-mail com link de volta para este endereço; ao abrir, o app pede a senha nova.
 $('#lforgot').addEventListener('click',e=>busy(e.currentTarget,async()=>{const m=$('#lmail').value.trim(),st=$('#lstat');if(!/^\S+@\S+\.\S+$/.test(m)){st.textContent='Digite o seu e-mail acima e toque de novo em “Esqueci a senha”.';return}
   const{error}=await db.auth.resetPasswordForEmail(m,{redirectTo:location.origin+location.pathname});
@@ -975,6 +995,7 @@ function live(){db.channel('registros').on('postgres_changes',{event:'*',schema:
   const p=r&&S.patients.find(x=>x.id===r.paciente_id);if(!p||!r.data)return;const e=norm(r.dados);if(sig(e)===sig(p.entries[r.data]))return;
   p.entries[r.data]=e;renderHead();if(p.id===P().id){renderEvo();renderDiario();renderExe();renderBk()}toast('Novo registro de '+p.name)}).subscribe()}
 async function startPro(){toast('Carregando…');
+  const m=(await db.auth.getUser()).data.user?.user_metadata||{};if(m.nome)$('#repsig').textContent=[m.nome,'Fisioterapeuta'+(m.area?' ('+m.area+')':''),m.registro].filter(Boolean).join(' · ');
   try{const[{data:ps,error},rs]=await Promise.all([db.from('pacientes').select('*').order('criado'),fetchAll()]);if(error)throw error;const by={};
     S={patients:ps.map(p=>(by[p.id]={id:p.id,name:p.nome,age:p.idade,queixa:p.queixa,aparelho:p.aparelho,events:p.eventos||{},presc:p.prescricao||[],token:p.token,codigo:p.codigo,entries:{}})),cur:ls(K+'-cur')};
     for(const r of rs)if(by[r.paciente_id])by[r.paciente_id].entries[r.data]=norm(r.dados)}
