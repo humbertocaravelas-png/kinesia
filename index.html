@@ -622,7 +622,14 @@ function renderGuide(){const tk=MODE==='pac'?TOKEN:P().token,remote=MODE!=='loca
     <li><b>Garmin</b>: app Garmin Connect → <b>Mais</b> → Configurações → <b>Apps Conectados</b> → <b>Apple Saúde</b> → ative todos os dados.</li>
     <li><b>Oura</b>: app Oura → Configurações → <b>Integrações</b> → <b>Apple Saúde</b> → Conectar.</li>
     <li><b>Xiaomi, Amazfit, Huawei</b>: no app do relógio (Mi Fitness, Zepp, Huawei Saúde) → Perfil → <b>Apple Saúde</b> → ativar.</li>
-    <li><b>Fitbit, Samsung e celulares Android</b>: o envio automático ainda não funciona. Preencha os números nesta aba.</li></ul>`;
+    <li><b>Celular Android</b>: veja “Android: Health Connect” abaixo.</li></ul>`;
+  const hk=remote?`${SUPA_URL}/functions/v1/hc?t=${tk}`:'';
+  const pA=remote?`<ol><li>No app do relógio, ligue o <b>Health Connect</b> e permita tudo. <b>CO FIT</b>: aba <b>Eu</b> → Health Connect → ligar. (Samsung Health, Mi Fitness, Zepp, Fitbit e Garmin Connect têm a mesma opção.)</li>
+    <li>Instale o app <a href="https://play.google.com/store/apps/details?id=com.hcwebhook.app" target="_blank" rel="noopener">HC Webhook</a> na Play Store, abra e dê acesso ao Health Connect: Passos, Sono, Frequência cardíaca, FC em repouso, Variabilidade e Oxigênio.</li>
+    <li>Em <b>Webhook URL</b>, cole o link abaixo (ele é pessoal, não compartilhe):<br><code style="word-break:break-all">${esc(hk)}</code><div class="row" style="margin-top:6px"><button type="button" id="hkcopy">Copiar link</button></div></li>
+    <li>Agendamento: <b>horário fixo</b>, todo dia às <b>21:00</b>. Toque em sincronizar agora para testar.</li>
+    <li>Em Configurações do Android → Apps → HC Webhook → Bateria, escolha <b>Sem restrição</b>. Senão o envio da noite pode não acontecer.</li></ol>`
+    :'<p>Funciona só no modo online, com o link do paciente.</p>';
   const p2=`<ol><li>Abra o app <b>Atalhos</b> → toque em <b>+</b>. No topo, renomeie para <b>Enviar Kinesia</b>.</li>
     <li>Para cada dado, adicione a ação <b>Encontrar Amostras de Saúde</b> com o filtro “Data de Início está nos últimos 1 dias”:<ul>
       <li><b>Frequência Cardíaca em Repouso</b>: ordenar pela mais recente, limite 1.</li>
@@ -646,8 +653,8 @@ function renderGuide(){const tk=MODE==='pac'?TOKEN:P().token,remote=MODE!=='loca
   const dica=MODE==='pro'&&remote?D('Dica: monte o atalho uma vez e compartilhe com todos',`<ol><li>Monte o atalho no seu iPhone com o código de um paciente no campo <code>p_token</code>.</li>
     <li>Nos detalhes do atalho (ⓘ), em <b>Configuração</b>, adicione uma <b>Pergunta de Importação</b> no campo <code>p_token</code>: “Cole o seu código do atalho”.</li>
     <li>Toque em Compartilhar → <b>Copiar Link do iCloud</b> e envie aos pacientes. Cada um instala, cola o próprio código (botão na aba Relógio dele) e faz só a parte 3.</li></ol>`):'';
-  $('#guia').innerHTML=`<h3 class="gh">Coleta automática do relógio (iPhone)</h3>${D('1. Ligar o relógio ao app Saúde',p1,1)}${D('2. Criar o atalho “Enviar Kinesia” (uma vez)',p2)}${D('3. Deixar automático todo dia',p3)}${dica}${MODE==='pac'&&remote?'<div class="row" style="margin-top:12px"><button type="button" id="tkcopy">Copiar meu código do atalho</button></div>':''}`}
-$('#guia').addEventListener('click',async e=>{if(e.target.id!=='tkcopy')return;try{await navigator.clipboard.writeText(TOKEN);toast('Código copiado. Cole no atalho.')}catch{prompt('Copie o código:',TOKEN)}});
+  $('#guia').innerHTML=`<h3 class="gh">Coleta automática do relógio</h3>${D('iPhone 1. Ligar o relógio ao app Saúde',p1,1)}${D('iPhone 2. Criar o atalho “Enviar Kinesia” (uma vez)',p2)}${D('iPhone 3. Deixar automático todo dia',p3)}${dica}${D('Android: Health Connect (CO FIT e outros)',pA)}${MODE==='pac'&&remote?'<div class="row" style="margin-top:12px"><button type="button" id="tkcopy">Copiar meu código do atalho</button></div>':''}`}
+$('#guia').addEventListener('click',async e=>{const id=e.target.id;if(id!=='tkcopy'&&id!=='hkcopy')return;const v=id==='tkcopy'?TOKEN:`${SUPA_URL}/functions/v1/hc?t=${MODE==='pac'?TOKEN:P().token}`;try{await navigator.clipboard.writeText(v);toast(id==='tkcopy'?'Código copiado. Cole no atalho.':'Link copiado. Cole no HC Webhook.')}catch{prompt('Copie:',v)}});
 
 function renderDiario(){const E=P().entries,ds=days().filter(d=>E[d].diario?.length).reverse().slice(0,60);
   $('#dlist').innerHTML=ds.length?ds.map(d=>`<li style="display:block"><b>${esc(br(d)+'/'+d.slice(2,4))}</b><ul class="evl">${E[d].diario.map((x,i)=>`<li><span><strong>${esc(x.h||'—')}</strong> · dor ${esc(x.dor)}${x.local?' · '+esc(x.local):''}${x.gat?`<br><span class="mut">Fazendo: ${esc(x.gat)}</span>`:''}${x.ali?`<br><span class="mut">Ajudou: ${esc(x.ali)}</span>`:''}${x.nota?`<br>${esc(x.nota)}`:''}</span><button type="button" class="del" data-d="${esc(d)}" data-i="${i}" aria-label="Apagar anotação" style="min-height:36px;padding:4px 12px">Apagar</button></li>`).join('')}</ul></li>`).join(''):'<li class="mut">Nenhuma anotação ainda.</li>'}
