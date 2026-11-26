@@ -89,6 +89,37 @@ nav button[aria-selected=true],.ltabs button[aria-selected=true]{background:var(
 .kpi>.mut:last-child{font-size:12.5px}
 .kpi b{display:block;font-family:Sora,sans-serif;font-size:clamp(26px,3vw,34px);font-weight:600;letter-spacing:-.03em;line-height:1.1;margin:8px 0 4px;white-space:nowrap;font-variant-numeric:tabular-nums}
 .kpi:first-child b{color:var(--acc);text-shadow:0 0 22px color-mix(in srgb,var(--acc) 45%,transparent)}
+/* Jornada (gamificação), tela Hoje, triagem, confete, letra grande e barra inferior no celular */
+.jtop{display:flex;flex-wrap:wrap;gap:22px;align-items:center}
+.ring{position:relative;width:118px;height:118px;flex:none}.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:10}.ring .bg{stroke:var(--line2)}.ring .fg{stroke:var(--acc);stroke-linecap:round;filter:drop-shadow(0 0 6px var(--acc));transition:stroke-dashoffset .8s cubic-bezier(.2,.8,.2,1)}
+.ring b{position:absolute;inset:0;display:grid;place-content:center;text-align:center;font-family:Sora,sans-serif;font-size:26px;line-height:1}.ring b small{display:block;font:500 11px Inter,sans-serif;color:var(--mut);margin-top:4px}
+.wdots{display:flex;gap:6px;margin-top:10px}.wdots span{width:30px;height:30px;border-radius:50%;display:grid;place-content:center;font-size:11px;color:var(--mut);border:1px solid var(--line2)}
+.wdots .on{background:var(--acc);color:var(--on);border-color:transparent;box-shadow:0 0 10px var(--acc)}.wdots .cr{background:var(--warn);color:var(--on);border-color:transparent}.wdots .hj{outline:2px solid var(--acc);outline-offset:2px}
+.lvl{font-family:Sora,sans-serif;font-size:22px;font-weight:600}.lvl small{display:block;font:500 13px Inter,sans-serif;color:var(--mut);margin-top:4px}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px;margin-top:18px}
+.badge{border:1px solid var(--line2);border-radius:16px;padding:12px;text-align:center;font-size:13px;line-height:1.3}.badge i{display:block;font-style:normal;font-size:28px;margin-bottom:6px}
+.badge.off{opacity:.45;filter:grayscale(1)}.badge.off small{display:block;color:var(--mut);margin-top:4px;font-size:11.5px}.badge:not(.off){background:var(--accs);border-color:var(--acc)}
+.todo{list-style:none;padding:0;margin:0;display:grid;gap:8px}.todo li{display:flex;align-items:center;gap:12px;border:1px solid var(--line2);border-radius:14px;padding:10px 14px}
+.todo li.ok{background:var(--accs);border-color:var(--acc)}.todo li span{flex:1}.todo b{font-size:20px;width:26px;text-align:center}
+.prog{height:8px;border-radius:4px;background:var(--line);margin:12px 0 14px;overflow:hidden}.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--acc2),var(--acc));transition:width .6s}
+.recado{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--acc);background:var(--accs);border-radius:16px;padding:12px 16px;margin-bottom:14px}.recado i{font-style:normal;font-size:28px}
+.tri{list-style:none;padding:0;margin:0}.tri li{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}.tri li:last-child{border:0}
+.tri em{font-style:normal;font-size:12.5px;padding:2px 10px;border-radius:999px;background:var(--wbg);color:var(--warn);margin-right:6px}
+.chips{display:grid;grid-template-columns:repeat(11,1fr);gap:4px;margin:6px 0 2px}.chips button{min-height:40px;padding:0;border-radius:10px;font-family:Sora,sans-serif}
+.chips button[aria-pressed=true]{background:var(--acc);color:var(--on);border-color:transparent;box-shadow:var(--glow)}
+.conf{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}.conf i{position:absolute;top:-12px;width:8px;height:13px;border-radius:2px;animation:cf var(--d) cubic-bezier(.2,.6,.4,1) forwards}
+@keyframes cf{to{transform:translate(var(--x),105vh) rotate(var(--r));opacity:.3}}
+html[data-fs=g] body{zoom:1.18}
+#fsz[aria-pressed=true]{background:var(--accs);color:var(--acc)}
+@media(max-width:700px){
+  body[data-auth=in]{padding-bottom:78px}
+  body[data-auth=in] header{backdrop-filter:none;-webkit-backdrop-filter:none} /* com o filtro, o position:fixed da barra ficaria preso ao cabeçalho */
+  body[data-auth=in] nav{position:fixed;left:0;right:0;bottom:0;z-index:20;margin:0;padding:6px 4px calc(6px + env(safe-area-inset-bottom));justify-content:space-around;gap:0;background:light-dark(rgba(238,244,243,.94),rgba(2,18,16,.94));backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--line)}
+  body[data-auth=in] nav button{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 2px;min-height:52px;font-size:10.5px;line-height:1.15;border-radius:12px;white-space:normal;text-align:center}
+  body[data-auth=in] nav button::before{font-size:19px;line-height:1}
+  nav [data-t=evo]::before{content:"📈"}nav [data-t=reg]::before{content:"✍️"}nav [data-t=diario]::before{content:"📓"}nav [data-t=exe]::before{content:"🏋️"}nav [data-t=wear]::before{content:"❤️"}nav [data-t=dados]::before{content:"🗂️"}
+}
 .flags{list-style:none;padding:0;margin:0}
 .flags li{background:var(--wbg);border:1px solid color-mix(in srgb,var(--warn) 22%,transparent);border-radius:14px;padding:11px 14px;margin:8px 0;font-size:14.5px}
 .flags li strong{color:var(--warn);display:block;font-weight:600;margin-bottom:2px}
@@ -178,7 +209,7 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
   <div class="top">
     <div class="brand"><svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="kg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7FF3EE"/><stop offset="1" stop-color="#00E1D8"/></linearGradient></defs><rect x="1" y="1" width="38" height="38" rx="12" fill="#0A3D35" stroke="#00E1D8" stroke-opacity=".35"/><path d="M8 21h6l3-8 5 15 3-7h7" fill="none" stroke="url(#kg)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><div><h1 id="htitle">Kinesia</h1><div class="sub" id="pinfo">Acompanhamento diário · Hugo Caravelas</div></div></div>
     <div class="pat npac auth"><select id="psel" aria-label="Paciente"></select><button id="pnew">Novo paciente</button><button id="lout" class="pro">Sair</button></div>
-    <button id="inst" hidden>Instalar app</button><button id="psair" class="pac">Sair</button>
+    <button id="inst" hidden>Instalar app</button><button id="fsz" aria-pressed="false" aria-label="Letra grande" title="Letra grande">A+</button><button id="psair" class="pac">Sair</button>
   </div>
   <nav role="tablist" class="auth">
     <button role="tab" data-t="evo" class="npac" aria-selected="true">Evolução</button>
@@ -224,7 +255,9 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
 <section id="t-evo">
   <div class="rep"><h2>Kinesia · Relatório de acompanhamento</h2><p id="rept" style="margin:6px 0 16px"></p></div>
   <div class="row noprint" style="justify-content:flex-end;margin-bottom:12px"><button id="xprint">Relatório para imprimir</button></div>
+  <div id="tri" class="npac noprint"></div>
   <div class="kpis" id="kpis"></div>
+  <div id="jor2" class="npac noprint" style="margin-bottom:18px"></div>
   <div class="grid">
     <div class="card">
       <div class="row" style="justify-content:space-between">
@@ -259,8 +292,11 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
 </section>
 
 <section id="t-reg" hidden>
-  <div class="card">
+  <div id="hoje" class="pac" style="margin-bottom:18px"></div>
+  <div class="card" id="regcard">
     <div class="row" style="justify-content:space-between"><h2>Como foi o dia</h2><label class="row" style="gap:8px">Data <input type="date" id="rdate" style="width:auto"></label></div>
+    <div class="row" style="margin-top:10px"><button type="button" id="rontem">Igual a ontem</button><button type="button" id="rcrise" class="del">Dia de crise: só a dor</button></div>
+    <p class="mut" style="margin:6px 0 0">Num dia de crise, marque só a dor e toque em “Dia de crise”. Ele conta para a sua meta da semana.</p>
     <div id="sliders"></div>
     <details class="guia"><summary>Observações (opcional)</summary><div class="f2">
       <label>Onde dói? <input type="text" id="rlocal" placeholder="Ex.: lombar, ombro direito" maxlength="300"></label>
@@ -376,13 +412,23 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
       <h2>Guardar e levar os dados</h2>
       <p class="mut loc" style="margin:4px 0 14px">Os registros ficam salvos só neste navegador, neste aparelho. Faça backup com frequência para não perder nada.</p>
       <p class="mut pro" style="margin:4px 0 14px">Os registros ficam no seu Supabase. O plano gratuito não guarda cópias automáticas: faça backup com frequência.</p>
-      <div class="row"><button class="pri" id="xall">Backup completo (todos os pacientes)</button><button id="xjson">Exportar paciente (JSON)</button><button id="xcsv">Exportar planilha (CSV)</button><button id="xcopy">Copiar dados</button></div>
+      <div class="row"><button class="pri" id="xall">Backup completo (todos os pacientes)</button><button class="pri" id="xdrive" type="button">Salvar backup no Google Drive</button><button id="xjson">Exportar paciente (JSON)</button><button id="xcsv">Exportar planilha (CSV)</button><button id="xcopy">Copiar dados</button></div>
       <h3 style="font-size:17px;margin-top:22px">Importar paciente ou backup</h3>
       <input type="file" id="ifile" accept=".json,application/json" style="margin-top:10px" aria-label="Arquivo JSON">
       <textarea id="ijson" style="margin-top:10px" placeholder="Ou cole aqui o conteúdo JSON exportado"></textarea>
       <div class="row" style="margin-top:10px"><button id="iimp">Importar</button><span class="mut" id="istat" role="status"></span></div>
     </div>
     <div class="stackc">
+      <div class="card pro">
+        <h2>Meu perfil</h2>
+        <div style="display:grid;gap:10px">
+          <label>Nome completo <input type="text" id="mfnome" maxlength="120"></label>
+          <label>Área de atuação <select id="mfarea"></select></label>
+          <label>Registro profissional <input type="text" id="mfreg" maxlength="40"></label>
+          <label>Clínica (opcional, sai no relatório) <input type="text" id="mfcli" maxlength="80"></label>
+          <div class="row"><button class="pri" id="mfsave" type="button">Salvar perfil</button><span class="mut" id="mfstat" role="status"></span></div>
+        </div>
+      </div>
       <div class="card pro">
         <h2>Acesso por código</h2>
         <p class="cod" id="acod"></p>
@@ -522,7 +568,7 @@ async function putEntries(p,ds){if(MODE==='local'){save();return true}if(!ds.len
   if(MODE==='pac')return sync(async()=>{for(const d of ds)await rpc('registrar',{p_token:TOKEN,p_data:d,p_dados:p.entries[d]})});
   return sync(async()=>{const{error}=await db.from('registros').upsert(ds.map(d=>({paciente_id:p.id,data:d,dados:p.entries[d]})));if(error)throw error})}
 async function putPatient(p){if(MODE!=='pro'){save();return true}
-  return sync(async()=>{const{data,error}=await db.from('pacientes').upsert({id:p.id,nome:p.name,idade:p.age??null,queixa:p.queixa||'',aparelho:p.aparelho||'',eventos:p.events||{},prescricao:p.presc||[]}).select('token').single();if(error)throw error;p.token=data.token})}
+  return sync(async()=>{const{data,error}=await db.from('pacientes').upsert({id:p.id,nome:p.name,idade:p.age??null,queixa:p.queixa||'',aparelho:p.aparelho||'',eventos:p.events||{},prescricao:p.presc||[],recado:p.recado||null}).select('token').single();if(error)throw error;p.token=data.token})}
 async function delPatient(id){if(MODE!=='pro'){save();return true}
   return sync(async()=>{const{error}=await db.from('pacientes').delete().eq('id',id);if(error)throw error})}
 
@@ -620,6 +666,11 @@ function draw(){const W=ch.clientWidth,H=ch.clientHeight;if(!W)return;
   for(const[d,t]of Object.entries(P().events||{})){if(d<ds[0]||d>ds[ds.length-1])continue;const xx=x(ds.findIndex(z=>z>=d)).toFixed(1);
     g+=`<g><title>${esc(br(d))}: ${esc(t)}</title><line x1="${xx}" x2="${xx}" y1="${pt}" y2="${pt+ih}" stroke="var(--warn)" stroke-width="1.5" stroke-dasharray="2 3"/><circle cx="${xx}" cy="${pt}" r="5" fill="var(--warn)"/></g>`}
   g+=`<path d="${path(sv,yR)}" fill="none" stroke="var(--acc2)" stroke-width="2" stroke-dasharray="5 4" stroke-linejoin="round"/>`;
+  const pts=dv.map((v,i)=>v==null?null:[x(i),yL(v),v,i]).filter(Boolean);
+  if(pts.length>1){g+=`<defs><linearGradient id="dga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--acc)" stop-opacity=".28"/><stop offset="1" stop-color="var(--acc)" stop-opacity="0"/></linearGradient></defs><path d="M${pts[0][0].toFixed(1)} ${pt+ih}${pts.map(q=>`L${q[0].toFixed(1)} ${q[1].toFixed(1)}`).join('')}L${pts[pts.length-1][0].toFixed(1)} ${pt+ih}Z" fill="url(#dga)"/>`;
+    // Melhor e pior dia do período.
+    const lo=pts.reduce((a,b)=>b[2]<a[2]?b:a),hi=pts.reduce((a,b)=>b[2]>=a[2]?b:a);
+    if(hi[2]>lo[2])for(const[q,l,c]of[[lo,'melhor','var(--acc)'],[hi,'pior','var(--warn)']])g+=`<circle cx="${q[0]}" cy="${q[1]}" r="7" fill="none" stroke="${c}" stroke-width="2"/><text x="${Math.min(Math.max(q[0],pl+40),W-pr-40)}" y="${(l==='pior'?q[1]-12<pt+10:q[1]+20>pt+ih)?q[1]+(l==='pior'?22:-12):q[1]+(l==='pior'?-12:20)}" text-anchor="middle" font-size="11.5" font-weight="600" fill="${c}">${l} · ${esc(br(ds[q[3]]))}</text>`}
   g+=`<path d="${path(dv,yL)}" fill="none" stroke="var(--acc)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
   if(ds.length<=31)dv.forEach((v,i)=>{if(v!=null)g+=`<circle cx="${x(i)}" cy="${yL(v)}" r="3.5" fill="var(--acc)"><title>${esc(br(ds[i]))}: dor ${v}</title></circle>`});
   ch.innerHTML=g}
@@ -643,6 +694,7 @@ function renderGuide(){const tk=MODE==='pac'?TOKEN:P().token,remote=MODE!=='loca
   const pApp=app?`<ul><li>${ok(app.passosCelular)} Passos e sono pelo celular${app.passosCelular?'':': falta permitir “Atividade física”'}</li>
     <li>${ok(app.healthConnect==='sim')} Health Connect${app.healthConnect==='sim'?' (relógio, Google Fit, Samsung Health)':app.healthConnect==='atualizar'?': atualize o app Health Connect na Play Store':': não disponível neste celular'}</li>
     <li>Último envio: ${app.ultimoEnvio?new Date(app.ultimoEnvio).toLocaleString('pt-BR'):'ainda não'}</li></ul>
+    ${app.lembrete!=null?`<label class="row" style="gap:8px;margin:4px 0 10px">🔔 Lembrete diário <select id="aplem" style="width:auto"><option value="-1">Desligado</option>${Array.from({length:16},(_,i)=>i+7).map(h=>`<option value="${h}"${h===app.lembrete?' selected':''}>${h}h</option>`).join('')}</select></label>${app.lembrete>=0&&!app.notificacoes?'<p class="mut">⚠️ Permita as notificações do Kinesia para receber o lembrete.</p>':''}`:''}
     <p class="mut">Google Fit (<a href="${FIT}" target="_blank" rel="noopener">instalar</a>): no app Fit → Perfil → Configurações → <b>Sincronizar o Fit com o Health Connect</b>.</p>
     <div class="row"><button type="button" id="apsync">Enviar agora</button><button type="button" id="apperm">Permissões</button><button type="button" id="aphc">Abrir Health Connect</button></div>`:'';
   const pA=remote?`<ol><li>Baixe o <a href="Kinesia.apk" download><b>app Kinesia para Android</b></a> e toque no arquivo. Se o celular avisar, toque em Configurações → <b>Permitir desta fonte</b>.</li>
@@ -678,6 +730,7 @@ function renderGuide(){const tk=MODE==='pac'?TOKEN:P().token,remote=MODE!=='loca
   const and=/Android/.test(navigator.userAgent),pAnd=app?D('App Kinesia: Google Fit e Health Connect',pApp,1):D('Android: Google Fit e Health Connect',pA,and),
     pIos=`${D('iPhone 1. Ligar o relógio ao app Saúde',p1,!and)}${D('iPhone 2. Criar o atalho “Enviar Kinesia” (uma vez)',p2)}${D('iPhone 3. Deixar automático todo dia',p3)}${dica}`;
   $('#guia').innerHTML=`<h3 class="gh">Coleta automática do relógio</h3>${and||app?pAnd+pIos:pIos+pAnd}${MODE==='pac'&&remote?'<div class="row" style="margin-top:12px"><button type="button" id="tkcopy">Copiar meu código do atalho</button></div>':''}`}
+$('#guia').addEventListener('change',e=>{if(e.target.id!=='aplem'||!window.KinesiaApp?.lembrete)return;const h=+e.target.value;KinesiaApp.lembrete(h);toast(h<0?'Lembrete desligado':'Lembrete todo dia às '+h+'h');setTimeout(renderGuide,3000)});
 $('#guia').addEventListener('click',async e=>{const id=e.target.id;
   if(window.KinesiaApp&&id in{apsync:1,apperm:1,aphc:1}){({apsync:()=>KinesiaApp.sincronizar(),apperm:()=>KinesiaApp.permissoes(),aphc:()=>KinesiaApp.healthConnect()})[id]();setTimeout(renderGuide,4000);return}if(id!=='tkcopy')return;try{await navigator.clipboard.writeText(TOKEN);toast('Código copiado. Cole no atalho.')}catch{prompt('Copie:',TOKEN)}});
 
@@ -762,13 +815,20 @@ $('#sliders').innerHTML=Object.entries(ITEMS).map(([d,its])=>`<fieldset><legend>
 $$('.help').forEach(b=>b.addEventListener('click',()=>{const o=b.getAttribute('aria-expanded')!=='true';
   $$('.help').forEach(x=>{x.setAttribute('aria-expanded','false');$('#'+x.dataset.b).hidden=true});
   b.setAttribute('aria-expanded',o);$('#'+b.dataset.b).hidden=!o}));
-ALL.forEach(([k])=>$('#r-'+k).addEventListener('input',e=>$('#o-'+k).textContent=e.target.value));
+// Carinha ao lado do número (nos itens em que mais é pior, 10 = 😫) e botões 0–10 para a dor.
+const FACES=['😀','🙂','🙂','🙂','😐','😐','😕','😟','😣','😖','😫'];
+const face=(k,v)=>FACES[INV[k]?v:10-v];
+function outR(k,v){$('#o-'+k).textContent=v+' '+face(k,v);if(k==='dor')$$('#dchips button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.v===+v))}
+function setR(k,v){$('#r-'+k).value=v;outR(k,v)}
+$('#r-dor').insertAdjacentHTML('afterend',`<div class="chips" id="dchips" role="group" aria-label="Dor de 0 a 10">${Array.from({length:11},(_,i)=>`<button type="button" data-v="${i}" aria-pressed="false">${i}</button>`).join('')}</div>`);$('#r-dor').hidden=true;
+$('#dchips').addEventListener('click',e=>{const v=e.target.dataset?.v;if(v!=null){setR('dor',+v);fillR()}});
+ALL.forEach(([k])=>$('#r-'+k).addEventListener('input',e=>outR(k,+e.target.value)));
 // Pinta a parte preenchida da régua (todas vão de 0 a 10).
 const fillR=()=>$$('input[type=range]').forEach(r=>r.style.setProperty('--p',r.value*10+'%'));
 document.addEventListener('input',e=>{if(e.target.type==='range')e.target.style.setProperty('--p',e.target.value*10+'%')});
 const devOpts='<option value="">Não informado</option>'+DEV.map(d=>`<option>${d}</option>`).join('');$('#nap').innerHTML=$('#eap').innerHTML=devOpts;
 function loadReg(){const e=P().entries[$('#rdate').value]||{};
-  ALL.forEach(([k])=>{const v=num(e[k]);$('#r-'+k).value=v??5;$('#o-'+k).textContent=v??5});
+  ALL.forEach(([k])=>setR(k,num(e[k])??5));
   $('#rlocal').value=e.local||'';$('#robs').value=e.obs||'';
   $('#rstat').textContent=e.dor!=null?'Já existe registro nesta data. Salvar atualiza.':'';fillR()}
 function loadWear(){const e=P().entries[$('#wdate').value]||{};WK.forEach(k=>$('#w-'+k).value=e[k]??'')}
@@ -862,6 +922,12 @@ $('#rsave').addEventListener('click',e=>{const p=P(),d=$('#rdate').value;if(!p.i
   ALL.forEach(([k])=>E[d][k]=+$('#r-'+k).value);E[d].local=$('#rlocal').value.trim();E[d].obs=$('#robs').value.trim();
   busy(e.currentTarget,async()=>{const ok=await putEntries(p,[d]);renderAll();
     $('#rstat').textContent=ok?(MODE==='pac'?'Enviado ao seu fisioterapeuta.':'Salvo.'):'Não enviado. Verifique a internet e toque em Salvar de novo.';if(ok)toast(MODE==='pac'?'Registro enviado':'Registro salvo')})});
+$('#rontem').addEventListener('click',()=>{const y=P().entries[prev($('#rdate').value)];if(!y||num(y.dor)==null)return toast('Não há registro do dia anterior');
+  ALL.forEach(([k])=>{const v=num(y[k]);if(v!=null)setR(k,v)});fillR();toast('Valores de ontem carregados. Ajuste o que mudou e salve.')});
+$('#rcrise').addEventListener('click',e=>{const p=P(),d=$('#rdate').value;if(!p.id)return toast('Crie um paciente primeiro');if(!d)return toast('Escolha a data');const E=p.entries;E[d]=E[d]||{};
+  E[d].dor=+$('#r-dor').value;E[d].crise=1;
+  busy(e.currentTarget,async()=>{const ok=await putEntries(p,[d]);renderAll();
+    $('#rstat').textContent=ok?'Dia de crise registrado. Descanse: a sua meta da semana continua valendo.':'Não enviado. Verifique a internet e tente de novo.';if(ok)toast('Dia de crise registrado')})});
 $('#wsave').addEventListener('click',e=>{const p=P(),d=$('#wdate').value;if(!p.id)return toast('Crie um paciente primeiro');if(!d)return toast('Escolha a data');const E=p.entries;E[d]=E[d]||{};
   WK.forEach(k=>{const v=num(String($('#w-'+k).value).replace(',','.'));if(v!=null)E[d][k]=v;else delete E[d][k]});
   busy(e.currentTarget,async()=>{const ok=await putEntries(p,[d]);renderAll();$('#wstat').textContent=ok?'Salvo.':'Não enviado. Toque em Salvar de novo.';if(ok)toast('Dados do aparelho salvos')})});
@@ -902,6 +968,11 @@ const slug=()=>P().name.normalize('NFD').replace(/[^\w]+/g,'-').toLowerCase().re
 function csv(){const keys=[...ALL.map(i=>i[0]),...WK,'local','obs'],E=P().entries;
   return['data;'+keys.join(';'),...days().map(d=>d+';'+keys.map(k=>String(E[d][k]??'').replace(/;/g,',').replace(/\./g,typeof E[d][k]==='number'?',':'.')).join(';'))].join('\n')}
 const backup=()=>{give('backup-kinesia-'+today+'.json',JSON.stringify({patients:S.patients.map(strip)},null,1));ls(K+'-bk',String(Date.now()));renderBk()};
+// Backup no Google Drive: no celular abre o menu Compartilhar (escolher “Drive”); no computador baixa o arquivo e abre o Drive para arrastar.
+// shortcut: envio manual pelo menu do sistema; envio automático exige um ID OAuth do Google Cloud (escopo drive.file).
+$('#xdrive').addEventListener('click',async()=>{const name='backup-kinesia-'+today+'.json',f=new File([JSON.stringify({patients:S.patients.map(strip)},null,1)],name,{type:'application/json'});
+  if(navigator.canShare?.({files:[f]})){try{await navigator.share({files:[f],title:name});ls(K+'-bk',String(Date.now()));renderBk();toast('Backup enviado. Confira no Drive.')}catch(e){if(e.name!=='AbortError')toast('Não deu certo: '+e.message)}return}
+  backup();open('https://drive.google.com/drive/my-drive','_blank','noopener');toast('Arraste o arquivo baixado para a pasta do Drive que abriu.')});
 $('#xall').addEventListener('click',backup);$('#bkx').addEventListener('click',backup);
 $('#bksn').addEventListener('click',()=>{ls(K+'-bksn',String(Date.now()));renderBk();toast('Lembro de novo em 3 dias')});
 $('#xjson').addEventListener('click',()=>give(slug()+'-bps.json',JSON.stringify(strip(P()),null,1)));
@@ -991,7 +1062,78 @@ function show(t){if(MODE==='pac'&&!['reg','diario','exe','wear','off'].includes(
   $$('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===t));$$('main section').forEach(s=>s.hidden=s.id!=='t-'+t);if(t==='evo')draw();
   if(t!=='login'&&t!=='off')ls(K+'-tab',t)}
 $$('nav button').forEach(b=>b.addEventListener('click',()=>show(b.dataset.t)));
-function renderAll(){renderHead();renderEvo();renderEv();renderDiario();renderExe();renderBk();renderLink();renderGuide();loadReg();loadWear();loadEdit();fillR()}
+// ===== Jornada (gamificação). Pontua constância (registrar, treinar como prescrito, enviar sinais vitais),
+// nunca dor baixa nem volume a mais. Meta semanal em vez de sequência diária; dia de crise conta como registro.
+const META=5,wkey=d=>{const t=new Date(d+'T12:00');t.setDate(t.getDate()-(t.getDay()+6)%7);return iso(t)};
+function jDays(){const p=P(),H={};for(const[d,h]of Object.entries(p.hist||{}))H[d]={d:num(h.d),c:+h.c||0,t:h.t==null?null:num(h.t),v:+h.v||0};
+  for(const[d,e]of Object.entries(p.entries))H[d]={d:num(e.dor),c:e.crise?1:0,t:e.treino?num(e.treino.dor)??-1:null,v:WK.some(k=>num(e[k])!=null)?1:0};return H}
+function jornada(){const H=jDays(),ds=Object.keys(H).sort(),wk={},tw={};let pts=0,lim=0,volta=0,crise=0,vit=0,reg=0;
+  for(const d of ds){const h=H[d],w=wkey(d);
+    if(h.d!=null||h.c){reg++;wk[w]=(wk[w]||0)+1;pts+=10;if(crise&&!h.c)volta=1}if(h.c)crise=1;
+    if(h.t!=null){pts+=10;tw[w]=1;const b=H[next(d)]?.d;if(h.t>=0&&h.t<=3&&!(h.d!=null&&b!=null&&b-h.d>=2))lim++}
+    if(h.v){pts+=5;vit++}}
+  const met=Object.values(wk).filter(n=>n>=META).length;
+  const B=[['primeiro','🌱','Primeiro registro','Registre o seu primeiro dia',reg>=1],
+    ['semana','📅','Primeira semana na meta','Registre 5 dias numa mesma semana',met>=1],
+    ['mes','🏅','4 semanas na meta','Feche a meta da semana 4 vezes',met>=4],
+    ['treino','💪','4 semanas de treino','Treine em 4 semanas diferentes',Object.keys(tw).length>=4],
+    ['limite','🎯','Respeitou o limite da dor','5 treinos com dor até 3/10 e sem piora no dia seguinte',lim>=5],
+    ['volta','🌤️','Registrou a crise e voltou','Num dia ruim, use “Dia de crise” e depois siga em frente',!!volta],
+    ['vitais','❤️','Sinais vitais em dia','7 dias com sinais vitais enviados',vit>=7],
+    ['trinta','🔥','30 dias registrados','Registre 30 dias',reg>=30]];
+  const LV=[['Início',0],['Constância',3],['Autonomia',8]];let li=0;LV.forEach((l,i)=>{if(met>=l[1])li=i});
+  return{H,pts,met,cur:wk[wkey(today)]||0,B,lv:LV[li][0],nx:LV[li+1]}}
+const SELOS=[['👏','Parabéns pela semana!'],['💪','Você está evoluindo!'],['⭐','Constância de campeão!'],['🎯','Ótimo controle da dor no treino!'],['🌤️','Força nos dias difíceis!']];
+function confete(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const c=document.createElement('div');c.className='conf';c.setAttribute('aria-hidden','true');
+  c.innerHTML=Array.from({length:32},(_,i)=>`<i style="left:${35+Math.random()*30}%;--x:${(Math.random()*2-1)*45}vw;--r:${Math.random()*900}deg;--d:${1+Math.random()*.9}s;background:${['#00E1D8','#7FF3EE','#2A6F66','#ff9f80','#F4F7F7'][i%5]}"></i>`).join('');
+  document.body.append(c);setTimeout(()=>c.remove(),2200)}
+function renderJor(){const p=P(),el=MODE==='pac'?$('#hoje'):$('#jor2');(MODE==='pac'?$('#jor2'):$('#hoje')).innerHTML='';if(!p.id){el.innerHTML='';return}
+  const J=jornada(),H=J.H,mon=wkey(today),C=2*Math.PI*52,fr=Math.min(J.cur/META,1);
+  const dots=['S','T','Q','Q','S','S','D'].map((l,i)=>{const t=new Date(mon+'T12:00');t.setDate(t.getDate()+i);const d=iso(t),h=H[d];
+    return`<span class="${h?.c?'cr':h&&h.d!=null?'on':''}${d===today?' hj':''}" title="${esc(br(d))}">${l}</span>`}).join('');
+  const rec=p.recado?.texto||p.recado?.selo?`<div class="recado"><i>${esc(p.recado.selo||'💬')}</i><div><b>${MODE==='pac'?'Recado do seu fisioterapeuta':'Recado enviado'}</b><br>${esc(p.recado.texto||'')}<div class="mut">${p.recado.em?esc(br(p.recado.em)):''}</div></div></div>`:'';
+  let hoje='';if(MODE==='pac'){const e=p.entries[today]||{},np=(p.presc||[]).length;
+    const T=[['reg',e.dor!=null||e.crise,'Registrar como foi o dia'],...(np?[['exe',!!e.treino,'Fazer os exercícios']]:[]),['wear',WK.some(k=>num(e[k])!=null),'Enviar os sinais vitais'+(window.KinesiaApp?' (o app envia sozinho)':'')]];
+    const n=T.filter(t=>t[1]).length;
+    hoje=`<h2>Hoje</h2><div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="${T.length}" aria-valuenow="${n}"><i style="width:${n/T.length*100}%"></i></div>
+      <ul class="todo">${T.map(([t,ok,l])=>`<li class="${ok?'ok':''}"><b aria-hidden="true">${ok?'✅':'○'}</b><span>${l}</span>${ok?'':`<button type="button" data-go="${t}">Fazer</button>`}</li>`).join('')}</ul>
+      <p class="mut" style="margin:10px 0 22px">${n===T.length?'Tudo feito hoje. Muito bem!':`${n} de ${T.length} feitos hoje.`}</p>`}
+  const pro=MODE!=='pac'?`<details class="guia" style="margin-top:16px"><summary>Enviar um selo ou recado ao paciente</summary><div class="row" style="margin-top:10px">
+      <select id="jselo" style="width:auto">${SELOS.map(([s,t])=>`<option value="${s}">${s} ${t}</option>`).join('')}</select>
+      <input type="text" id="jtxt" maxlength="200" placeholder="Recado (opcional). Ex.: aumente para 3 séries" style="flex:1;min-width:200px">
+      <button class="pri" id="jsend" type="button">Enviar</button>${p.recado?'<button type="button" class="del" id="jdel">Apagar recado</button>':''}</div></details>`:'';
+  el.innerHTML=`<div class="card">${rec}${hoje}<h2>${MODE==='pac'?'Sua jornada':'Jornada do paciente'}</h2>
+    <div class="jtop"><div class="ring" role="img" aria-label="${J.cur} de ${META} dias nesta semana"><svg viewBox="0 0 120 120"><circle class="bg" cx="60" cy="60" r="52"/><circle class="fg" cx="60" cy="60" r="52" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-fr)}"/></svg><b>${Math.min(J.cur,7)}/${META}<small>dias na semana</small></b></div>
+      <div><div class="lvl">Nível: ${J.lv}<small>${J.pts} pontos · ${J.met} ${J.met===1?'semana':'semanas'} na meta${J.nx?` · faltam ${J.nx[1]-J.met} para ${J.nx[0]}`:''}</small></div><div class="wdots">${dots}</div>
+      <p class="mut" style="margin:8px 0 0">${J.cur>=META?'Meta da semana cumprida! 🎉':`Meta: registrar ${META} dias por semana. Dia de crise também conta.`}</p></div></div>
+    <div class="badges">${J.B.map(([,i,t,h,ok])=>`<div class="badge${ok?'':' off'}"><i>${i}</i>${t}${ok?'':`<small>${h}</small>`}</div>`).join('')}</div>${pro}</div>`;
+  if(MODE!=='pac')return;
+  // Comemoração: conquista nova ou meta da semana cumprida (só depois da primeira visita, para não soltar confete à toa).
+  const kk=K+'-jor-'+(TOKEN||'').slice(0,8),got=J.B.filter(b=>b[4]).map(b=>b[0]);let old=null;try{old=JSON.parse(ls(kk))}catch(e){}
+  const novas=old?J.B.filter(b=>b[4]&&!old.b.includes(b[0])):[],meta=J.cur>=META&&old&&old.m!==mon;
+  if(novas.length||meta){confete();toast(novas.length?'Nova conquista: '+novas[0][2]+' '+novas[0][1]:'Meta da semana cumprida! 🎉')}
+  ls(kk,JSON.stringify({b:got,m:J.cur>=META?mon:old?.m||''}))}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-go]');if(t){show(t.dataset.go);if(t.dataset.go==='reg')$('#regcard').scrollIntoView({behavior:'smooth'})}});
+$('#jor2').addEventListener('click',async e=>{const p=P();if(e.target.id!=='jsend'&&e.target.id!=='jdel')return;
+  const old=p.recado;p.recado=e.target.id==='jdel'?null:{selo:$('#jselo').value,texto:$('#jtxt').value.trim().slice(0,200),em:today};
+  if(await putPatient(p)){renderJor();toast(p.recado?'Recado enviado. O paciente vê ao abrir o app.':'Recado apagado')}else p.recado=old});
+// ===== Triagem: quem precisa de atenção entre todos os pacientes do fisioterapeuta.
+function renderTri(){const el=$('#tri');if(MODE==='pac'||S.patients.length<2){el.innerHTML='';return}
+  const L=S.patients.map(p=>{const E=p.entries,ds=Object.keys(E).filter(d=>num(E[d].dor)!=null||E[d].crise).sort(),r=[];let s=0;
+    const last=ds[ds.length-1],sem=last?Math.round((new Date(today+'T12:00')-new Date(last+'T12:00'))/864e5):null;
+    if(sem==null){r.push('Ainda não registrou');s+=1}else if(sem>=3){r.push(sem+' dias sem registrar');s+=Math.min(sem,10)}
+    const dv=ds.slice(-10).map(d=>num(E[d].dor)).filter(v=>v!=null),a=avg(dv.slice(-3)),b=avg(dv.slice(-10,-3));
+    if(a!=null&&a>=7){r.push('Dor alta ('+fmt(a)+')');s+=4}
+    if(a!=null&&b!=null&&a-b>=1.5){r.push('Dor subindo (+'+fmt(a-b)+')');s+=3}
+    const cr=ds.slice(-7).filter(d=>E[d].crise).length;if(cr){r.push(cr+(cr>1?' dias':' dia')+' de crise');s+=2}
+    if(Object.keys(E).sort().slice(-14).some(d=>num(E[d].treino?.dor)>5)){r.push('Dor alta no treino');s+=2}
+    return{p,r,s}}).filter(x=>x.r.length).sort((x,y)=>y.s-x.s);
+  el.innerHTML=`<div class="card" style="margin-bottom:18px"><h2>Quem precisa de atenção</h2>${L.length?`<ul class="tri">${L.slice(0,8).map(x=>`<li><button type="button" class="lnk" data-pid="${esc(x.p.id)}">${esc(x.p.name)}</button><span>${x.r.map(t=>`<em>${esc(t)}</em>`).join('')}</span></li>`).join('')}</ul>`:'<p class="mut" style="margin:0">Todos em dia. Nenhum paciente com alerta.</p>'}</div>`}
+$('#tri').addEventListener('click',e=>{const id=e.target.dataset?.pid;if(!id)return;S.cur=id;save();renderAll();scrollTo({top:0,behavior:'smooth'})});
+// Letra grande (pacientes idosos), lembrada neste aparelho.
+function fsz(on){document.documentElement.dataset.fs=on?'g':'';$('#fsz').setAttribute('aria-pressed',!!on)}
+fsz(ls(K+'-fs')==='g');$('#fsz').addEventListener('click',()=>{const on=$('#fsz').getAttribute('aria-pressed')!=='true';fsz(on);ls(K+'-fs',on?'g':'');requestAnimationFrame(draw)});
+function renderAll(){renderHead();renderTri();renderJor();renderEvo();renderEv();renderDiario();renderExe();renderBk();renderLink();renderGuide();loadReg();loadWear();loadEdit();fillR()}
 
 function off(m){$('#offm').textContent=m;document.body.dataset.auth='out';show('off')}
 function start(t){document.body.dataset.auth='in';renderAll();show(t)}
@@ -1001,10 +1143,16 @@ const sig=e=>JSON.stringify(Object.keys(e||{}).sort().map(k=>[k,e[k]]));
 function live(){db.channel('registros').on('postgres_changes',{event:'*',schema:'public',table:'registros'},({new:r})=>{
   const p=r&&S.patients.find(x=>x.id===r.paciente_id);if(!p||!r.data)return;const e=norm(r.dados);if(sig(e)===sig(p.entries[r.data]))return;
   p.entries[r.data]=e;renderHead();if(p.id===P().id){renderEvo();renderDiario();renderExe();renderBk()}toast('Novo registro de '+p.name)}).subscribe()}
+// Perfil do fisioterapeuta (user_metadata): preenche a aba Dados e assina o relatório.
+function perfil(m){if(m.nome)$('#repsig').textContent=[m.nome,'Fisioterapeuta'+(m.area?' ('+m.area+')':''),m.registro,m.clinica].filter(Boolean).join(' · ');
+  $('#mfarea').innerHTML=$('#sarea').innerHTML;$('#mfnome').value=m.nome||'';$('#mfarea').value=m.area||'';$('#mfreg').value=m.registro||'';$('#mfcli').value=m.clinica||''}
+$('#mfsave').addEventListener('click',e=>busy(e.currentTarget,async()=>{const d={nome:$('#mfnome').value.trim(),area:$('#mfarea').value,registro:$('#mfreg').value.trim(),clinica:$('#mfcli').value.trim()},st=$('#mfstat');
+  if(d.nome.split(/\s+/).length<2||!d.area||d.registro.length<4){st.textContent='Preencha nome completo, área e registro.';return}
+  const{data,error}=await db.auth.updateUser({data:d});if(error){st.textContent='Não deu certo: '+error.message;return}perfil(data.user.user_metadata);st.textContent='Perfil salvo.'}));
 async function startPro(){toast('Carregando…');
-  const m=(await db.auth.getUser()).data.user?.user_metadata||{};if(m.nome)$('#repsig').textContent=[m.nome,'Fisioterapeuta'+(m.area?' ('+m.area+')':''),m.registro].filter(Boolean).join(' · ');
+  perfil((await db.auth.getUser()).data.user?.user_metadata||{});
   try{const[{data:ps,error},rs]=await Promise.all([db.from('pacientes').select('*').order('criado'),fetchAll()]);if(error)throw error;const by={};
-    S={patients:ps.map(p=>(by[p.id]={id:p.id,name:p.nome,age:p.idade,queixa:p.queixa,aparelho:p.aparelho,events:p.eventos||{},presc:p.prescricao||[],token:p.token,codigo:p.codigo,entries:{}})),cur:ls(K+'-cur')};
+    S={patients:ps.map(p=>(by[p.id]={id:p.id,name:p.nome,age:p.idade,queixa:p.queixa,aparelho:p.aparelho,events:p.eventos||{},presc:p.prescricao||[],recado:p.recado,token:p.token,codigo:p.codigo,entries:{}})),cur:ls(K+'-cur')};
     for(const r of rs)if(by[r.paciente_id])by[r.paciente_id].entries[r.data]=norm(r.dados)}
   catch(e){return off('Não consegui carregar os dados: '+(e.message||'sem conexão'))}
   live();start(ls(K+'-tab')||'evo')}
@@ -1013,7 +1161,7 @@ async function boot(){
   if(!db)return off('Sem conexão com o servidor. Verifique a internet e recarregue a página.');
   if(MODE==='pac'){let r;try{r=await rpc('paciente',{p_token:TOKEN})}catch(e){return off('Sem conexão com o servidor. Verifique a internet e recarregue a página.')}
     if(!r)return off('Este link não vale mais. Peça um novo ao seu fisioterapeuta.');ls(K+'-pac',TOKEN);
-    S={patients:[{id:'me',name:r.nome||'',aparelho:r.aparelho||'',entries:Object.fromEntries(Object.entries(r.entries||{}).map(([d,e])=>[d,norm(e)])),events:{},presc:Array.isArray(r.prescricao)?r.prescricao:[]}],cur:'me'};return start('reg')}
+    S={patients:[{id:'me',name:r.nome||'',aparelho:r.aparelho||'',entries:Object.fromEntries(Object.entries(r.entries||{}).map(([d,e])=>[d,norm(e)])),events:{},presc:Array.isArray(r.prescricao)?r.prescricao:[],recado:r.recado,hist:r.hist||{}}],cur:'me'};return start('reg')}
   const{data:{session}}=await db.auth.getSession();if(!session){document.body.dataset.auth='out';return show('login')}
   startPro()}
 boot();
