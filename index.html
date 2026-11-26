@@ -145,6 +145,11 @@ code{font-size:12.5px;word-break:break-all;background:var(--accs);color:var(--ac
 .gs.on .gck{background:var(--acc);color:var(--on);border-color:var(--acc)}.gs.on input{opacity:.65}.gadd{margin-top:10px}
 .gtm{margin-top:16px;text-align:center;padding:16px;border-radius:16px;background:var(--card2);border:1px solid var(--line2);display:grid;gap:6px}.gtm b{font-family:Sora,sans-serif;font-size:46px;font-variant-numeric:tabular-nums;color:var(--acc)}
 .gdnav{display:flex;gap:10px;margin-top:24px}.gdnav button{flex:1;min-height:52px}
+.m3{position:relative}.m3 canvas{display:block;width:100%;height:400px;touch-action:none;cursor:grab}
+.m3b{position:absolute;top:6px;right:6px;display:flex;gap:6px}.m3b button{min-height:34px;padding:2px 12px;font-size:13px}
+.m3sel{position:absolute;left:8px;bottom:8px;font-size:13px;font-weight:600;color:var(--acc);pointer-events:none}
+.gh{font-family:Sora,sans-serif;font-size:16px;margin:4px 0 6px}.cod{font-size:18px;margin:0 0 10px}.cod b{font-family:Sora,sans-serif;letter-spacing:.18em;color:var(--acc)}
+@media print{.m3{display:none!important}#mmap{display:flex!important}}
 .mmap{display:flex;gap:6px;justify-content:center}.mmap svg{width:48%;max-width:170px}.mb{fill:var(--line2)}
 .cal{display:flex;gap:3px;justify-content:center}.cal div{display:grid;gap:3px;flex:1;max-width:20px}.cal i{display:block;aspect-ratio:1;border-radius:3px;background:var(--line2)}.cal i.f{visibility:hidden}
 .cal i.t1,.lg i.t1{background:color-mix(in srgb,var(--acc) 35%,transparent)}.cal i.t2,.lg i.t2{background:var(--acc)}
@@ -158,7 +163,7 @@ code{font-size:12.5px;word-break:break-all;background:var(--accs);color:var(--ac
 .f3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}.f3 label{font-size:12px;display:grid;gap:3px;color:var(--mut)}
 .rep{display:none}
 [hidden]{display:none!important}
-body[data-mode=pac] .npac,body:not([data-mode=pro]) .pro,body:not([data-mode=local]) .loc,body[data-auth=out] .auth{display:none!important}
+body[data-mode=pac] .npac,body:not([data-mode=pac]) .pac,body:not([data-mode=pro]) .pro,body:not([data-mode=local]) .loc,body[data-auth=out] .auth{display:none!important}
 main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
 @keyframes rise{from{opacity:0;transform:translateY(8px)}}
 @media(max-width:600px){header select{max-width:100%;width:100%}.pat{width:100%}.pat select{flex:1}}
@@ -169,7 +174,7 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
   <div class="top">
     <div class="brand"><svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="kg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7FF3EE"/><stop offset="1" stop-color="#00E1D8"/></linearGradient></defs><rect x="1" y="1" width="38" height="38" rx="12" fill="#0A3D35" stroke="#00E1D8" stroke-opacity=".35"/><path d="M8 21h6l3-8 5 15 3-7h7" fill="none" stroke="url(#kg)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><div><h1 id="htitle">Kinesia</h1><div class="sub" id="pinfo">Acompanhamento diário · Hugo Caravelas</div></div></div>
     <div class="pat npac auth"><select id="psel" aria-label="Paciente"></select><button id="pnew">Novo paciente</button><button id="lout" class="pro">Sair</button></div>
-    <button id="inst" hidden>Instalar app</button>
+    <button id="inst" hidden>Instalar app</button><button id="psair" class="pac">Sair</button>
   </div>
   <nav role="tablist" class="auth">
     <button role="tab" data-t="evo" class="npac" aria-selected="true">Evolução</button>
@@ -185,12 +190,17 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
 <div class="bk" id="bk" hidden><span id="bkt"></span><span class="row" style="gap:8px"><button id="bksn">Lembrar depois</button><button class="pri" id="bkx">Fazer backup agora</button></span></div>
 
 <section id="t-login" hidden>
-  <div class="card" style="max-width:420px;margin:0 auto;display:grid;gap:12px">
-    <h2>Entrar</h2><p class="mut" style="margin:0">Acesso do fisioterapeuta.</p>
+  <div class="card" style="max-width:420px;margin:0 auto 16px;display:grid;gap:12px">
+    <h2>Sou paciente</h2>
+    <label style="display:grid;gap:4px;font-size:14px;font-weight:500">Código <input type="text" id="pcod" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Ex.: KX7P2Q" style="text-transform:uppercase;letter-spacing:.2em"></label>
+    <label style="display:grid;gap:4px;font-size:14px;font-weight:500">PIN <input type="password" id="ppin" inputmode="numeric" maxlength="6" autocomplete="off"></label>
+    <button class="pri" id="pok">Entrar</button><span class="mut" id="pstat" role="status"></span>
+  </div>
+  <details class="card fold" style="max-width:420px;margin:0 auto"><summary><h2>Sou fisioterapeuta</h2></summary><div style="display:grid;gap:12px">
     <label style="display:grid;gap:4px;font-size:14px;font-weight:500">E-mail <input type="email" id="lmail" autocomplete="username"></label>
     <label style="display:grid;gap:4px;font-size:14px;font-weight:500">Senha <input type="password" id="lpass" autocomplete="current-password"></label>
     <button class="pri" id="lok">Entrar</button><span class="mut" id="lstat" role="status"></span>
-  </div>
+  </div></details>
 </section>
 
 <section id="t-off" hidden><div class="card" style="max-width:520px;margin:0 auto"><h2>Não foi possível abrir</h2><p id="offm" style="margin:8px 0 0"></p></div></section>
@@ -222,7 +232,7 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
     </div>
   </div>
   <div class="grid" style="margin-top:20px">
-    <div class="card"><h2>Músculos · 7 dias</h2><div id="mmap" class="mmap"></div><p class="mut" id="mmapt" style="margin:8px 0 0;font-size:14px"></p></div>
+    <div class="card"><h2>Músculos · 7 dias</h2><div class="m3" id="m3" hidden><canvas id="m3c" aria-label="Mapa muscular em 3D: arraste para girar"></canvas><div class="m3b"><button type="button" data-v="0">Frente</button><button type="button" data-v="1">Costas</button></div><span class="m3sel" id="m3sel"></span></div><div id="mmap" class="mmap"></div><p class="mut" id="m3st" style="margin:6px 0 0;font-size:12px"></p><p class="mut" id="mmapt" style="margin:8px 0 0;font-size:14px"></p></div>
     <div class="card"><h2>Constância</h2><div id="cal" class="cal"></div><p class="mut" id="calt" style="margin:8px 0 0;font-size:14px"></p></div>
   </div>
   <div class="grid" style="margin-top:20px">
@@ -358,8 +368,14 @@ main section:not([hidden]){animation:rise .4s cubic-bezier(.2,.8,.2,1)}
     </div>
     <div class="stackc">
       <div class="card pro">
+        <h2>Acesso por código</h2>
+        <p class="cod" id="acod"></p>
+        <div class="row" style="flex-wrap:nowrap"><input type="text" id="apin" inputmode="numeric" maxlength="6" placeholder="Novo PIN (4 a 6 números)" autocomplete="off" aria-label="Novo PIN" style="flex:1;min-width:0"><button class="pri" id="aset">Definir PIN</button></div>
+        <p class="mut" id="astat" role="status" style="margin:8px 0 0"></p>
+      </div>
+      <div class="card pro">
         <h2>Link do paciente</h2>
-        <p class="mut" style="margin:4px 0 10px">Envie ao paciente. Ele abre no celular, sem senha, e cada registro aparece aqui na hora. Quem tiver o link consegue registrar por esse paciente: se o link vazar, gere outro.</p>
+        <p class="mut" style="margin:4px 0 10px">Funciona como senha: se vazar, gere outro.</p>
         <input type="text" id="plink" readonly aria-label="Link do paciente">
         <div class="row" style="margin-top:10px"><button class="pri" id="lcopy">Copiar link</button><button id="lwa">Enviar por WhatsApp</button><button class="del" id="lnew">Gerar novo link</button></div>
       </div>
@@ -449,9 +465,9 @@ function norm(e){e={...e};for(const k in e)if(typeof e[k]==='string'&&k!=='local
   if(e.sonoH>1440)e.sonoH=+(e.sonoH/3600).toFixed(1);else if(e.sonoH>24)e.sonoH=+(e.sonoH/60).toFixed(1);
   if(e.spo2!=null&&e.spo2<=1)e.spo2=Math.round(e.spo2*100);return e}
 
-// App instalado abre sem o #p= do link: usa o último link de paciente aberto neste aparelho.
+// Sem o #p= no endereço (app instalado, login por código), usa o último acesso de paciente deste aparelho. "Sair" apaga.
 const STAND=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
-const TOKEN=(location.hash.match(/p=([0-9a-f-]{36})/i)||[])[1]||(STAND&&ls(K+'-pac'))||null;
+const TOKEN=(location.hash.match(/p=([0-9a-f-]{36})/i)||[])[1]||ls(K+'-pac')||null;
 const MODE=SUPA_URL?(TOKEN?'pac':'pro'):'local';
 const db=SUPA_URL&&window.supabase?supabase.createClient(SUPA_URL,SUPA_KEY):null;
 document.body.dataset.mode=MODE;
@@ -591,25 +607,40 @@ function renderEv(){const E=P().events||{};
   $('#evl').innerHTML=Object.keys(E).sort().reverse().map(d=>`<li><span><b>${esc(d.slice(8,10)+'/'+d.slice(5,7)+'/'+d.slice(2,4))}</b> ${esc(E[d])}</span><button type="button" class="del" data-d="${esc(d)}" aria-label="Apagar evento de ${esc(br(d))}" style="min-height:36px;padding:4px 12px">Apagar</button></li>`).join('')}
 function renderBk(){const has=S.patients.some(p=>!/\(exemplo\)/.test(p.name)&&Object.keys(p.entries).length),le=+ls(K+'-bk')||0,dd=le?Math.floor((Date.now()-le)/864e5):null,sn=+ls(K+'-bksn')||0,on=MODE!=='pac'&&has&&(dd==null||dd>=7)&&Date.now()-sn>3*864e5;
   $('#bk').hidden=!on;if(on)$('#bkt').textContent=dd==null?(MODE==='local'?'Os dados ainda não têm backup. Se o navegador for limpo, tudo se perde.':'Ainda não há backup. O plano gratuito do Supabase não guarda cópias.'):`Último backup há ${dd} dias. Faça um novo para não perder registros.`}
-function renderLink(){const t=P().token;$('#plink').value=t?location.origin+location.pathname+'#p='+t:''}
+function renderLink(){const p=P(),t=p.token;$('#plink').value=t?location.origin+location.pathname+'#p='+t:'';
+  $('#acod').innerHTML=p.codigo?`Código: <b>${esc(p.codigo)}</b>`:'Ainda sem código. Defina um PIN para criar.';$('#astat').textContent=''}
 function renderGuide(){const tk=MODE==='pac'?TOKEN:P().token,remote=MODE!=='local'&&tk;
-  const get=`<li>Para cada dado, adicione <b>Encontrar Amostras de Saúde</b> com “Data de Início está nos últimos 1 dias”:<ul>
-    <li><b>Frequência Cardíaca em Repouso</b>: ordenar pela mais recente, limite 1.</li>
-    <li><b>Variabilidade da Frequência Cardíaca</b>: ordenar pela mais recente, limite 1.</li>
-    <li><b>Passos</b>: em seguida, <b>Calcular Estatísticas</b> → Soma.</li>
-    <li><b>Análise do Sono</b>, sem os valores “Na Cama” e “Acordado”: em seguida, <b>Obter Detalhes de Amostras de Saúde</b> → Duração e <b>Calcular Estatísticas</b> → Soma.</li>
-    <li><b>Saturação de Oxigênio</b>: em seguida, <b>Calcular Estatísticas</b> → Média.</li></ul></li>
-    <li>Use <b>Arredondar Número</b> em cada valor (sono com 1 casa decimal).</li>`;
-  const send=remote?`<li>Adicione <b>Obter Conteúdo do URL</b>:<ul>
-    <li>URL: <code>${esc(SUPA_URL)}/rest/v1/rpc/registrar</code></li>
-    <li>Método <b>POST</b>. Cabeçalhos: <code>apikey</code> = <code>${esc(SUPA_KEY)}</code> e <code>Content-Type</code> = <code>application/json</code></li>
-    <li>Corpo <b>JSON</b>: <code>p_token</code> (Texto) = <code>${esc(tk)}</code>; <code>p_data</code> (Texto) = Data Atual no formato <code>yyyy-MM-dd</code>; <code>p_dados</code> (Dicionário) com os números <code>fc</code>, <code>vfc</code>, <code>sonoH</code>, <code>passos</code> e <code>spo2</code>.</li></ul></li>
-    <li>Em <b>Automação</b> → <b>Hora do Dia</b>, escolha 21h e “Executar Imediatamente”. Os dados chegam sozinhos ao painel toda noite.</li>`
-   :`<li>Adicione <b>Texto</b> com: <code>#HC data=[Data Atual, formato yyyy-MM-dd];fc=[FC];vfc=[VFC];sono=[Sono];passos=[Passos];spo2=[SpO₂]</code></li>
-    <li>Termine com <b>Enviar Mensagem</b> para o WhatsApp do fisioterapeuta.</li>
-    <li>Em <b>Automação</b> → <b>Hora do Dia</b>, escolha 21h para rodar todo dia.</li>
-    <li>Cole as mensagens recebidas (pode ser a conversa inteira) em “Importar”. O app lê só as linhas que começam com #HC.</li>`;
-  $('#guia').innerHTML=`<details class="guia"><summary>Atalho do iPhone: dados do relógio ${remote?'enviados sozinhos':'com um toque'}</summary><ol><li>No iPhone, abra o app <b>Atalhos</b> e crie um atalho chamado “Enviar Kinesia”.</li>${get}${send}</ol><p class="mut">Os nomes das ações mudam um pouco conforme a versão do iOS: teste com um paciente antes de distribuir. O sono pode vir em horas, minutos ou segundos e a SpO₂ como fração (0,97): o painel converte.</p></details>`}
+  const D=(t,b,o)=>`<details class="guia"${o?' open':''}><summary>${t}</summary>${b}</details>`;
+  const p1=`<ul><li><b>Apple Watch</b>: já envia sozinho para o app Saúde.</li>
+    <li><b>Garmin</b>: app Garmin Connect → <b>Mais</b> → Configurações → <b>Apps Conectados</b> → <b>Apple Saúde</b> → ative todos os dados.</li>
+    <li><b>Oura</b>: app Oura → Configurações → <b>Integrações</b> → <b>Apple Saúde</b> → Conectar.</li>
+    <li><b>Xiaomi, Amazfit, Huawei</b>: no app do relógio (Mi Fitness, Zepp, Huawei Saúde) → Perfil → <b>Apple Saúde</b> → ativar.</li>
+    <li><b>Fitbit, Samsung e celulares Android</b>: o envio automático ainda não funciona. Preencha os números nesta aba.</li></ul>`;
+  const p2=`<ol><li>Abra o app <b>Atalhos</b> → toque em <b>+</b>. No topo, renomeie para <b>Enviar Kinesia</b>.</li>
+    <li>Para cada dado, adicione a ação <b>Encontrar Amostras de Saúde</b> com o filtro “Data de Início está nos últimos 1 dias”:<ul>
+      <li><b>Frequência Cardíaca em Repouso</b>: ordenar pela mais recente, limite 1.</li>
+      <li><b>Variabilidade da Frequência Cardíaca</b>: ordenar pela mais recente, limite 1.</li>
+      <li><b>Passos</b>: depois, <b>Calcular Estatísticas</b> → Soma.</li>
+      <li><b>Análise do Sono</b> (tire “Na Cama” e “Acordado”): depois, <b>Obter Detalhes de Amostras de Saúde</b> → Duração e <b>Calcular Estatísticas</b> → Soma.</li>
+      <li><b>Saturação de Oxigênio</b>: depois, <b>Calcular Estatísticas</b> → Média.</li></ul></li>
+    <li>Use <b>Arredondar Número</b> em cada valor (sono com 1 casa decimal).</li>
+    ${remote?`<li>Adicione <b>Obter Conteúdo do URL</b> e toque na seta para abrir as opções:<ul>
+      <li>URL: <code>${esc(SUPA_URL)}/rest/v1/rpc/registrar</code></li>
+      <li>Método: <b>POST</b>. Cabeçalhos: <code>apikey</code> = <code>${esc(SUPA_KEY)}</code> e <code>Content-Type</code> = <code>application/json</code></li>
+      <li>Corpo da solicitação: <b>JSON</b>, com <code>p_token</code> (Texto) = <code>${esc(tk)}</code>, <code>p_data</code> (Texto) = Data Atual no formato <code>yyyy-MM-dd</code> e <code>p_dados</code> (Dicionário) com os números <code>fc</code>, <code>vfc</code>, <code>sonoH</code>, <code>passos</code> e <code>spo2</code>.</li></ul></li>`
+    :`<li>Adicione <b>Texto</b> com: <code>#HC data=[Data Atual, formato yyyy-MM-dd];fc=[FC];vfc=[VFC];sono=[Sono];passos=[Passos];spo2=[SpO₂]</code></li>
+      <li>Termine com <b>Enviar Mensagem</b> para o WhatsApp do fisioterapeuta. Ele cola as mensagens em “Importar” e o app lê as linhas #HC.</li>`}
+    <li>Toque em ▶ para testar. Na primeira vez, o iPhone pede acesso ao Saúde${remote?' e para conectar a supabase.co':''}: toque em <b>Permitir</b> e em <b>Sempre Permitir</b>.</li></ol>`;
+  const p3=`<ol><li>No app Atalhos, abra a aba <b>Automação</b> → <b>+</b> (ou “Nova Automação”).</li>
+    <li>Escolha <b>Hora do Dia</b> → <b>21:00</b> → <b>Diariamente</b>.</li>
+    <li>Marque <b>Executar Imediatamente</b> (se quiser, desligue “Notificar ao Executar”) → Avançar.</li>
+    <li>Escolha o atalho <b>Enviar Kinesia</b>. Pronto: toda noite os dados ${remote?'chegam sozinhos ao fisioterapeuta':'vão pelo WhatsApp'}.</li>
+    <li>Use o iPhone pelo menos uma vez no dia: com o aparelho bloqueado desde cedo, o Saúde não libera os dados.</li></ol>`;
+  const dica=MODE==='pro'&&remote?D('Dica: monte o atalho uma vez e compartilhe com todos',`<ol><li>Monte o atalho no seu iPhone com o código de um paciente no campo <code>p_token</code>.</li>
+    <li>Nos detalhes do atalho (ⓘ), em <b>Configuração</b>, adicione uma <b>Pergunta de Importação</b> no campo <code>p_token</code>: “Cole o seu código do atalho”.</li>
+    <li>Toque em Compartilhar → <b>Copiar Link do iCloud</b> e envie aos pacientes. Cada um instala, cola o próprio código (botão na aba Relógio dele) e faz só a parte 3.</li></ol>`):'';
+  $('#guia').innerHTML=`<h3 class="gh">Coleta automática do relógio (iPhone)</h3>${D('1. Ligar o relógio ao app Saúde',p1,1)}${D('2. Criar o atalho “Enviar Kinesia” (uma vez)',p2)}${D('3. Deixar automático todo dia',p3)}${dica}${MODE==='pac'&&remote?'<div class="row" style="margin-top:12px"><button type="button" id="tkcopy">Copiar meu código do atalho</button></div>':''}`}
+$('#guia').addEventListener('click',async e=>{if(e.target.id!=='tkcopy')return;try{await navigator.clipboard.writeText(TOKEN);toast('Código copiado. Cole no atalho.')}catch{prompt('Copie o código:',TOKEN)}});
 
 function renderDiario(){const E=P().entries,ds=days().filter(d=>E[d].diario?.length).reverse().slice(0,60);
   $('#dlist').innerHTML=ds.length?ds.map(d=>`<li style="display:block"><b>${esc(br(d)+'/'+d.slice(2,4))}</b><ul class="evl">${E[d].diario.map((x,i)=>`<li><span><strong>${esc(x.h||'—')}</strong> · dor ${esc(x.dor)}${x.local?' · '+esc(x.local):''}${x.gat?`<br><span class="mut">Fazendo: ${esc(x.gat)}</span>`:''}${x.ali?`<br><span class="mut">Ajudou: ${esc(x.ali)}</span>`:''}${x.nota?`<br>${esc(x.nota)}`:''}</span><button type="button" class="del" data-d="${esc(d)}" data-i="${i}" aria-label="Apagar anotação" style="min-height:36px;padding:4px 12px">Apagar</button></li>`).join('')}</ul></li>`).join(''):'<li class="mut">Nenhuma anotação ainda.</li>'}
@@ -650,6 +681,7 @@ function renderMap(){const E=P().entries,L=P().presc||[],v={};
     if(MUS.includes(x.mus))v[x.mus]=(v[x.mus]||0)+k;(x.mus2||[]).forEach(m=>{if(MUS.includes(m))v[m]=(v[m]||0)+k/2})}}
   const fig=(V,lab)=>`<svg viewBox="0 0 100 185" role="img" aria-label="${lab}"><circle cx="50" cy="13" r="10" class="mb"/>${BODY[V].map(([m,x,y,w,h,s])=>(s?[x,100-x-w]:[x]).map(X=>`<rect x="${X}" y="${y}" width="${w}" height="${h}" rx="4" class="mb"${v[m]?` style="fill:var(--acc);fill-opacity:${(.3+.7*Math.min(1,v[m]/12)).toFixed(2)}"`:''}>${m?`<title>${m}: ${fmt(v[m]||0)} séries</title>`:''}</rect>`).join('')).join('')}</svg>`;
   $('#mmap').innerHTML=fig('f','Frente')+fig('b','Costas');
+  M3v=v;if(MODE!=='pac'){if(M3)paint3();else map3d()}
   const zero=[...new Set(L.map(x=>x.mus).filter(m=>MUS.includes(m)&&!v[m]))];
   $('#mmapt').textContent=!Object.keys(v).length?(L.length?'Nenhuma série nos últimos 7 dias.':'Sem exercícios prescritos.'):zero.length?'Sem treino na semana: '+zero.join(', '):'Todos os músculos prescritos foram treinados.'}
 function renderCal(){const E=P().entries,W=17,t0=new Date(),st=new Date(t0);st.setDate(st.getDate()-(t0.getDay()+6)%7-7*(W-1));let h='',nt=0,sq=0;const hoje=iso(t0);
@@ -657,6 +689,34 @@ function renderCal(){const E=P().entries,W=17,t0=new Date(),st=new Date(t0);st.s
   for(let i=0;i<28;i++){const d=new Date(t0);d.setDate(d.getDate()-i);if(E[iso(d)]?.treino)nt++}
   for(let i=E[hoje]?0:1;i<400;i++){const d=new Date(t0);d.setDate(d.getDate()-i);if(!E[iso(d)])break;sq++}
   $('#cal').innerHTML=h;$('#calt').innerHTML=`<b>${sq}</b> ${sq===1?'dia seguido':'dias seguidos'} · <b>${nt}</b> ${nt===1?'treino':'treinos'} em 4 semanas<span class="lg"><i class="t1"></i>registro<i class="t2"></i>treino</span>`}
+// Mapa 3D com os músculos do Atlas Anatômico 3D (BodyParts3D © DBCLS, CC BY 4.0). Carrega uma vez; o desenho 2D fica de reserva.
+let M3=null,M3v={};
+const js=src=>new Promise((ok,no)=>{const e=document.createElement('script');e.src=src;e.onload=ok;e.onerror=no;document.head.appendChild(e)});
+async function map3d(){if(M3!==null)return;M3=false;const cv=$('#m3c');if(!window.DecompressionStream||!document.createElement('canvas').getContext('webgl'))return;
+  try{$('#m3st').textContent='Carregando o modelo 3D…';if(!window.THREE)await js('lib/three.min.js');if(!THREE.OrbitControls)await js('lib/OrbitControls.js');
+    const[meta,bin]=await Promise.all([fetch('musculos3d.json').then(r=>r.json()),fetch('musculos3d.bin').then(r=>r.arrayBuffer())]);
+    const buf=await new Response(new Blob([bin]).stream().pipeThrough(new DecompressionStream('deflate'))).arrayBuffer(),lo=meta.lo,rg=meta.hi.map((h,i)=>h-lo[i]);
+    const R=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});R.setPixelRatio(Math.min(devicePixelRatio,2));
+    const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(30,1,.05,20);sc.add(new THREE.HemisphereLight(0xffffff,0x445566,.85));
+    const key=new THREE.DirectionalLight(0xffffff,.65);key.position.set(.6,1,1.2);cam.add(key);sc.add(cam);
+    const ms=meta.parts.map(p=>{const q=new Uint16Array(buf,p.p,p.v*3),pos=new Float32Array(p.v*3);
+      for(let j=0;j<pos.length;j+=3){pos[j]=lo[0]+q[j]/65535*rg[0];pos[j+1]=lo[1]+q[j+1]/65535*rg[1];pos[j+2]=lo[2]+q[j+2]/65535*rg[2]}
+      const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('normal',new THREE.BufferAttribute(new Int8Array(buf,p.n,p.v*3),3,true));
+      g.setIndex(new THREE.BufferAttribute(p.x32?new Uint32Array(buf,p.x,p.ic):new Uint16Array(buf,p.x,p.ic),1));
+      const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({roughness:.6,metalness:0,side:THREE.DoubleSide}));m.userData={g:p.g.map(i=>meta.grupos[i]),nome:p.nome};sc.add(m);return m});
+    const ctl=new THREE.OrbitControls(cam,cv);ctl.target.set(0,.9,0);ctl.enablePan=false;ctl.minDistance=.7;ctl.maxDistance=5.5;
+    const draw=()=>R.render(sc,cam),size=()=>{const w=cv.clientWidth,h=cv.clientHeight;if(!w)return;R.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();draw()};
+    ctl.addEventListener('change',draw);new ResizeObserver(size).observe(cv);
+    const view=b=>{cam.position.set(0,.88,b?-3.2:3.2);ctl.update();draw()};
+    const ray=new THREE.Raycaster(),pt=new THREE.Vector2();let down=null;
+    cv.addEventListener('pointerdown',e=>down=[e.clientX,e.clientY]);
+    cv.addEventListener('pointerup',e=>{if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>6)return;const r=cv.getBoundingClientRect();pt.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(pt,cam);
+      const h=ray.intersectObjects(ms)[0],u=h?.object.userData;$('#m3sel').textContent=!u?'':u.g.length?u.g.map(g=>`${g}: ${fmt(M3v[g]||0)} séries`).join(' · '):u.nome});
+    $('#m3').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(b)view(+b.dataset.v)});
+    M3={ms,draw};$('#m3').hidden=false;$('#mmap').hidden=true;$('#m3st').textContent='Arraste para girar, toque num músculo para ver as séries. Modelo: BodyParts3D © DBCLS (CC BY 4.0).';size();view(0);paint3()}
+  catch(err){M3=false;$('#m3').hidden=true;$('#mmap').hidden=false;$('#m3st').textContent=''}}
+function paint3(){if(!M3)return;const base=new THREE.Color(matchMedia('(prefers-color-scheme: dark)').matches?'#2c4a46':'#c9d6d4'),acc=new THREE.Color(getComputedStyle($('#m3sel')).color);
+  M3.ms.forEach(m=>{const v=Math.max(0,...m.userData.g.map(g=>M3v[g]||0));m.material.color.copy(base);if(v)m.material.color.lerp(acc,.35+.65*Math.min(1,v/12))});M3.draw()}
 function renderEvo(){renderKpis();renderDoms();renderFlags();renderIns();renderLast();draw();renderMap();renderCal()}
 
 $('#sliders').innerHTML=Object.entries(ITEMS).map(([d,its])=>`<fieldset><legend>${DN[d]}</legend><div class="items">${its.map(([k,l,,h])=>`<div class="sl"><div class="slh"><label for="r-${k}">${l}</label><button type="button" class="help" aria-expanded="false" aria-controls="b-${k}" aria-label="Exemplos para ${l}" data-b="b-${k}">?</button><output id="o-${k}">5</output></div><div class="balao" id="b-${k}" hidden><ul>${EX[k].map(([n,t])=>`<li><b>${n}</b>${t}</li>`).join('')}</ul></div><input type="range" id="r-${k}" min="0" max="10" step="1" value="5"><small>${h}</small></div>`).join('')}</div></fieldset>`).join('');
@@ -798,7 +858,7 @@ async function give(name,data){
   if(dlc){try{await dlc.save({filename:name,data});toast('Arquivo salvo');return}catch(e){}}
   if(!window.claude){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/octet-stream'}));a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);toast('Arquivo baixado');return}
   try{await navigator.clipboard.writeText(data);toast('Download indisponível aqui: dados copiados')}catch(e){showCopy(data)}}
-const strip=({token,...p})=>p; // o token do link não sai nos arquivos
+const strip=({token,codigo,...p})=>p; // token e código de acesso não saem nos arquivos
 const slug=()=>P().name.normalize('NFD').replace(/[^\w]+/g,'-').toLowerCase().replace(/^-|-$/g,'')||'paciente';
 function csv(){const keys=[...ALL.map(i=>i[0]),...WK,'local','obs'],E=P().entries;
   return['data;'+keys.join(';'),...days().map(d=>d+';'+keys.map(k=>String(E[d][k]??'').replace(/;/g,',').replace(/\./g,typeof E[d][k]==='number'?',':'.')).join(';'))].join('\n')}
@@ -855,6 +915,17 @@ $('#lok').addEventListener('click',e=>busy(e.currentTarget,async()=>{$('#lstat')
   const{error}=await db.auth.signInWithPassword({email:$('#lmail').value.trim(),password:$('#lpass').value});
   if(error)return $('#lstat').textContent='E-mail ou senha incorretos.';$('#lpass').value='';$('#lstat').textContent='';startPro()}));
 $('#lpass').addEventListener('keydown',e=>{if(e.key==='Enter')$('#lok').click()});
+$('#ppin').addEventListener('keydown',e=>{if(e.key==='Enter')$('#pok').click()});
+$('#pok').addEventListener('click',e=>busy(e.currentTarget,async()=>{const c=$('#pcod').value.trim().toUpperCase(),pin=$('#ppin').value.trim(),st=$('#pstat');
+  if(!/^[A-Z0-9]{6}$/.test(c)||!/^\d{4,6}$/.test(pin)){st.textContent='Digite o código de 6 letras e o PIN.';return}
+  st.textContent='Entrando…';try{const t=await rpc('entrar',{p_codigo:c,p_pin:pin});if(!t){st.textContent='Código ou PIN não confere.';return}
+    ls(K+'-pac',t);location.hash='p='+t;location.reload()}catch(err){st.textContent=err.message?.includes('tentativas')?err.message:'Sem conexão. Tente de novo.'}}));
+$('#psair').addEventListener('click',()=>{if(!confirm('Sair deste aparelho? Para voltar, use o código e o PIN ou o seu link.'))return;ls(K+'-pac','');history.replaceState(null,'',location.pathname);location.reload()});
+$('#aset').addEventListener('click',e=>busy(e.currentTarget,async()=>{const p=P(),pin=$('#apin').value.trim(),st=$('#astat');if(!/^\d{4,6}$/.test(pin)){st.textContent='O PIN precisa ter de 4 a 6 números.';return}
+  try{p.codigo=await rpc('definir_acesso',{p_id:p.id,p_pin:pin});$('#apin').value='';renderLink();
+    const msg=`Olá! Para entrar no Kinesia, abra ${location.origin+location.pathname} e toque em “Sou paciente”.\nCódigo: ${p.codigo}\nPIN: ${pin}`;
+    st.innerHTML=`PIN definido. Passe ao paciente o código <b>${esc(p.codigo)}</b> e o PIN <b>${esc(pin)}</b>. <a href="https://wa.me/?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener" style="color:var(--acc)">Enviar por WhatsApp</a>`}
+  catch(err){st.textContent='Não deu certo: '+(err.message||'sem conexão')}}));
 $('#lout').addEventListener('click',async()=>{await db.auth.signOut();location.reload()});
 
 function show(t){if(MODE==='pac'&&!['reg','diario','exe','wear','off'].includes(t))t='reg';
@@ -873,7 +944,7 @@ function live(){db.channel('registros').on('postgres_changes',{event:'*',schema:
   p.entries[r.data]=e;renderHead();if(p.id===P().id){renderEvo();renderDiario();renderExe();renderBk()}toast('Novo registro de '+p.name)}).subscribe()}
 async function startPro(){toast('Carregando…');
   try{const[{data:ps,error},rs]=await Promise.all([db.from('pacientes').select('*').order('criado'),fetchAll()]);if(error)throw error;const by={};
-    S={patients:ps.map(p=>(by[p.id]={id:p.id,name:p.nome,age:p.idade,queixa:p.queixa,aparelho:p.aparelho,events:p.eventos||{},presc:p.prescricao||[],token:p.token,entries:{}})),cur:ls(K+'-cur')};
+    S={patients:ps.map(p=>(by[p.id]={id:p.id,name:p.nome,age:p.idade,queixa:p.queixa,aparelho:p.aparelho,events:p.eventos||{},presc:p.prescricao||[],token:p.token,codigo:p.codigo,entries:{}})),cur:ls(K+'-cur')};
     for(const r of rs)if(by[r.paciente_id])by[r.paciente_id].entries[r.data]=norm(r.dados)}
   catch(e){return off('Não consegui carregar os dados: '+(e.message||'sem conexão'))}
   live();start(ls(K+'-tab')||'evo')}
@@ -886,8 +957,8 @@ async function boot(){
   const{data:{session}}=await db.auth.getSession();if(!session){document.body.dataset.auth='out';return show('login')}
   startPro()}
 boot();
-// Instalar como aplicativo. No modo paciente o manifesto fica de fora: o atalho guarda o endereço com o link pessoal.
-if(MODE!=='pac')document.head.insertAdjacentHTML('beforeend','<link rel="manifest" href="manifest.webmanifest">');
+// Instalar como aplicativo.
+document.head.insertAdjacentHTML('beforeend','<link rel="manifest" href="manifest.webmanifest">');
 document.head.insertAdjacentHTML('beforeend','<link rel="apple-touch-icon" href="icon-180.png">');
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
 let instP=null;$('#inst').hidden=STAND;
